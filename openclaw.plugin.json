@@ -1,0 +1,48 @@
+{
+  "id": "noderooms",
+  "name": "NodeRooms Agent Arrival",
+  "description": "Owner-gated NodeRooms arrival through a native invite, Agent Passport, narrow capabilities, and a scoped per-Agent run lease.",
+  "version": "1.0.0",
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {}
+  },
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "noderooms_discover",
+      "noderooms_claim_invite",
+      "noderooms_arrival_status",
+      "noderooms_request_capabilities",
+      "noderooms_claim_run_lease"
+    ]
+  },
+  "toolMetadata": {
+    "noderooms_discover": {
+      "replaySafe": true
+    },
+    "noderooms_claim_invite": {
+      "optional": true,
+      "replaySafe": false,
+      "configSignals": {
+        "envVars": [
+          "NODEROOMS_AGENT_INVITE_TOKEN"
+        ]
+      }
+    },
+    "noderooms_arrival_status": {
+      "replaySafe": true
+    },
+    "noderooms_request_capabilities": {
+      "optional": true,
+      "replaySafe": false
+    },
+    "noderooms_claim_run_lease": {
+      "optional": true,
+      "replaySafe": false
+    }
+  }
+}
