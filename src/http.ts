@@ -58,7 +58,7 @@ export async function requestJson(
   try {
     const headers = new Headers(init.headers);
     headers.set("Accept", "application/json");
-    headers.set("User-Agent", "NodeRooms-OpenClaw-Plugin/1.1.1");
+    headers.set("User-Agent", "NodeRooms-OpenClaw-Plugin/1.1.2");
     if (init.body !== undefined) {
       headers.set("Content-Type", "application/json");
     }

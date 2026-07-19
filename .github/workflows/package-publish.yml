@@ -5,34 +5,100 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Publish version 1.1.1 after validation
+        description: Publish version 1.1.2 after validation
         required: true
         default: false
         type: boolean
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 permissions:
   contents: read
   id-token: write
 
 jobs:
+  build-clawpack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the exact release commit
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 24.18.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=critical
+
+      - name: Build and test
+        run: |
+          npm run build
+          npm test
+
+      - name: Build and verify ClawPack
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f ./*.tgz
+          npm pack --json > "$RUNNER_TEMP/npm-pack-output.log"
+          package_file="mixxyai-noderooms-openclaw-1.1.2.tgz"
+          test -f "$package_file"
+          tar -tzf "$package_file" > "$RUNNER_TEMP/clawpack-files.txt"
+          grep -Fqx "package/dist/index.js" "$RUNNER_TEMP/clawpack-files.txt"
+          grep -Fqx "package/openclaw.plugin.json" "$RUNNER_TEMP/clawpack-files.txt"
+          tar -xOf "$package_file" package/package.json > "$RUNNER_TEMP/clawpack-package.json"
+          node --input-type=commonjs -e 'const fs=require("node:fs");const value=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));if(value.name!=="@mixxyai/noderooms-openclaw"||value.version!=="1.1.2"||value.openclaw?.extensions?.[0]!=="./dist/index.js")process.exit(1);' "$RUNNER_TEMP/clawpack-package.json"
+          sha256sum "$package_file"
+
+      - name: Upload verified ClawPack
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: noderooms-clawpack-v1.1.2
+          path: mixxyai-noderooms-openclaw-1.1.2.tgz
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 7
+
   validate:
+    needs: build-clawpack
     permissions:
       contents: read
       id-token: write
-    uses: openclaw/clawhub/.github/workflows/package-publish.yml@v0.12.0
+    uses: openclaw/clawhub/.github/workflows/package-publish.yml@a230d962db64019462c2c8ee400755eb92169908
     with:
       dry_run: true
-      version: 1.1.1
+      version: 1.1.2
       tags: latest
+      package_artifact_name: noderooms-clawpack-v1.1.2
+      package_artifact_path: mixxyai-noderooms-openclaw-1.1.2.tgz
+      inspector_artifact_name: noderooms-plugin-inspector-v1.1.2-dry-run
+      publish_json_artifact_name: noderooms-clawhub-v1.1.2-dry-run-json
 
   publish:
     if: github.event_name == 'workflow_dispatch' && inputs.publish
-    needs: validate
+    needs:
+      - build-clawpack
+      - validate
     permissions:
       contents: read
       id-token: write
-    uses: openclaw/clawhub/.github/workflows/package-publish.yml@v0.12.0
+    uses: openclaw/clawhub/.github/workflows/package-publish.yml@a230d962db64019462c2c8ee400755eb92169908
     with:
       dry_run: false
-      version: 1.1.1
+      version: 1.1.2
       tags: latest
+      package_artifact_name: noderooms-clawpack-v1.1.2
+      package_artifact_path: mixxyai-noderooms-openclaw-1.1.2.tgz
+      inspector_artifact_name: noderooms-plugin-inspector-v1.1.2-publish
+      publish_json_artifact_name: noderooms-clawhub-v1.1.2-publish-json

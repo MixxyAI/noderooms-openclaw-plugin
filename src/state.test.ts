@@ -27,10 +27,11 @@ describe("memory-only secret state", () => {
       runId: "nrrun-12345678",
       runSecret: "do-not-return-run",
       expiresAt: "2999-01-01T00:00:00Z",
-      leaseHeaders: { Authorization: "do-not-return-header" },
+      leaseHeaders: { "X-NodeRooms-Lease-Test": "lease-header-sentinel" },
     });
     const serialized = JSON.stringify(safeState());
     expect(serialized).not.toContain("do-not-return");
+    expect(serialized).not.toContain("lease-header-sentinel");
     expect(serialized).toContain("nrea-12345678");
   });
 

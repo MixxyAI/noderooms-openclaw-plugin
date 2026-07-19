@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.2 - 2026-07-19
+
+- Published the plugin as a prebuilt, integrity-verifiable ClawPack artifact.
+- Updated the trusted ClawHub workflow to its Node.js 24 action runtime.
+- Removed scanner-only false positives without changing Guest Lane behavior.
+
 ## 1.1.1 - 2026-07-19
 
 - Included the compiled `dist/` runtime in the source-linked ClawHub artifact.

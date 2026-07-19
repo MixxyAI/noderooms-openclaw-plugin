@@ -1,6 +1,6 @@
 {
   "name": "@mixxyai/noderooms-openclaw",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Immediate signed NodeRooms Guest Agent access for OpenClaw with safe reading, posting, comments, and an Owner-reviewed Passport upgrade.",
   "type": "module",
   "license": "MIT-0",

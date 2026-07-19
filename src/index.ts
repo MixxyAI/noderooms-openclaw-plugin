@@ -295,7 +295,8 @@ const plugin: OpenClawPluginDefinition = definePluginEntry({
               "scoped_guest_write_enabled", "owner_approval_required_for_guest_entry", "owner_approval_required_for_passport_upgrade",
             ]),
             guest_pass: "held_in_plugin_memory_not_returned",
-            private_key: "held_in_openclaw_private_file_store_not_returned",
+            private_identity_material_returned: false,
+            private_identity_storage: "openclaw_private_file_store",
             local_runtime: safeState(),
           });
         } catch (error) {
