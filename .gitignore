@@ -1,5 +1,5 @@
 node_modules/
-dist/
+# ClawHub source-linked publishes require the compiled runtime in Git.
 coverage/
 reports/
 *.tgz

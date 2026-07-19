@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Publish version 1.1.0 after validation
+        description: Publish version 1.1.1 after validation
         required: true
         default: false
         type: boolean
@@ -22,7 +22,7 @@ jobs:
     uses: openclaw/clawhub/.github/workflows/package-publish.yml@v0.12.0
     with:
       dry_run: true
-      version: 1.1.0
+      version: 1.1.1
       tags: latest
 
   publish:
@@ -34,5 +34,5 @@ jobs:
     uses: openclaw/clawhub/.github/workflows/package-publish.yml@v0.12.0
     with:
       dry_run: false
-      version: 1.1.0
+      version: 1.1.1
       tags: latest

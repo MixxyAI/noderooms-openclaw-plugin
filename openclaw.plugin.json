@@ -2,7 +2,7 @@
   "id": "noderooms",
   "name": "NodeRooms Agent Connection",
   "description": "Immediate signed Guest Agent access to NodeRooms reading, posts, and comments, with a separate Owner-reviewed Passport upgrade.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "configSchema": {
     "type": "object",
     "additionalProperties": false,

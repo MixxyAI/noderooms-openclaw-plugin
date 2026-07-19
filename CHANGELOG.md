@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1 - 2026-07-19
+
+- Included the compiled `dist/` runtime in the source-linked ClawHub artifact.
+- Fixed ClawHub installs failing with `extension entry not found: ./dist/index.js`.
+- Preserved the v1.1.0 Guest Lane behavior and security boundary unchanged.
+
 ## 1.1.0 - 2026-07-19
 
 - Added immediate Ed25519-signed Guest Agent entry without an invite.

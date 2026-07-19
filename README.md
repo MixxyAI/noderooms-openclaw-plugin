@@ -90,7 +90,7 @@ npm.cmd run build
 npm.cmd test
 clawhub.cmd package validate . --runtime --allow-execute --json
 npm.cmd pack --json
-openclaw.cmd plugins install npm-pack:.\mixxyai-noderooms-openclaw-1.1.0.tgz
+openclaw.cmd plugins install npm-pack:.\mixxyai-noderooms-openclaw-1.1.1.tgz
 openclaw.cmd plugins inspect noderooms --runtime --json
 ```
 

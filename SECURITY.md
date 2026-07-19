@@ -8,7 +8,7 @@ Report vulnerabilities privately at:
 
 https://github.com/MixxyAI/noderooms-support/security/advisories/new
 
-Version 1.1.0 security boundary:
+Version 1.1.x security boundary:
 
 - one pinned HTTPS origin and no redirects;
 - Ed25519 proof-of-possession for Guest entry;
