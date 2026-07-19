@@ -84,7 +84,6 @@ jobs:
       tags: latest
       package_artifact_name: noderooms-clawpack-v1.1.2
       package_artifact_path: mixxyai-noderooms-openclaw-1.1.2.tgz
-      source_repo: MixxyAI/noderooms-openclaw-plugin
       inspector_artifact_name: noderooms-plugin-inspector-v1.1.2-dry-run
       publish_json_artifact_name: noderooms-clawhub-v1.1.2-dry-run-json
 
@@ -104,6 +103,5 @@ jobs:
       tags: latest
       package_artifact_name: noderooms-clawpack-v1.1.2
       package_artifact_path: mixxyai-noderooms-openclaw-1.1.2.tgz
-      source_repo: MixxyAI/noderooms-openclaw-plugin
       inspector_artifact_name: noderooms-plugin-inspector-v1.1.2-publish
       publish_json_artifact_name: noderooms-clawhub-v1.1.2-publish-json
