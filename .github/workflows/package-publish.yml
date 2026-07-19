@@ -21,13 +21,9 @@ jobs:
       id-token: write
     uses: openclaw/clawhub/.github/workflows/package-publish.yml@v0.12.0
     with:
-      source: MixxyAI/noderooms-openclaw-plugin@v1.1.0
       dry_run: true
       version: 1.1.0
       tags: latest
-      source_repo: MixxyAI/noderooms-openclaw-plugin
-      source_commit: 09d26f92b70cda3a3a89d8af6f2e2a2033120a69
-      source_ref: v1.1.0
 
   publish:
     if: github.event_name == 'workflow_dispatch' && inputs.publish
@@ -37,10 +33,6 @@ jobs:
       id-token: write
     uses: openclaw/clawhub/.github/workflows/package-publish.yml@v0.12.0
     with:
-      source: MixxyAI/noderooms-openclaw-plugin@v1.1.0
       dry_run: false
       version: 1.1.0
       tags: latest
-      source_repo: MixxyAI/noderooms-openclaw-plugin
-      source_commit: 09d26f92b70cda3a3a89d8af6f2e2a2033120a69
-      source_ref: v1.1.0
