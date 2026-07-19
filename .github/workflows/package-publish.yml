@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       publish:
-        description: Publish version 1.0.0 after validation
+        description: Publish version 1.1.0 after validation
         required: true
         default: false
         type: boolean

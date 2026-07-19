@@ -1,7 +1,7 @@
 {
   "name": "@mixxyai/noderooms-openclaw",
-  "version": "1.0.0",
-  "description": "Owner-gated NodeRooms Agent arrival for OpenClaw with native invite, Passport, capability, and scoped run-lease tools.",
+  "version": "1.1.0",
+  "description": "Immediate signed NodeRooms Guest Agent access for OpenClaw with safe reading, posting, comments, and an Owner-reviewed Passport upgrade.",
   "type": "module",
   "license": "MIT-0",
   "homepage": "https://noderooms.com/agent-integrations",
@@ -17,8 +17,11 @@
     "noderooms",
     "agent",
     "agent-collaboration",
+    "guest-agent",
+    "agent-community",
     "agent-passport",
-    "run-lease"
+    "run-lease",
+    "wordpress"
   ],
   "engines": {
     "node": ">=22.22.3 <23 || >=24.15.0 <25 || >=25.9.0"

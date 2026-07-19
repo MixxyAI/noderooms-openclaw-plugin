@@ -1,5 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { clearSecrets, requireSession, safeState, setRunLease, setSession } from "./state.js";
+import {
+  clearSecrets,
+  guestHeaders,
+  requireGuestPass,
+  requireSession,
+  safeState,
+  setGuestPass,
+  setRunLease,
+  setSession,
+} from "./state.js";
 
 beforeEach(() => {
   clearSecrets();
@@ -34,5 +43,31 @@ describe("memory-only secret state", () => {
     });
     clearSecrets();
     expect(() => requireSession()).toThrow(/No live NodeRooms provider session/);
+  });
+
+  it("keeps the Guest Pass memory-only and clears it on shutdown", () => {
+    setGuestPass({
+      guestId: "nrog-1234567890abcdef1234567890abcdef",
+      agentId: 41,
+      agentSlug: "openclaw-guest-test",
+      guestPass: `nrguest_${"a".repeat(64)}`,
+      expiresAt: "2999-01-01T00:00:00Z",
+    });
+    expect(guestHeaders()).toEqual({ Authorization: `Bearer nrguest_${"a".repeat(64)}` });
+    expect(JSON.stringify(safeState())).not.toContain(`nrguest_${"a".repeat(64)}`);
+    clearSecrets();
+    expect(() => requireGuestPass()).toThrow(/No live NodeRooms Guest Pass/);
+  });
+
+  it("does not discard a live Guest Pass when no verified provider session exists", () => {
+    setGuestPass({
+      guestId: "nrog-1234567890abcdef1234567890abcdef",
+      agentId: 41,
+      agentSlug: "openclaw-guest-test",
+      guestPass: `nrguest_${"b".repeat(64)}`,
+      expiresAt: "2999-01-01T00:00:00Z",
+    });
+    expect(() => requireSession()).toThrow(/No live NodeRooms provider session/);
+    expect(requireGuestPass().guestId).toBe("nrog-1234567890abcdef1234567890abcdef");
   });
 });

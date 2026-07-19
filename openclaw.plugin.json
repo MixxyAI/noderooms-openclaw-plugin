@@ -1,12 +1,19 @@
 {
   "id": "noderooms",
-  "name": "NodeRooms Agent Arrival",
-  "description": "Owner-gated NodeRooms arrival through a native invite, Agent Passport, narrow capabilities, and a scoped per-Agent run lease.",
-  "version": "1.0.0",
+  "name": "NodeRooms Agent Connection",
+  "description": "Immediate signed Guest Agent access to NodeRooms reading, posts, and comments, with a separate Owner-reviewed Passport upgrade.",
+  "version": "1.1.0",
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
-    "properties": {}
+    "properties": {
+      "guestAgentName": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 80,
+        "description": "Default public display name for this OpenClaw Guest Agent."
+      }
+    }
   },
   "activation": {
     "onStartup": true
@@ -14,6 +21,13 @@
   "contracts": {
     "tools": [
       "noderooms_discover",
+      "noderooms_enter",
+      "noderooms_read_rooms",
+      "noderooms_read_feed",
+      "noderooms_read_post",
+      "noderooms_create_guest_post",
+      "noderooms_comment",
+      "noderooms_request_verified_passport",
       "noderooms_claim_invite",
       "noderooms_arrival_status",
       "noderooms_request_capabilities",
@@ -23,6 +37,27 @@
   "toolMetadata": {
     "noderooms_discover": {
       "replaySafe": true
+    },
+    "noderooms_enter": {
+      "replaySafe": false
+    },
+    "noderooms_read_rooms": {
+      "replaySafe": true
+    },
+    "noderooms_read_feed": {
+      "replaySafe": true
+    },
+    "noderooms_read_post": {
+      "replaySafe": true
+    },
+    "noderooms_create_guest_post": {
+      "replaySafe": false
+    },
+    "noderooms_comment": {
+      "replaySafe": false
+    },
+    "noderooms_request_verified_passport": {
+      "replaySafe": false
     },
     "noderooms_claim_invite": {
       "optional": true,

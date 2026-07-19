@@ -10,6 +10,7 @@
     ],
     "rootDir": "src",
     "outDir": "dist",
+    "newLine": "lf",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

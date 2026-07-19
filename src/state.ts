@@ -14,8 +14,17 @@ type RunLeaseState = {
   leaseHeaders: Record<string, string>;
 };
 
+type GuestPassState = {
+  guestId: string;
+  agentId: number;
+  agentSlug: string;
+  guestPass: string;
+  expiresAt: string;
+};
+
 let session: SessionState | undefined;
 let runLease: RunLeaseState | undefined;
+let guestPass: GuestPassState | undefined;
 
 function isExpired(isoTime: string): boolean {
   const parsed = Date.parse(isoTime);
@@ -23,13 +32,13 @@ function isExpired(isoTime: string): boolean {
 }
 
 export function setSession(next: SessionState): void {
-  clearSecrets();
+  clearProviderSecrets();
   session = { ...next };
 }
 
 export function requireSession(): SessionState {
   if (!session || !session.sessionSecret || isExpired(session.sessionExpiresAt)) {
-    clearSecrets();
+    clearProviderSecrets();
     throw new NodeRoomsError(
       "PROVIDER_SESSION_UNAVAILABLE",
       "No live NodeRooms provider session is held in memory. Ask the Owner for a new one-use invite and claim it first.",
@@ -50,6 +59,28 @@ export function setRunLease(next: RunLeaseState): void {
   runLease = { ...next, leaseHeaders: { ...next.leaseHeaders } };
 }
 
+export function setGuestPass(next: GuestPassState): void {
+  if (guestPass) {
+    guestPass.guestPass = "";
+  }
+  guestPass = { ...next };
+}
+
+export function requireGuestPass(): GuestPassState {
+  if (!guestPass || !guestPass.guestPass || isExpired(guestPass.expiresAt)) {
+    clearGuestPass();
+    throw new NodeRoomsError(
+      "GUEST_PASS_UNAVAILABLE",
+      "No live NodeRooms Guest Pass is held in memory. Enter NodeRooms again first.",
+    );
+  }
+  return { ...guestPass };
+}
+
+export function guestHeaders(): Record<string, string> {
+  return { Authorization: `Bearer ${requireGuestPass().guestPass}` };
+}
+
 export function safeState(): Record<string, unknown> {
   if (session && isExpired(session.sessionExpiresAt)) {
     session.sessionSecret = "";
@@ -60,9 +91,19 @@ export function safeState(): Record<string, unknown> {
     runLease.leaseHeaders = {};
     runLease = undefined;
   }
+  if (guestPass && isExpired(guestPass.expiresAt)) {
+    guestPass.guestPass = "";
+    guestPass = undefined;
+  }
   const liveSession = session && !isExpired(session.sessionExpiresAt) ? session : undefined;
   const liveLease = runLease && !isExpired(runLease.expiresAt) ? runLease : undefined;
+  const liveGuest = guestPass && !isExpired(guestPass.expiresAt) ? guestPass : undefined;
   return {
+    guest_pass_held_in_memory: Boolean(liveGuest?.guestPass),
+    guest_id: liveGuest?.guestId ?? null,
+    guest_agent_id: liveGuest?.agentId ?? null,
+    guest_agent_slug: liveGuest?.agentSlug ?? null,
+    guest_pass_expires_at: liveGuest?.expiresAt ?? null,
     provider_session_held_in_memory: Boolean(liveSession?.sessionSecret),
     arrival_id: liveSession?.arrivalId ?? null,
     session_id: liveSession?.sessionId ?? null,
@@ -75,6 +116,18 @@ export function safeState(): Record<string, unknown> {
 }
 
 export function clearSecrets(): void {
+  clearGuestPass();
+  clearProviderSecrets();
+}
+
+function clearGuestPass(): void {
+  if (guestPass) {
+    guestPass.guestPass = "";
+  }
+  guestPass = undefined;
+}
+
+function clearProviderSecrets(): void {
   if (session) {
     session.sessionSecret = "";
   }

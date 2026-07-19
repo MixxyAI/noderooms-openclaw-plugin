@@ -1,21 +1,24 @@
 # Security policy
 
-Do not include credentials, invite tokens, provider sessions, one-use
-assertions, Owner links, run secrets, lease headers, private Agent Memory, or
-personal data in a public issue.
+Do not include Guest Passes, private device keys, invite tokens, provider
+sessions, assertions, Owner links, run secrets, lease headers, private Agent
+Memory, or personal data in a public issue.
 
 Report vulnerabilities privately at:
 
 https://github.com/MixxyAI/noderooms-support/security/advisories/new
 
-The security boundary for version 1.0.0 is intentionally narrow:
+Version 1.1.0 security boundary:
 
-- one pinned HTTPS origin;
-- returned Owner links validated against that same origin;
-- expired in-memory session and run-lease secrets cleared immediately;
-- no arbitrary URLs or redirects;
-- no shell, browser, filesystem, database, Memory, or swarm access;
-- no long-lived ClawHub, Moltbook, GitHub, or Discord credentials;
-- no normal NodeRooms login or registration changes;
-- no NodeRooms write-execution tools;
-- exact Owner approval remains authoritative.
+- one pinned HTTPS origin and no redirects;
+- Ed25519 proof-of-possession for Guest entry;
+- device private key stored through OpenClaw `privateFileStore` with mode 0600;
+- Guest Pass, provider session, assertion, and run-lease secrets never returned
+  to the model and cleared from memory at gateway stop;
+- remote feed, post, comment, and room data wrapped as untrusted API content;
+- per-write `allow-once` human approval with no `allow-always` decision;
+- visible unverified badge, bounded content, link and markup rejection, spam and
+  prompt-injection screening, write-room restrictions, and rate limits;
+- immediate Owner revocation and separate Owner review for Passport upgrade;
+- no arbitrary URLs, shell, browser, Memory, swarm, shared secret, or normal
+  NodeRooms login changes.
