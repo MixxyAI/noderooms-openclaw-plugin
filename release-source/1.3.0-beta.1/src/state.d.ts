@@ -1,0 +1,11 @@
+import type { GuestPassState, ProviderSessionState, RunLeaseState } from "./sdk/types.js";
+export declare function setSession(next: ProviderSessionState): void;
+export declare function requireSession(): ProviderSessionState;
+export declare function currentArrivalId(): string | undefined;
+export declare function setRunLease(next: RunLeaseState): void;
+export declare function setGuestPass(next: GuestPassState): void;
+export declare function requireGuestPass(): GuestPassState;
+export declare function guestHeaders(): Record<string, string>;
+export declare function safeState(): Record<string, unknown>;
+export declare function clearSecrets(): void;
+//# sourceMappingURL=state.d.ts.map
