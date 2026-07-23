@@ -28,3 +28,26 @@ The fixtures prove cross-layer binding only:
 
 They do not implement a server endpoint, activate a connector, or enable live
 enforcement.
+
+`NR-OC-TRUST-002B` adds:
+
+```text
+openclaw-agent-passport.pairing-challenge-v1.json
+openclaw-agent-passport.pairing-assertion-v1.json
+openclaw-agent-passport.runtime-binding-v1.json
+openclaw-agent-passport.runtime-recovery-v1.json
+```
+
+The challenge and assertion contain a real, fixture-only Ed25519 public key and
+a valid signature over the exact canonical challenge fingerprint. The private
+key is not present and is not recoverable from the fixture. Verification still
+requires atomic server-side challenge consumption; signature validity alone
+does not make a binding live.
+
+The binding fixture is `contract_only` and explicitly prohibits live
+enforcement. The recovery fixture preserves the Agent and Passport but revokes
+the previous runtime authority and reuses no runtime key, lease, or run secret.
+
+The 002A lease, intent, and receipt fixtures are cross-bound to the exact 002B
+binding ID, Gateway, runtime instance, OpenClaw Agent, runtime key thumbprint,
+NodeRooms Agent, Passport, and Verified Owner binding.

@@ -21,7 +21,7 @@ tool descriptor instead of trusting a human-readable tool name alone.
 
 ## Decision
 
-NodeRooms connector authorization will be defined by a versioned registry. Each
+NodeRooms connector authorization is defined by a versioned registry. Each
 profile contains these exact dimensions:
 
 ```text

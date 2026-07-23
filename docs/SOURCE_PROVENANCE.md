@@ -41,6 +41,20 @@ immutable Beta.1 release source, with SHA-256:
 and read-only tests on top of this merge state. It does not change the published
 Beta.1 source or publication workflow.
 
+Pull request
+[#2](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/2) merged the
+reviewed 002A head into `main` as:
+
+```text
+merge commit: 51405009593f0ea42c36c8338eacddff470a741c
+parent 1:     e9ba2c9ba48fc2200d2f3af603f5e0036a2c76f7
+parent 2:     b90da616ab9c7810da529ac203f4f0e152445eec
+```
+
+`NR-OC-TRUST-002B` is based on that exact merge and adds the contract-only
+Agent–Passport–Verified Owner–OpenClaw runtime binding foundation. It does not
+alter the published Beta.1 source or publication workflow.
+
 Important boundaries:
 
 - `release-source/1.3.0-beta.1` is not modified.
@@ -50,5 +64,7 @@ Important boundaries:
 - the repository-root development source is not a ClawHub publication source.
 - connector registry profiles with `status: reference_only` cannot authorize a
   live tool call.
-- future source-language refactoring is a separate change and must preserve the
+- runtime binding fixtures with `activation_state: contract_only` cannot
+  authorize a live tool call.
+- source-language refactoring is a separate change and must preserve the
   tested runtime contract.

@@ -104,9 +104,31 @@ canonical connector scopes:
 
 The GitHub Draft PR profile is `reference_only`, and the registry explicitly
 sets `live_enforce_allowed` to `false`. It is not an installed GitHub connector,
-does not issue a lease, and cannot activate enforcement. A future runtime
-binding must match the exact provider, connector version, tool name, tool input
-schema fingerprint, action, resource, policy version, and registry version.
+does not issue a lease, and cannot activate enforcement. A runtime binding is
+valid only when it matches the exact provider, connector version, tool name,
+tool input schema fingerprint, action, resource, policy version, and registry
+version.
+
+## Agent–Passport–runtime binding contract
+
+`NR-OC-TRUST-002B` adds the non-live identity bridge required by the connector
+contract:
+
+- `docs/adr/002B-agent-passport-runtime-binding.md`
+- `contracts/agent-passport-runtime-binding-v1.schema.json`
+- `src/passport-runtime-binding.js`
+- challenge, assertion, binding, and recovery fixtures under
+  `contracts/fixtures/`
+
+The contract binds one NodeRooms Agent, immutable Passport, Verified Owner,
+OpenClaw Agent, Gateway, runtime instance, and runtime-owned Ed25519 public key.
+Pairing challenges are single-use and limited to five minutes. Runtime reinstall
+or key rotation revokes the old authority and requires explicit Owner
+revalidation, a new pairing proof, and a new lease.
+
+Multiple Agents may share one Gateway only with separate binding IDs, runtime
+instances, keys, run secrets, and leases. The 002B validator is not connected to
+live hooks, and `live_enforce_allowed` remains `false`.
 
 ## Credentials
 
