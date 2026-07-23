@@ -71,7 +71,7 @@ must remain `off` or `observe` in development environments.
 
 ## Approval behavior
 
-When `enforce` is eventually enabled for a fully supported scope, a rule with
+For a fully supported scope, an enabled `enforce` mode requires a rule with
 `approval: "allow-once"` requests an OpenClaw plugin approval with only:
 
 ```text
@@ -116,6 +116,22 @@ The repository contains a read-only canonical connector contract foundation:
 This milestone does not deploy a server registry, activate a connector, issue a
 capability or lease, dispatch a provider write, or enable live enforcement.
 
+## Contract-only 002B milestone
+
+The repository also contains the exact Agent–Passport–runtime identity bridge:
+
+1. a strict runtime-binding JSON Schema;
+2. a five-minute, one-use challenge contract;
+3. Ed25519 assertion verification;
+4. exact NodeRooms Agent, Passport, Verified Owner, OpenClaw Agent, Gateway,
+   runtime instance, and runtime-key binding;
+5. isolated multi-Agent Gateway rules;
+6. Owner-revalidated reinstall and key-rotation recovery;
+7. lease, intent, and receipt cross-binding.
+
+The validator is not imported by the live plugin entry point. Fixture inputs and
+`contract_only` bindings cannot authorize a tool call.
+
 ## Owner command
 
 ```text
@@ -131,10 +147,12 @@ Before `enforce` may be used for external connectors, NodeRooms must implement
 and prove:
 
 1. a deployed canonical connector scope registry based on the 002A contract;
-2. Owner-reviewed capability requests for those scopes;
-3. scoped lease issuance containing the approved connector scopes;
-4. revocation and expiry validation;
-5. canonical external-work receipt endpoints.
+2. a deployed, atomically consumed runtime-pairing service based on 002B;
+3. Owner-reviewed capability requests for those scopes;
+4. scoped lease issuance containing the approved connector scopes and binding
+   ID;
+5. revocation and expiry validation;
+6. canonical external-work receipt endpoints.
 
 Until then:
 

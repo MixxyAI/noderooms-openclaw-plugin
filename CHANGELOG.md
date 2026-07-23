@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased — NR-OC-TRUST-002B
+
+- Added the strict Agent–Passport–Verified Owner–OpenClaw runtime binding
+  contract and JSON Schema.
+- Added a five-minute, one-use pairing challenge and Ed25519 assertion
+  verification foundation.
+- Added exact Gateway, runtime instance, OpenClaw Agent, runtime key, NodeRooms
+  Agent, Passport, and Owner binding validation.
+- Added multi-Agent Gateway isolation rules that prohibit shared runtime keys,
+  run secrets, leases, and cross-Agent authority.
+- Added explicit reinstall/key-rotation recovery rules that preserve Agent and
+  Passport identity while revoking the old runtime authority.
+- Cross-bound the 002A lease, intent, and receipt fixtures to the exact 002B
+  runtime binding.
+- Kept the validator disconnected from live hooks and kept live enforcement,
+  publication, installation, Gateway restart, and production deployment out of
+  scope.
+
 ## Unreleased — NR-OC-TRUST-002A
 
 - Corrected the repository status and source provenance after Trust Middleware

@@ -13,6 +13,9 @@ const registry = await readJson("contracts/reference/github-draft-pr.v1.json");
 const lease = await readJson("contracts/fixtures/github-draft-pr.run-lease-v2.json");
 const intent = await readJson("contracts/fixtures/github-draft-pr.external-action-intent-v2.json");
 const receipt = await readJson("contracts/fixtures/github-draft-pr.external-action-receipt-v2.json");
+const runtimeBinding = await readJson(
+    "contracts/fixtures/openclaw-agent-passport.runtime-binding-v1.json",
+);
 
 const SCOPE_PATTERN = /^connector\.[a-z][a-z0-9_]{1,31}\.[a-z][a-z0-9_]{1,47}\.[a-z][a-z0-9_]{1,47}$/;
 const SHA256_PATTERN = /^sha256:[a-f0-9]{64}$/;
@@ -133,15 +136,26 @@ function assertRegistryContract(value) {
     assertNoSensitiveMaterial(value);
 }
 
-function assertLeaseContract(value, profile, now = Date.parse("2026-07-23T21:35:00Z")) {
+function assertLeaseContract(value, profile, now = Date.parse("2026-07-24T16:10:00Z")) {
     assert.equal(value.contract_version, "noderooms-run-lease-v2");
     assert.equal(value.fixture, true);
     assert.equal(value.registry_version, registry.registry_version);
     assert.equal(value.policy_version, registry.policy_version);
     assert.equal(value.profile_id, profile.profile_id);
     assert.equal(value.scope, profile.scope);
-    assert.equal(value.agent_binding.verified_owner_required, true);
-    assert.equal(value.agent_binding.agent_id, value.runtime_binding.agent_runtime_id);
+    assert.deepEqual(value.agent_binding, runtimeBinding.agent_binding);
+    assert.equal(value.runtime_binding.binding_id, runtimeBinding.binding_id);
+    for (const field of ["platform", "gateway_id", "runtime_instance_id", "openclaw_agent_id"]) {
+        assert.equal(
+            value.runtime_binding[field],
+            runtimeBinding.runtime_binding[field],
+            `lease runtime ${field} mismatch`,
+        );
+    }
+    assert.equal(
+        value.runtime_binding.runtime_key_thumbprint,
+        runtimeBinding.runtime_key.thumbprint_sha256,
+    );
     assert.equal(value.connector_binding.provider, profile.provider);
     assert.equal(value.connector_binding.connector_id, profile.connector_id);
     assert.equal(value.connector_binding.connector_version, profile.connector_version);
@@ -173,14 +187,8 @@ function assertIntentContract(value, leaseValue, profile) {
     for (const field of ["registry_version", "policy_version", "profile_id", "scope", "action"]) {
         assert.equal(value[field], leaseValue[field], `intent ${field} mismatch`);
     }
-    assert.deepEqual(value.agent_binding, {
-        agent_id: leaseValue.agent_binding.agent_id,
-        passport_id: leaseValue.agent_binding.passport_id,
-        owner_binding_id: leaseValue.agent_binding.owner_binding_id,
-    });
-    for (const field of ["platform", "gateway_id", "runtime_instance_id", "agent_runtime_id", "session_id", "run_id", "channel"]) {
-        assert.equal(value.runtime_binding[field], leaseValue.runtime_binding[field], `intent runtime ${field} mismatch`);
-    }
+    assert.deepEqual(value.agent_binding, leaseValue.agent_binding);
+    assert.deepEqual(value.runtime_binding, leaseValue.runtime_binding);
     assert.deepEqual(value.connector_binding, leaseValue.connector_binding);
     assert.deepEqual(value.resource, leaseValue.resource);
     assert.equal(value.payload_projection.repository_full_name, value.resource.selector.repository_full_name);
@@ -293,7 +301,7 @@ test("run lease binding fails closed on drift, mismatch, revocation, expiry, and
         (value) => { value.connector_binding.tool_schema_fingerprint = `sha256:${"d".repeat(64)}`; },
         (value) => { value.action = "merge"; },
         (value) => { value.resource.selector.repository_full_name = "*"; },
-        (value) => { value.runtime_binding.agent_runtime_id = "agent-other"; },
+        (value) => { value.runtime_binding.openclaw_agent_id = "agent-other"; },
         (value) => { value.revocation.revoked = true; },
         (value) => { value.limits.actions_remaining = 0; },
     ];
@@ -305,7 +313,7 @@ test("run lease binding fails closed on drift, mismatch, revocation, expiry, and
     assert.throws(() => assertLeaseContract(
         lease,
         profile,
-        Date.parse("2026-07-23T21:45:00Z"),
+        Date.parse("2026-07-24T16:18:30Z"),
     ));
 });
 

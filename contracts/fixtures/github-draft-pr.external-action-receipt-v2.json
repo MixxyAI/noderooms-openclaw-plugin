@@ -10,18 +10,22 @@
   "profile_id": "nrscp_github_pull_request_draft_v1",
   "scope": "connector.github.pull_request.draft",
   "agent_binding": {
-    "agent_id": "agent-example-openclaw",
-    "passport_id": "passport-example-openclaw",
-    "owner_binding_id": "nrob_example_verified_owner"
+    "noderooms_agent_id": 42,
+    "passport_id": "NRP-000042-AGENT",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "verified_owner_required": true
   },
   "runtime_binding": {
+    "binding_id": "nrbind_11111111111111111111111111111111",
     "platform": "openclaw",
-    "gateway_id": "ocgw_example_01",
-    "runtime_instance_id": "ocruntime_example_01",
-    "agent_runtime_id": "agent-example-openclaw",
+    "gateway_id": "ocgw_dddddddddddddddddddddddddddddddd",
+    "runtime_instance_id": "ocruntime_eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "openclaw_agent_id": "agent-example-openclaw",
+    "runtime_key_thumbprint": "sha256:39296c5ff287cfa1045b78340c2e108b49e99e1c5477acabfcf27b3cf1987ef7",
     "session_id": "session-example-01",
     "run_id": "run-example-01",
-    "channel": "discord"
+    "channel": "discord",
+    "owner_sender_binding_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
   },
   "connector_binding": {
     "provider": "github",
@@ -61,5 +65,5 @@
     "policy": "allow_once",
     "consumed": true
   },
-  "recorded_at": "2026-07-23T21:32:00Z"
+  "recorded_at": "2026-07-24T16:05:00Z"
 }

@@ -1,0 +1,54 @@
+{
+  "$schema": "../agent-passport-runtime-binding-v1.schema.json",
+  "$comment": "Non-live 002B fixture. Contract-only binding cannot authorize a tool call.",
+  "contract_version": "noderooms-agent-passport-runtime-binding-v1",
+  "fixture": true,
+  "binding_id": "nrbind_11111111111111111111111111111111",
+  "binding_version": 1,
+  "activation_state": "contract_only",
+  "live_enforce_allowed": false,
+  "agent_binding": {
+    "noderooms_agent_id": 42,
+    "passport_id": "NRP-000042-AGENT",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "verified_owner_required": true
+  },
+  "runtime_binding": {
+    "platform": "openclaw",
+    "gateway_id": "ocgw_dddddddddddddddddddddddddddddddd",
+    "runtime_instance_id": "ocruntime_eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "openclaw_agent_id": "agent-example-openclaw"
+  },
+  "runtime_key": {
+    "algorithm": "Ed25519",
+    "thumbprint_sha256": "sha256:39296c5ff287cfa1045b78340c2e108b49e99e1c5477acabfcf27b3cf1987ef7",
+    "public_key_jwk": {
+      "kty": "OKP",
+      "crv": "Ed25519",
+      "x": "VQx1vgt88j6BfpR9Mxx-2Brg0rw3C_j49G6_IjpSs8A"
+    }
+  },
+  "proof": {
+    "binding_request_id": "nrbreq_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "challenge_id": "nrbch_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "assertion_id": "nrbassert_ffffffffffffffffffffffffffffffff",
+    "challenge_fingerprint_sha256": "sha256:e0a9b5e0769a9c8506abb9d080042a6552cde283307c3d3b9ca5c56902b035c8",
+    "assertion_verified_at": "2026-07-24T16:01:01Z"
+  },
+  "lifecycle": {
+    "status": "paired",
+    "issued_at": "2026-07-24T16:01:01Z",
+    "expires_at": "2026-08-23T16:01:01Z",
+    "revoked_at": null,
+    "revocation_reason": null,
+    "supersedes_binding_id": null
+  },
+  "constraints": {
+    "one_time_pairing_required": true,
+    "multi_agent_gateway_allowed": true,
+    "shared_run_secret_allowed": false,
+    "shared_lease_allowed": false,
+    "cross_agent_binding_allowed": false,
+    "owner_revalidation_on_recovery": true
+  }
+}

@@ -73,4 +73,4 @@ connector.github.repository.admin
 
 These examples do not activate a connector. Only registry profiles with
 `status: active`, a deployed registry, and an exact Owner-approved lease may be
-considered in a future enforcement path.
+considered before any enforcement path uses the profile.
