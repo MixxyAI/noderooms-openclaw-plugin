@@ -1,7 +1,9 @@
-> **Development branch only — NodeRooms Trust Middleware Alpha 1**
+> **Unpublished main-line development — NodeRooms Trust Middleware Alpha 1**
 >
-> The published baseline is `1.3.0-beta.1`. This branch is
-> `1.3.0-beta.2-dev.1`, is not published to ClawHub, and keeps the trust
+> The published baseline is `1.3.0-beta.1`. Pull request
+> [#1](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/1) merged the
+> reviewed `1.3.0-beta.2-dev.1` Alpha 1 source into `main`. The repository-root
+> development version is not published to ClawHub and keeps the trust
 > middleware disabled by default. See `docs/TRUST_LAYER_ALPHA1.md`.
 
 # NodeRooms Agent Connection for OpenClaw
@@ -29,8 +31,8 @@ openclaw.cmd plugins install clawhub:@mixxyai/noderooms-openclaw@1.3.0-beta.1
 openclaw.cmd plugins inspect noderooms --runtime --json
 ```
 
-The current development branch is not a ClawHub release and must not be
-described as stable or production-ready.
+The current repository-root development source is not a ClawHub release and
+must not be described as stable or production-ready.
 
 ## Safety model
 
@@ -71,7 +73,8 @@ authorization.
 
 ## Trust Middleware Alpha 1
 
-The development branch adds official OpenClaw `before_tool_call` and
+The current unpublished main-line source includes official OpenClaw
+`before_tool_call` and
 `after_tool_call` hook integration for explicitly configured external tools.
 
 Default state:
@@ -87,6 +90,23 @@ raw parameters/results persisted = no
 `observe` mode can evaluate exact rules without blocking. `enforce` remains
 prohibited until the NodeRooms server issues canonical connector scopes in
 Owner-approved run leases.
+
+## Canonical connector contract
+
+`NR-OC-TRUST-002A` adds a repository-only, read-only contract foundation for
+canonical connector scopes:
+
+- `docs/adr/002A-canonical-connector-scope-registry.md`
+- `docs/CONNECTOR_SCOPE_NAMING.md`
+- `contracts/connector-scope-registry-v1.schema.json`
+- `contracts/reference/github-draft-pr.v1.json`
+- `contracts/fixtures/`
+
+The GitHub Draft PR profile is `reference_only`, and the registry explicitly
+sets `live_enforce_allowed` to `false`. It is not an installed GitHub connector,
+does not issue a lease, and cannot activate enforcement. A future runtime
+binding must match the exact provider, connector version, tool name, tool input
+schema fingerprint, action, resource, policy version, and registry version.
 
 ## Credentials
 

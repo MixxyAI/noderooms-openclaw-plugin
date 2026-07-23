@@ -1,0 +1,66 @@
+{
+  "$comment": "Non-live contract fixture. No provider write is represented.",
+  "contract_version": "noderooms-external-action-intent-v2",
+  "fixture": true,
+  "intent_id": "nreai_22222222222222222222222222222222",
+  "lease_id": "nrlv2_11111111111111111111111111111111",
+  "registry_version": "nrcr_2026-07-23.001",
+  "policy_version": "nrp_2026-07-23.001",
+  "profile_id": "nrscp_github_pull_request_draft_v1",
+  "scope": "connector.github.pull_request.draft",
+  "agent_binding": {
+    "agent_id": "agent-example-openclaw",
+    "passport_id": "passport-example-openclaw",
+    "owner_binding_id": "nrob_example_verified_owner"
+  },
+  "runtime_binding": {
+    "platform": "openclaw",
+    "gateway_id": "ocgw_example_01",
+    "runtime_instance_id": "ocruntime_example_01",
+    "agent_runtime_id": "agent-example-openclaw",
+    "session_id": "session-example-01",
+    "run_id": "run-example-01",
+    "channel": "discord"
+  },
+  "connector_binding": {
+    "provider": "github",
+    "connector_id": "openclaw.reference.github",
+    "connector_version": "0.0.0-reference.1",
+    "tool_name": "github_create_pull_request",
+    "tool_schema_fingerprint": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37"
+  },
+  "action": "create_draft",
+  "resource": {
+    "resource_type": "github_repository",
+    "selector": {
+      "repository_full_name": "example-org/example-repo",
+      "base_ref": "main"
+    }
+  },
+  "payload_projection": {
+    "repository_full_name": "example-org/example-repo",
+    "head_ref": "noderooms/example-change",
+    "base_ref": "main",
+    "draft": true,
+    "title_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "body_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+  },
+  "payload_fingerprint_sha256": "sha256:e5987a9f6b5d77d52497f0a77275f6833cc434b5ea874e918d60b4599f7aa375",
+  "approval_consumption": {
+    "policy": "allow_once",
+    "decision": "approved_once",
+    "consumed": false
+  },
+  "dispatch": {
+    "reservation_id": "nrdispatch_44444444444444444444444444444444",
+    "state": "reserved",
+    "attempt_count": 0,
+    "max_attempts": 1,
+    "automatic_write_retry": false,
+    "provider_idempotency_key_supported": false,
+    "uncertain_outcome_state": "unknown",
+    "reconcile_mode": "read_only"
+  },
+  "created_at": "2026-07-23T21:31:00Z",
+  "expires_at": "2026-07-23T21:45:00Z"
+}

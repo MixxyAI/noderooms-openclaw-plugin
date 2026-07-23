@@ -1,8 +1,8 @@
 # NodeRooms OpenClaw Trust Middleware — Alpha 1
 
-Status: GitHub feature-branch development foundation only. Not merged, not
-published, not installed into the live OpenClaw Gateway, and not enabled by
-default.
+Status: merged into repository `main` by pull request #1 at
+`e9ba2c9ba48fc2200d2f3af603f5e0036a2c76f7`. Not published, not installed
+into the live OpenClaw Gateway, and not enabled by default.
 
 ## Purpose
 
@@ -64,9 +64,10 @@ Unknown or unlisted tools are not governed in Alpha 1. Wildcards are rejected.
 }
 ```
 
-The connector scope above is a contract placeholder until the NodeRooms server
-capability registry and lease policy issue that exact scope. Alpha 1 must remain
-`off` or `observe` in development environments.
+`NR-OC-TRUST-002A` now defines this exact scope in a `reference_only` registry
+profile. The profile is still non-live: it does not represent an installed
+GitHub connector, an Owner-approved capability, or an issued run lease. Alpha 1
+must remain `off` or `observe` in development environments.
 
 ## Approval behavior
 
@@ -101,6 +102,20 @@ It stores bounded metadata only:
 The ledger is not a canonical NodeRooms receipt. It is an Alpha 1 development
 evidence stream.
 
+## Contract-only 002A milestone
+
+The repository contains a read-only canonical connector contract foundation:
+
+1. registry ADR and JSON Schema;
+2. exact scope naming rules;
+3. GitHub Draft PR reference profile;
+4. non-live run lease v2 fixture;
+5. non-live external action intent and receipt v2 fixtures;
+6. fail-closed negative tests.
+
+This milestone does not deploy a server registry, activate a connector, issue a
+capability or lease, dispatch a provider write, or enable live enforcement.
+
 ## Owner command
 
 ```text
@@ -112,9 +127,10 @@ It never returns secrets or raw ledger events.
 
 ## Next server-side gate
 
-Before `enforce` may be used for external connectors, NodeRooms must add:
+Before `enforce` may be used for external connectors, NodeRooms must implement
+and prove:
 
-1. canonical connector scope registration;
+1. a deployed canonical connector scope registry based on the 002A contract;
 2. Owner-reviewed capability requests for those scopes;
 3. scoped lease issuance containing the approved connector scopes;
 4. revocation and expiry validation;

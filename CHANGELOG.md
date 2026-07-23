@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased — NR-OC-TRUST-002A
+
+- Corrected the repository status and source provenance after Trust Middleware
+  Alpha 1 pull request #1 was merged into `main`.
+- Added the canonical connector scope registry ADR, JSON Schema, and exact
+  scope-naming contract.
+- Added a contract-only GitHub Draft PR reference profile with a pinned tool
+  input schema fingerprint.
+- Added non-live run lease v2, external action intent v2, and canonical receipt
+  v2 fixtures.
+- Added fail-closed negative contract tests for wildcard scopes, schema drift,
+  binding mismatches, revocation, expiry, retry semantics, and exactly-once
+  overclaiming.
+- Kept live enforcement, ClawHub publication, OpenClaw installation, Gateway
+  restart, and NodeRooms production deployment out of scope.
+
 ## 1.3.0-beta.2-dev.1 — Trust Middleware Alpha 1
 
 - Added disabled-by-default `before_tool_call` and `after_tool_call` integration.

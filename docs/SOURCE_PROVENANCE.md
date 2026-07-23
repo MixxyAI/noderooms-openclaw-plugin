@@ -1,20 +1,45 @@
 # Source provenance and branch structure
 
-The repository `main` commit
-`a4886cccc68b1875dbc1c224e3fdf7f1ae9705c9` preserves the exact published
-`1.3.0-beta.1` source under:
+Trust Middleware Alpha 1 pull request
+[#1](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/1) was merged
+into `main` as:
+
+```text
+merge commit: e9ba2c9ba48fc2200d2f3af603f5e0036a2c76f7
+parent 1:     a4886cccc68b1875dbc1c224e3fdf7f1ae9705c9
+parent 2:     646b7ce205b6ba6a0ec551ff6f7f4a074ccd54c1
+main tree:    b44d4cb79f4e7c13b80bcbe5910945895ac3be65
+```
+
+The first parent introduced the exact published `1.3.0-beta.1` source under:
 
 ```text
 release-source/1.3.0-beta.1
 ```
 
 That release-source directory is immutable and remains the provenance input for
-the published Beta.1 artifact.
+the published Beta.1 artifact. Its Git tree at the merge commit is:
 
-The Trust Middleware Alpha 1 feature branch promotes the exact Beta.1 package
-source to the repository root before adding the disabled-by-default trust
-middleware. This is why the branch contains a large source-layout diff from the
-older 1.1.2 TypeScript root.
+```text
+43f43635714769503ae33677a45fc1c12beb2753
+```
+
+The merged Alpha 1 history promoted the exact Beta.1 package source to the
+repository root before adding the disabled-by-default trust middleware. This is
+why pull request #1 contained a large source-layout diff from the older 1.1.2
+TypeScript root.
+
+The repository root remains unpublished development version
+`1.3.0-beta.2-dev.1`. The trusted publication workflow remains pinned to the
+immutable Beta.1 release source, with SHA-256:
+
+```text
+111b196aa36929eb2d8f49aaf70011455bbbf010dc44df5eb7073f95cafde248
+```
+
+`NR-OC-TRUST-002A` adds repository-only connector contract documents, fixtures,
+and read-only tests on top of this merge state. It does not change the published
+Beta.1 source or publication workflow.
 
 Important boundaries:
 
@@ -22,6 +47,8 @@ Important boundaries:
 - `.github/workflows/package-publish.yml` remains pinned to exact Beta.1.
 - `server-reference/` is a test/reference fixture and is not included in the npm
   package allowlist.
-- the branch is development-only and is not a ClawHub publication source.
+- the repository-root development source is not a ClawHub publication source.
+- connector registry profiles with `status: reference_only` cannot authorize a
+  live tool call.
 - future source-language refactoring is a separate change and must preserve the
   tested runtime contract.
