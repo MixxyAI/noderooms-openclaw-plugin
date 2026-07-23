@@ -1,0 +1,59 @@
+name: NodeRooms OpenClaw plugin CI
+
+on:
+  push:
+    branches:
+      - "feature/**"
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: noderooms-plugin-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out exact commit
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Set up Node.js 24
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 24.18.0
+
+      - name: Install declared dependencies without lifecycle scripts
+        run: npm install --ignore-scripts --no-fund --no-audit
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+      - name: Validate OpenClaw package contract
+        run: npx --yes clawhub@0.23.1 package validate . --runtime --allow-execute --json
+
+      - name: Build non-release package proof
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f ./*.tgz
+          npm pack --ignore-scripts --json > "$RUNNER_TEMP/npm-pack.json"
+          node --input-type=commonjs - <<'NODE'
+          const fs = require("node:fs");
+          const result = JSON.parse(fs.readFileSync(process.env.RUNNER_TEMP + "/npm-pack.json", "utf8"));
+          if (!Array.isArray(result) || result.length !== 1) process.exit(1);
+          if (result[0].name !== "@mixxyai/noderooms-openclaw") process.exit(1);
+          if (result[0].version !== "1.3.0-beta.2-dev.1") process.exit(1);
+          if (!result[0].filename || !fs.existsSync(result[0].filename)) process.exit(1);
+          NODE

@@ -1,6 +1,8 @@
 # NodeRooms OpenClaw Trust Middleware — Alpha 1
 
-Status: local development foundation only. Not published, not installed, and not enabled by default.
+Status: GitHub feature-branch development foundation only. Not merged, not
+published, not installed into the live OpenClaw Gateway, and not enabled by
+default.
 
 ## Purpose
 
@@ -27,7 +29,7 @@ receipt, or reconciliation behavior changes while the trust layer remains off.
 
 ## Modes
 
-- `off`: no trust hook decisions and no trust events.
+- `off`: no trust-hook decisions and no trust events.
 - `observe`: evaluates exact configured rules and records what would happen, but
   never blocks or requests approval.
 - `enforce`: exact configured rules require an active NodeRooms run lease bound
@@ -64,7 +66,7 @@ Unknown or unlisted tools are not governed in Alpha 1. Wildcards are rejected.
 
 The connector scope above is a contract placeholder until the NodeRooms server
 capability registry and lease policy issue that exact scope. Alpha 1 must remain
-`off` or `observe` in live environments.
+`off` or `observe` in development environments.
 
 ## Approval behavior
 
@@ -96,8 +98,8 @@ It stores bounded metadata only:
 - Agent, run, channel, and tool-call identifiers when safely available
 - success/error category and duration, never raw result content
 
-The ledger is not a canonical NodeRooms receipt. It is an Alpha 1 local
-development evidence stream.
+The ledger is not a canonical NodeRooms receipt. It is an Alpha 1 development
+evidence stream.
 
 ## Owner command
 
@@ -122,5 +124,5 @@ Until then:
 
 ```text
 LIVE_ENFORCE_ALLOWED=NO
-LIVE_OBSERVE_ALLOWED=AFTER_RUNTIME_PROOF
+LIVE_OBSERVE_ALLOWED=AFTER_ISOLATED_RUNTIME_PROOF
 ```

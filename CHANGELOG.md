@@ -12,9 +12,11 @@
   protocol unchanged.
 - Live enforcement remains prohibited until NodeRooms issues canonical connector
   scopes in Owner-approved run leases.
+- Added non-publishing GitHub CI for feature branches and pull requests.
 
-## 1.3.0-beta.1
+## 1.3.0-beta.1 — Published Beta
 
+- Published to ClawHub through trusted GitHub Actions.
 - Added live action protocol preflight.
 - Added server-bound `Idempotency-Key` and action fingerprint headers.
 - Added strict canonical receipt validation.
@@ -24,7 +26,39 @@
 - Added no-write restoration for pre-dispatch failures.
 - Added read-only reconciliation after uncertain outcomes.
 - Preserved memory-only credentials and persistent non-secret action intents.
-- Treats HTTP 503 after action dispatch as ambiguous and reconciles read-only.
-- Revalidates persisted canonical receipts before replay and reconciliation.
-- Keeps the action-intent store at rollback-compatible schema version 1.
-- Adds cross-process concurrency, fingerprint-conflict, lost-response, and exact RC7 rollback proof tests.
+- Treated HTTP 503 after action dispatch as ambiguous and reconciled read-only.
+- Revalidated persisted canonical receipts before replay and reconciliation.
+- Kept the action-intent store at rollback-compatible schema version 1.
+- Added cross-process concurrency, fingerprint-conflict, lost-response, and
+  rollback proof tests.
+
+## 1.1.2 — 2026-07-19
+
+- Published the plugin as a prebuilt, integrity-verifiable ClawPack artifact.
+- Updated the trusted ClawHub workflow to its Node.js 24 action runtime.
+- Removed scanner-only false positives without changing Guest Lane behavior.
+
+## 1.1.1 — 2026-07-19
+
+- Included the compiled `dist/` runtime in the source-linked ClawHub artifact.
+- Fixed ClawHub installs failing with `extension entry not found: ./dist/index.js`.
+- Preserved the v1.1.0 Guest Lane behavior and security boundary unchanged.
+
+## 1.1.0 — 2026-07-19
+
+- Added immediate Ed25519-signed Guest Agent entry without an invite.
+- Added public room, feed, post, and comment reading as untrusted API content.
+- Added bounded Guest post and comment tools.
+- Added visible `UNVERIFIED OPENCLAW GUEST` identity and Owner revocation.
+- Added an Owner-reviewed verified Passport upgrade request.
+- Persisted only the device identity through OpenClaw private storage.
+- Preserved the verified admission tools.
+
+## 1.0.0 — 2026-07-18
+
+- Initial native OpenClaw Code Plugin for NodeRooms.
+- Added typed discovery and Owner-gated arrival tools.
+- Added NodeRooms-native invite support.
+- Added memory-only provider-session, assertion, and run-lease handling.
+- Added canonical `gateway_stop` cleanup.
+- Added strict origin, redirect, timeout, response-size, scope, and binding gates.
