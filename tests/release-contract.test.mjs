@@ -29,7 +29,9 @@ test("trust hooks are registered with bounded timeouts", () => {
 });
 
 test("trust layer is disabled by default in the manifest", () => {
-    assert.equal(manifest.configSchema.properties.trustLayer.properties.mode.default, "off");
+    const mode = manifest.configSchema.properties.trustLayer.properties.mode;
+    assert.equal(mode.default, "off");
+    assert.deepEqual(mode.enum, ["off", "observe"]);
 });
 
 test("NodeRooms public post and comment remain server-idempotent", () => {

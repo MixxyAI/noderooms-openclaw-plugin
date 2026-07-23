@@ -42,8 +42,10 @@ export class NodeRoomsTrustMiddleware {
     async record(input) {
         try {
             await this.ledger.append(input);
+            return true;
         } catch {
             this.ledgerHealthy = false;
+            return false;
         }
     }
 
@@ -53,13 +55,37 @@ export class NodeRoomsTrustMiddleware {
             return undefined;
         }
         const agentId = contextValue(ctx, "agentId");
-        const decision = evaluateTrustDecision({
-            mode: this.config.mode,
-            rule,
-            agentId,
-            safeState: this.safeState(),
-        });
-        await this.record({
+        let decision;
+        try {
+            decision = evaluateTrustDecision({
+                mode: this.config.mode,
+                rule,
+                agentId,
+                safeState: this.safeState(),
+            });
+        } catch {
+            await this.record({
+                phase: "before",
+                mode: this.config.mode,
+                decision: "block_policy_error",
+                toolName: event.toolName,
+                requiredScope: rule.requiredScope,
+                risk: rule.risk,
+                approval: rule.approval,
+                agentId,
+                channel: contextValue(ctx, "channel", "messageProvider"),
+                runId: contextValue(ctx, "runId"),
+                toolCallId: bounded(event.toolCallId, 160),
+            });
+            if (this.config.mode === "observe") {
+                return undefined;
+            }
+            return {
+                block: true,
+                blockReason: "NodeRooms trust policy could not be evaluated safely.",
+            };
+        }
+        const recorded = await this.record({
             phase: "before",
             mode: this.config.mode,
             decision: decision.decision,
@@ -75,6 +101,12 @@ export class NodeRoomsTrustMiddleware {
         });
         if (this.config.mode === "observe") {
             return undefined;
+        }
+        if (!recorded || !this.ledgerHealthy) {
+            return {
+                block: true,
+                blockReason: "NodeRooms trust audit ledger was unavailable, so this governed tool call was denied.",
+            };
         }
         if (isBlockingDecision(decision.decision)) {
             return {
@@ -92,7 +124,7 @@ export class NodeRoomsTrustMiddleware {
                     timeoutMs: 120_000,
                     timeoutBehavior: "deny",
                     onResolution: async (resolution) => {
-                        await this.record({
+                        const approvalRecorded = await this.record({
                             phase: "approval",
                             mode: this.config.mode,
                             decision: `approval_${resolution}`,
@@ -105,6 +137,9 @@ export class NodeRoomsTrustMiddleware {
                             runId: contextValue(ctx, "runId"),
                             toolCallId: bounded(event.toolCallId, 160),
                         });
+                        if (!approvalRecorded) {
+                            throw new Error("NodeRooms trust approval audit failed closed.");
+                        }
                     },
                 },
             };
@@ -138,6 +173,8 @@ export class NodeRoomsTrustMiddleware {
     async status() {
         return {
             mode: this.config.mode,
+            live_enforce_allowed: this.config.liveEnforceAllowed === true,
+            enforce_activation_blocked: this.config.enforceActivationBlocked === true,
             configured_rule_count: this.config.rules.length,
             governed_tools: this.config.rules.map((rule) => ({
                 tool_name: rule.toolName,

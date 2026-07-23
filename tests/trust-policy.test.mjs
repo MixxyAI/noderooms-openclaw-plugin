@@ -8,7 +8,7 @@ import { TrustEventLedger } from "../src/trust-ledger.js";
 import { NodeRoomsTrustMiddleware } from "../src/trust-middleware.js";
 import { normalizeTrustLayerConfig } from "../src/trust-policy.js";
 
-function config(mode, approval = "none") {
+function config(mode, approval = "none", risk = approval === "allow-once" ? "high" : "medium") {
     return normalizeTrustLayerConfig({
         trustLayer: {
             mode,
@@ -16,10 +16,19 @@ function config(mode, approval = "none") {
             rules: [{
                 toolName: "github_create_pull_request",
                 requiredScope: "connector.github.pull_request.draft",
-                risk: approval === "allow-once" ? "high" : "medium",
+                risk,
                 approval,
             }],
         },
+    });
+}
+
+function internalEnforceConfig(approval = "none", risk = approval === "allow-once" ? "high" : "medium") {
+    const normalized = config("observe", approval, risk);
+    return Object.freeze({
+        ...normalized,
+        mode: "enforce",
+        enforceActivationBlocked: false,
     });
 }
 
@@ -38,7 +47,9 @@ async function withMiddleware(mode, approval, safeState, fn) {
     const filePath = path.join(dir, "trust-events-v1.json");
     const ledger = new TrustEventLedger({ filePath, maxEntries: 8 });
     const middleware = new NodeRoomsTrustMiddleware({
-        config: config(mode, approval),
+        config: mode === "enforce"
+            ? internalEnforceConfig(approval)
+            : config(mode, approval),
         safeState: () => safeState,
         ledger,
     });
@@ -54,6 +65,24 @@ test("trust layer defaults off with no rules", () => {
     assert.equal(value.mode, "off");
     assert.deepEqual(value.rules, []);
     assert.equal(value.ledgerMaxEntries, 256);
+    assert.equal(value.liveEnforceAllowed, false);
+    assert.equal(value.enforceActivationBlocked, false);
+});
+
+test("Alpha1 public configuration cannot activate enforce mode", () => {
+    const value = config("enforce");
+    assert.equal(value.mode, "off");
+    assert.equal(value.liveEnforceAllowed, false);
+    assert.equal(value.enforceActivationBlocked, true);
+});
+
+test("high and critical rules always require allow-once approval", () => {
+    for (const risk of ["high", "critical"]) {
+        const value = config("observe", "none", risk);
+        assert.equal(value.rules[0].risk, risk);
+        assert.equal(value.rules[0].approval, "allow-once");
+    }
+    assert.equal(config("observe", "none", "medium").rules[0].approval, "none");
 });
 
 test("invalid and duplicate rules are removed", () => {
@@ -165,6 +194,44 @@ test("high-risk configured action requests allow-once only", async () => {
         const summary = await ledger.summary();
         assert.equal(summary.entry_count, 2);
     });
+});
+
+test("internal enforce path fails closed on policy and audit errors", async () => {
+    const policyFailure = new NodeRoomsTrustMiddleware({
+        config: internalEnforceConfig(),
+        safeState: () => {
+            throw new Error("policy unavailable");
+        },
+        ledger: {
+            append: async () => undefined,
+            summary: async () => ({ entry_count: 1 }),
+            clearRuntimeCache: () => undefined,
+        },
+    });
+    const policyResult = await policyFailure.beforeToolCall({
+        toolName: "github_create_pull_request",
+        params: {},
+    }, { agentId: "agent-main" });
+    assert.equal(policyResult.block, true);
+    assert.match(policyResult.blockReason, /could not be evaluated safely/);
+
+    const auditFailure = new NodeRoomsTrustMiddleware({
+        config: internalEnforceConfig(),
+        safeState: safeLease,
+        ledger: {
+            append: async () => {
+                throw new Error("ledger unavailable");
+            },
+            summary: async () => ({ entry_count: 0 }),
+            clearRuntimeCache: () => undefined,
+        },
+    });
+    const auditResult = await auditFailure.beforeToolCall({
+        toolName: "github_create_pull_request",
+        params: {},
+    }, { agentId: "agent-main" });
+    assert.equal(auditResult.block, true);
+    assert.match(auditResult.blockReason, /audit ledger was unavailable/);
 });
 
 test("NodeRooms tools and unlisted tools are never governed", async () => {

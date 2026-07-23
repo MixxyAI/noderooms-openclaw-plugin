@@ -1,8 +1,10 @@
-const MODES = new Set(["off", "observe", "enforce"]);
+const PUBLIC_MODES = new Set(["off", "observe"]);
 const RISKS = new Set(["low", "medium", "high", "critical"]);
 const APPROVALS = new Set(["none", "allow-once"]);
 const TOOL_PATTERN = /^[A-Za-z0-9._:-]{1,128}$/;
 const SCOPE_PATTERN = /^[a-z][a-z0-9._:-]{2,127}$/;
+
+export const LIVE_ENFORCE_ALLOWED = false;
 
 function normalizeRule(value) {
     if (!value || typeof value !== "object" || Array.isArray(value)) {
@@ -18,15 +20,30 @@ function normalizeRule(value) {
     if (!SCOPE_PATTERN.test(requiredScope) || !RISKS.has(risk) || !APPROVALS.has(approval)) {
         return undefined;
     }
-    return Object.freeze({ toolName, requiredScope, risk, approval });
+    const effectiveApproval = risk === "high" || risk === "critical"
+        ? "allow-once"
+        : approval;
+    return Object.freeze({
+        toolName,
+        requiredScope,
+        risk,
+        approval: effectiveApproval,
+    });
 }
 
 export function normalizeTrustLayerConfig(pluginConfig) {
     const raw = pluginConfig?.trustLayer;
     if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
-        return Object.freeze({ mode: "off", rules: Object.freeze([]), ledgerMaxEntries: 256 });
+        return Object.freeze({
+            mode: "off",
+            rules: Object.freeze([]),
+            ledgerMaxEntries: 256,
+            liveEnforceAllowed: LIVE_ENFORCE_ALLOWED,
+            enforceActivationBlocked: false,
+        });
     }
-    const mode = MODES.has(raw.mode) ? raw.mode : "off";
+    const enforceActivationBlocked = raw.mode === "enforce";
+    const mode = PUBLIC_MODES.has(raw.mode) ? raw.mode : "off";
     const normalizedRules = [];
     const seen = new Set();
     if (Array.isArray(raw.rules)) {
@@ -46,6 +63,8 @@ export function normalizeTrustLayerConfig(pluginConfig) {
         mode,
         rules: Object.freeze(normalizedRules),
         ledgerMaxEntries,
+        liveEnforceAllowed: LIVE_ENFORCE_ALLOWED,
+        enforceActivationBlocked,
     });
 }
 
