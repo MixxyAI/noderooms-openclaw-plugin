@@ -1,0 +1,254 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:connector-scope-registry:v1",
+  "title": "NodeRooms canonical connector scope registry v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "registry_version",
+    "policy_version",
+    "activation_state",
+    "live_enforce_allowed",
+    "source_provenance",
+    "profiles"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contract_version": {
+      "const": "noderooms-connector-scope-registry-v1"
+    },
+    "registry_version": {
+      "type": "string",
+      "pattern": "^nrcr_[a-z0-9][a-z0-9._-]{2,63}$"
+    },
+    "policy_version": {
+      "type": "string",
+      "pattern": "^nrp_[a-z0-9][a-z0-9._-]{2,63}$"
+    },
+    "activation_state": {
+      "enum": [
+        "contract_only",
+        "active",
+        "retired"
+      ]
+    },
+    "live_enforce_allowed": {
+      "type": "boolean"
+    },
+    "source_provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "commit",
+        "tree"
+      ],
+      "properties": {
+        "repository": {
+          "const": "MixxyAI/noderooms-openclaw-plugin"
+        },
+        "commit": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "tree": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        }
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "$ref": "#/$defs/profile"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "activation_state": {
+            "const": "contract_only"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "live_enforce_allowed": {
+            "const": false
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile_id",
+        "scope",
+        "status",
+        "provider",
+        "connector_id",
+        "connector_version",
+        "tool_name",
+        "tool_schema_fingerprint",
+        "tool_input_schema",
+        "action",
+        "resource_type",
+        "resource_selector",
+        "risk",
+        "side_effect_class",
+        "replay_semantics",
+        "approval_policy",
+        "receipt_profile",
+        "description"
+      ],
+      "properties": {
+        "profile_id": {
+          "type": "string",
+          "pattern": "^nrscp_[a-z0-9][a-z0-9_]{2,95}$"
+        },
+        "scope": {
+          "type": "string",
+          "pattern": "^connector\\.[a-z][a-z0-9_]{1,31}\\.[a-z][a-z0-9_]{1,47}\\.[a-z][a-z0-9_]{1,47}$"
+        },
+        "status": {
+          "enum": [
+            "reference_only",
+            "active",
+            "deprecated",
+            "blocked"
+          ]
+        },
+        "provider": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,31}$"
+        },
+        "connector_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._:-]{2,127}$"
+        },
+        "connector_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+        },
+        "tool_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+        },
+        "tool_schema_fingerprint": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "tool_input_schema": {
+          "type": "object"
+        },
+        "action": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "resource_type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "resource_selector": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "strategy",
+            "required_claims",
+            "wildcards_allowed"
+          ],
+          "properties": {
+            "strategy": {
+              "const": "exact"
+            },
+            "required_claims": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 16,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]{1,63}$"
+              }
+            },
+            "wildcards_allowed": {
+              "const": false
+            }
+          }
+        },
+        "risk": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "side_effect_class": {
+          "enum": [
+            "read",
+            "write",
+            "destructive",
+            "admin"
+          ]
+        },
+        "replay_semantics": {
+          "enum": [
+            "replay_safe_read",
+            "at_most_once_dispatch",
+            "provider_idempotent"
+          ]
+        },
+        "approval_policy": {
+          "enum": [
+            "none",
+            "allow_once"
+          ]
+        },
+        "receipt_profile": {
+          "enum": [
+            "read_observation_v1",
+            "external_action_receipt_v2"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "risk": {
+                "enum": [
+                  "high",
+                  "critical"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "approval_policy": {
+                "const": "allow_once"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

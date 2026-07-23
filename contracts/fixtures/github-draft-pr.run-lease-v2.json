@@ -1,0 +1,60 @@
+{
+  "$comment": "Non-live contract fixture. A runtime must reject fixture=true.",
+  "contract_version": "noderooms-run-lease-v2",
+  "fixture": true,
+  "lease_id": "nrlv2_11111111111111111111111111111111",
+  "registry_version": "nrcr_2026-07-23.001",
+  "policy_version": "nrp_2026-07-23.001",
+  "profile_id": "nrscp_github_pull_request_draft_v1",
+  "scope": "connector.github.pull_request.draft",
+  "agent_binding": {
+    "agent_id": "agent-example-openclaw",
+    "passport_id": "passport-example-openclaw",
+    "owner_binding_id": "nrob_example_verified_owner",
+    "verified_owner_required": true
+  },
+  "runtime_binding": {
+    "platform": "openclaw",
+    "gateway_id": "ocgw_example_01",
+    "runtime_instance_id": "ocruntime_example_01",
+    "agent_runtime_id": "agent-example-openclaw",
+    "session_id": "session-example-01",
+    "run_id": "run-example-01",
+    "channel": "discord",
+    "owner_sender_binding_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "connector_binding": {
+    "provider": "github",
+    "connector_id": "openclaw.reference.github",
+    "connector_version": "0.0.0-reference.1",
+    "tool_name": "github_create_pull_request",
+    "tool_schema_fingerprint": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37"
+  },
+  "action": "create_draft",
+  "resource": {
+    "resource_type": "github_repository",
+    "selector": {
+      "repository_full_name": "example-org/example-repo",
+      "base_ref": "main"
+    }
+  },
+  "approval": {
+    "policy": "allow_once",
+    "decision": "approved_once",
+    "approved_by": "verified_human_owner",
+    "approved_at": "2026-07-23T21:30:00Z",
+    "consumed": false
+  },
+  "limits": {
+    "ttl_seconds": 900,
+    "max_actions": 1,
+    "actions_remaining": 1
+  },
+  "issued_at": "2026-07-23T21:30:00Z",
+  "expires_at": "2026-07-23T21:45:00Z",
+  "revocation": {
+    "revoked": false,
+    "revoked_at": null,
+    "reason_code": null
+  }
+}

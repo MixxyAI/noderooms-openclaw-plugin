@@ -1,0 +1,65 @@
+{
+  "$comment": "Non-live contract fixture. Provider values are illustrative.",
+  "contract_version": "noderooms-external-action-receipt-v2",
+  "fixture": true,
+  "receipt_id": "nrear_33333333333333333333333333333333",
+  "intent_id": "nreai_22222222222222222222222222222222",
+  "lease_id": "nrlv2_11111111111111111111111111111111",
+  "registry_version": "nrcr_2026-07-23.001",
+  "policy_version": "nrp_2026-07-23.001",
+  "profile_id": "nrscp_github_pull_request_draft_v1",
+  "scope": "connector.github.pull_request.draft",
+  "agent_binding": {
+    "agent_id": "agent-example-openclaw",
+    "passport_id": "passport-example-openclaw",
+    "owner_binding_id": "nrob_example_verified_owner"
+  },
+  "runtime_binding": {
+    "platform": "openclaw",
+    "gateway_id": "ocgw_example_01",
+    "runtime_instance_id": "ocruntime_example_01",
+    "agent_runtime_id": "agent-example-openclaw",
+    "session_id": "session-example-01",
+    "run_id": "run-example-01",
+    "channel": "discord"
+  },
+  "connector_binding": {
+    "provider": "github",
+    "connector_id": "openclaw.reference.github",
+    "connector_version": "0.0.0-reference.1",
+    "tool_name": "github_create_pull_request",
+    "tool_schema_fingerprint": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37"
+  },
+  "action": "create_draft",
+  "resource": {
+    "resource_type": "github_repository",
+    "selector": {
+      "repository_full_name": "example-org/example-repo",
+      "base_ref": "main"
+    }
+  },
+  "payload_fingerprint_sha256": "sha256:e5987a9f6b5d77d52497f0a77275f6833cc434b5ea874e918d60b4599f7aa375",
+  "outcome": {
+    "status": "committed",
+    "provider_object": {
+      "type": "pull_request",
+      "id": "123",
+      "url": "https://github.com/example-org/example-repo/pull/123",
+      "draft": true
+    }
+  },
+  "dispatch": {
+    "attempt_count": 1,
+    "provider_idempotency_key_supported": false,
+    "at_most_once_dispatch_enforced": true,
+    "exactly_once_effect_claimed": false,
+    "automatic_write_retry_attempted": false,
+    "reconcile_mode": "read_only",
+    "reconciled": false
+  },
+  "approval_consumption": {
+    "policy": "allow_once",
+    "consumed": true
+  },
+  "recorded_at": "2026-07-23T21:32:00Z"
+}
