@@ -132,6 +132,22 @@ The repository also contains the exact Agent–Passport–runtime identity bridg
 The validator is not imported by the live plugin entry point. Fixture inputs and
 `contract_only` bindings cannot authorize a tool call.
 
+## Contract-only 002C milestone
+
+The repository also contains the Owner-reviewed external capability and run
+lease v2 chain:
+
+1. an exact capability request fingerprint;
+2. a non-automatable Verified Human Owner decision;
+3. a grant that may narrow but cannot expand the request;
+4. exact channel, session, run, connector, tool, action, and resource binding;
+5. TTL, action-count, optional cost, goal, and resource limits;
+6. atomic one-decision-to-one-lease issuance rules;
+7. revocation, expiry, exhaustion, and replay rejection.
+
+The 002C validator is not imported by live hooks. The fixtures remain
+`contract_only`, and an exact match returns `LIVE_ENFORCE_PROHIBITED`.
+
 ## Owner command
 
 ```text
@@ -148,10 +164,10 @@ and prove:
 
 1. a deployed canonical connector scope registry based on the 002A contract;
 2. a deployed, atomically consumed runtime-pairing service based on 002B;
-3. Owner-reviewed capability requests for those scopes;
-4. scoped lease issuance containing the approved connector scopes and binding
-   ID;
-5. revocation and expiry validation;
+3. a deployed Owner review service based on the 002C capability and decision
+   contracts;
+4. atomically consumed scoped lease issuance based on 002C;
+5. online revocation, expiry, and action-counter validation;
 6. canonical external-work receipt endpoints.
 
 Until then:

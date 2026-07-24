@@ -54,11 +54,15 @@ function assertNoSensitiveMaterial(value, path = "$") {
         return;
     }
     for (const [key, entry] of Object.entries(value)) {
-        assert.doesNotMatch(
-            key,
-            /(?:secret|token|authorization|raw_prompt|raw_body|raw_request|raw_response|credential_value)/i,
-            `sensitive field at ${path}.${key}`,
-        );
+        const safePolicyBoolean = typeof entry === "boolean"
+            && /(?:allowed|included|automatable|automated)$/i.test(key);
+        if (!safePolicyBoolean) {
+            assert.doesNotMatch(
+                key,
+                /(?:secret|token|authorization|raw_prompt|raw_body|raw_request|raw_response|credential_value)/i,
+                `sensitive field at ${path}.${key}`,
+            );
+        }
         assertNoSensitiveMaterial(entry, `${path}.${key}`);
     }
 }

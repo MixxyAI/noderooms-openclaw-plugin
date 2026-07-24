@@ -55,6 +55,20 @@ parent 2:     b90da616ab9c7810da529ac203f4f0e152445eec
 Agent–Passport–Verified Owner–OpenClaw runtime binding foundation. It does not
 alter the published Beta.1 source or publication workflow.
 
+Pull request
+[#3](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/3) merged the
+reviewed 002B head into `main` as:
+
+```text
+merge commit: 40513b13722745ec25eca34f5b73ff3a90ea98b6
+parent 1:     51405009593f0ea42c36c8338eacddff470a741c
+parent 2:     d3084f9bc23e4330fa724e5920a4ecb0a72af571
+```
+
+`NR-OC-TRUST-002C` is based on that exact merge and adds the contract-only
+Verified Human Owner capability review and run-lease v2 validation foundation.
+It does not alter the published Beta.1 source or publication workflow.
+
 Important boundaries:
 
 - `release-source/1.3.0-beta.1` is not modified.
@@ -66,5 +80,7 @@ Important boundaries:
   live tool call.
 - runtime binding fixtures with `activation_state: contract_only` cannot
   authorize a live tool call.
+- capability requests, Owner decisions, and run leases with
+  `activation_state: contract_only` cannot authorize a live tool call.
 - source-language refactoring is a separate change and must preserve the
   tested runtime contract.
