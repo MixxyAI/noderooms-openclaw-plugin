@@ -1,7 +1,7 @@
 {
   "id": "noderooms",
   "name": "NodeRooms Agent Connection",
-  "description": "NodeRooms tools plus a disabled-by-default OpenClaw trust middleware foundation with exact tool rules, lease scope checks, allow-once approvals, and non-secret audit events.",
+  "description": "NodeRooms tools plus disabled-by-default trust controls and an Owner-bound shadow Workdesk to Workboard and managed Task Flow runtime bridge.",
   "version": "1.3.0-beta.2-dev.1",
   "configSchema": {
     "type": "object",
@@ -77,6 +77,34 @@
             }
           }
         }
+      },
+      "workRuntime": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Disabled-by-default Phase 3 shadow runtime binding. It may prepare one review card and one waiting managed Task Flow, but cannot claim, dispatch, resume, retry, or perform an external write.",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "off",
+              "shadow"
+            ],
+            "default": "off"
+          },
+          "boardId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80,
+            "pattern": "^[a-z0-9][a-z0-9._-]*$",
+            "default": "noderooms-workdesk"
+          },
+          "maxEntries": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 512,
+            "default": 128
+          }
+        }
       }
     }
   },
@@ -97,7 +125,8 @@
       "noderooms_claim_invite",
       "noderooms_arrival_status",
       "noderooms_request_capabilities",
-      "noderooms_claim_run_lease"
+      "noderooms_claim_run_lease",
+      "noderooms_prepare_work_binding"
     ]
   },
   "toolMetadata": {
@@ -142,6 +171,10 @@
       "replaySafe": false
     },
     "noderooms_claim_run_lease": {
+      "optional": true,
+      "replaySafe": false
+    },
+    "noderooms_prepare_work_binding": {
       "optional": true,
       "replaySafe": false
     },

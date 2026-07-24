@@ -9,6 +9,10 @@ import { requestJson } from "./http.js";
 import { NodeRoomsSdk } from "./sdk/client.js";
 import { assertId, boundedString, nonEmptyString, optionalBoundedString, positiveInteger, requestedScopes, } from "./sdk/validation.js";
 import { bindRunLeaseAgent, clearSecrets, currentArrivalId, guestHeaders, requireSession, safeState, setGuestPass, setRunLease, setSession, } from "./state.js";
+import {
+    normalizeSafeWorkRuntimeConfig,
+    SafeWorkRuntimeBindingController,
+} from "./safe-work-runtime-binding.js";
 import { TrustEventLedger } from "./trust-ledger.js";
 import { NodeRoomsTrustMiddleware } from "./trust-middleware.js";
 import { normalizeTrustLayerConfig } from "./trust-policy.js";
@@ -27,6 +31,7 @@ const TOOL_NAMES = Object.freeze({
     arrivalStatus: "noderooms_arrival_status",
     requestCapabilities: "noderooms_request_capabilities",
     claimRunLease: "noderooms_claim_run_lease",
+    prepareWorkBinding: "noderooms_prepare_work_binding",
 });
 function textResult(value) {
     return {
@@ -156,6 +161,16 @@ const plugin = definePluginEntry({
             safeState,
             ledger: trustLedger,
         });
+        const workRuntimeConfig = normalizeSafeWorkRuntimeConfig(api.pluginConfig);
+        const workRuntime = new SafeWorkRuntimeBindingController({
+            config: workRuntimeConfig,
+            stateFilePath: path.join(
+                stateDir,
+                "noderooms",
+                "safe-work-runtime-bindings-v1.json",
+            ),
+            taskRuntime: api.runtime.tasks?.managedFlows,
+        });
         const secretStore = {
             setGuestPass,
             guestHeaders,
@@ -188,6 +203,16 @@ const plugin = definePluginEntry({
         });
         api.on(
             "before_tool_call",
+            async (event, ctx) => workRuntime.beforeToolCall(event, ctx),
+            { priority: -1_000, timeoutMs: 5_000 },
+        );
+        api.on(
+            "after_tool_call",
+            async (event) => workRuntime.afterToolCall(event),
+            { priority: 80, timeoutMs: 5_000 },
+        );
+        api.on(
+            "before_tool_call",
             async (event, ctx) => trustMiddleware.beforeToolCall(event, ctx),
             { priority: 70, timeoutMs: 5_000 },
         );
@@ -198,13 +223,14 @@ const plugin = definePluginEntry({
         );
         api.on("gateway_stop", () => {
             intents.clearRuntimeCache();
+            workRuntime.clearRuntimeCache();
             trustMiddleware.clearRuntimeCache();
             sdk.clearSecrets();
         });
         api.registerCommand({
             name: "noderooms",
             nativeNames: { discord: "noderooms" },
-            description: "Inspect trust status or commit, reconcile, deny, and list owner-only NodeRooms action intents.",
+            description: "Inspect trust and safe work runtime status or commit, reconcile, deny, cancel, and list Owner-only NodeRooms records.",
             acceptsArgs: true,
             requireAuth: true,
             // OpenClaw only exposes senderIsOwner to external plugin commands when
@@ -217,6 +243,7 @@ const plugin = definePluginEntry({
             exposeSenderIsOwner: true,
             agentPromptGuidance: [
                 "NodeRooms side-effect tools only prepare an action intent. Never simulate or invoke the /noderooms owner command. Only the verified human Owner may type it in chat.",
+                "A NodeRooms shadow Workboard binding may create only one exact review card. Never claim, dispatch, resume, or retry it automatically.",
             ],
             handler: async (ctx) => {
                 try {
@@ -228,6 +255,55 @@ const plugin = definePluginEntry({
                     }
                     if (action === "trust") {
                         return { text: JSON.stringify(await trustMiddleware.status(), null, 2) };
+                    }
+                    if (action === "work") {
+                        const workAction = tokens[1]?.toLowerCase() ?? "status";
+                        if (workAction === "preflight") {
+                            if (ctx.senderIsOwner !== true
+                                || ctx.isAuthorizedSender !== true) {
+                                throw new NodeRoomsError(
+                                    "WORK_RUNTIME_OWNER_REQUIRED",
+                                    "Only the authenticated human OpenClaw Owner may inspect the safe work runtime preflight.",
+                                );
+                            }
+                            return {
+                                text: JSON.stringify(workRuntime.preflight(), null, 2),
+                            };
+                        }
+                        if (workAction === "status" || workAction === "list") {
+                            return {
+                                text: JSON.stringify(await workRuntime.list(ctx), null, 2),
+                            };
+                        }
+                        const bindingId = tokens[2] ?? "";
+                        if (workAction === "reconcile") {
+                            return {
+                                text: JSON.stringify(
+                                    await workRuntime.reconcile(bindingId, ctx),
+                                    null,
+                                    2,
+                                ),
+                            };
+                        }
+                        if (workAction === "cancel") {
+                            return {
+                                text: JSON.stringify(
+                                    await workRuntime.cancel(bindingId, ctx),
+                                    null,
+                                    2,
+                                ),
+                            };
+                        }
+                        return {
+                            text: [
+                                "NodeRooms safe work runtime command usage:",
+                                "/noderooms work preflight",
+                                "/noderooms work status",
+                                "/noderooms work reconcile <binding_id>",
+                                "/noderooms work cancel <binding_id>",
+                            ].join("\n"),
+                            isError: true,
+                        };
                     }
                     const intentId = tokens[1] ?? "";
                     if (action === "deny") {
@@ -246,6 +322,10 @@ const plugin = definePluginEntry({
                             "NodeRooms owner command usage:",
                             "/noderooms list",
                             "/noderooms trust",
+                            "/noderooms work preflight",
+                            "/noderooms work status",
+                            "/noderooms work reconcile <binding_id>",
+                            "/noderooms work cancel <binding_id>",
                             "/noderooms commit <intent_id>",
                             "/noderooms reconcile <intent_id>",
                             "/noderooms deny <intent_id>",
@@ -363,6 +443,31 @@ const plugin = definePluginEntry({
                     return safeFailure(error);
                 }
             },
+        });
+        api.registerTool((ctx) => ({
+            name: TOOL_NAMES.prepareWorkBinding,
+            label: "Prepare NodeRooms shadow work binding",
+            description: "Bind one exact canonical NodeRooms work item to a waiting managed Task Flow and prepare one guarded Workboard review card. This never claims, dispatches, resumes, starts a child task, calls a connector, or performs an external write.",
+            parameters: Type.Object({
+                work_item_json: Type.String({
+                    minLength: 2,
+                    maxLength: 65_536,
+                    description: "Exact canonical noderooms-work-item-v1 JSON. Fixtures, expired records, runtime drift, and non-Owner contexts are rejected.",
+                }),
+            }, { additionalProperties: false }),
+            async execute(_toolCallId, params) {
+                try {
+                    return textResult(
+                        await workRuntime.prepare(ctx, params.work_item_json),
+                    );
+                }
+                catch (error) {
+                    return safeFailure(error);
+                }
+            },
+        }), {
+            names: [TOOL_NAMES.prepareWorkBinding],
+            optional: true,
         });
         api.registerTool((ctx) => ({
             name: TOOL_NAMES.createGuestPost,

@@ -99,6 +99,22 @@ NodeRooms Workdesk, OpenClaw Workboard, managed Task Flow, and public-safe work
 receipt mapping. It does not alter the published Beta.1 source or publication
 workflow.
 
+Pull request
+[#6](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/6) merged the
+reviewed 003A head into `main` as:
+
+```text
+merge commit: 98daacaaa9deea2a543f76d8b4e89adf0e0b516c
+parent 1:     633b7f28306819150a7ac5a75f4239c760628478
+parent 2:     d9e94f2894049eb05d85ada9981bc0c46b2e78bb
+```
+
+`NR-OC-WORK-003B` is based on that exact merge. It imports the strict 003A work
+item validator into one disabled-by-default local shadow bridge. The bridge
+uses the public managed Task Flow API and a guarded `workboard_create` agent
+tool call; it does not use cross-plugin Gateway RPC. It does not alter the
+published Beta.1 source or publication workflow.
+
 Important boundaries:
 
 - `release-source/1.3.0-beta.1` is not modified.
@@ -119,5 +135,12 @@ Important boundaries:
   bindings with `activation_state: contract_only` cannot create a card, claim
   work, start a child task, dispatch a provider write, or update Agent
   reputation.
+- Phase 3B accepts a non-fixture contract-only work item only for an
+  Owner-bound local shadow mirror. It may create one unclaimed review card and
+  one waiting managed Task Flow, but cannot claim or dispatch the card, start
+  a Task Run, resume a flow, invoke a connector, retry an uncertain create, or
+  perform an external write.
+- `workRuntime.mode` defaults to `off`; `armed` activation is not exposed and
+  remains hard-blocked.
 - source-language refactoring is a separate change and must preserve the
   tested runtime contract.
