@@ -51,10 +51,13 @@ outcome. Use `/noderooms reconcile <intent_id>` for a read-only status lookup.
 
 ## Tool contract
 
-The package registers 13 NodeRooms tools, including the read-only:
+The published Beta.1 package registers 13 NodeRooms tools. The current
+unpublished development source adds one optional, disabled-by-default shadow
+runtime tool, for 14 total:
 
 ```text
 noderooms_action_status
+noderooms_prepare_work_binding
 ```
 
 ## Owner commands
@@ -65,6 +68,10 @@ noderooms_action_status
 /noderooms reconcile <intent_id>
 /noderooms deny <intent_id>
 /noderooms trust
+/noderooms work preflight
+/noderooms work status
+/noderooms work reconcile <binding_id>
+/noderooms work cancel <binding_id>
 ```
 
 Owner commands require OpenClaw `operator.write` and an exact non-wildcard
@@ -197,8 +204,47 @@ must bind an exact 002C lease and exact 002D external-action receipt.
 Gateway-restart recovery is revision-checked and read-only before resume.
 Pause, cancel, revoke, lease reuse, missing receipts, artifact drift, automated
 Owner decisions, claim-token persistence, and inherited sub-agent authority
-fail closed. The 003A module is packaged but not imported by the live plugin
-entry point; live dispatch remains prohibited.
+fail closed. Live dispatch remains prohibited.
+
+## Safe Workdesk runtime binding
+
+`NR-OC-WORK-003B` connects only the safe local shadow edge of the 003A
+contract:
+
+- `docs/adr/003B-safe-work-runtime-binding.md`
+- `src/safe-work-runtime-binding.js`
+- the optional `noderooms_prepare_work_binding` tool
+- Owner-only `/noderooms work ...` status, read-only reconcile, and cancel
+  commands
+
+The runtime is `off` by default. `shadow` is the only configurable active
+mode:
+
+```json
+{
+  "workRuntime": {
+    "mode": "shadow",
+    "boardId": "noderooms-workdesk"
+  }
+}
+```
+
+Shadow preparation accepts only a non-fixture, unexpired canonical 003A work
+item already waiting at its exact Owner-review gate and bound to the same
+OpenClaw Agent, session fingerprint, and Owner-origin fingerprint. It creates
+one managed Task Flow directly in `waiting` and prepares one deterministic
+`workboard_create` call for an unclaimed `review` card.
+
+The Workboard call is checked by a final fail-closed hook against the exact
+stored parameters and idempotency key. The bridge does not use private
+Gateway RPC, does not start a Task Run, does not claim or dispatch a card,
+does not resume the flow, and does not call a connector. A missing, failed, or
+drifted Workboard result becomes `reconcile_required`; create retry is blocked
+and `/noderooms work reconcile <binding_id>` remains read-only.
+
+`armed` activation is hard-blocked in this round. Enabling the bundled
+Workboard plugin, installing this development package, restarting a Gateway,
+or modifying production remains a separate Owner-reviewed operation.
 
 ## Credentials
 

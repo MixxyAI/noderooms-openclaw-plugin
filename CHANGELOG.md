@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased — NR-OC-WORK-003B
+
+- Added a disabled-by-default `off`/`shadow` runtime bridge from one canonical
+  003A work item to one waiting OpenClaw managed Task Flow and one guarded
+  Workboard `review` card.
+- Added exact OpenClaw Agent, session fingerprint, Owner-origin fingerprint,
+  work-item fingerprint, card-parameter fingerprint, and deterministic
+  Workboard idempotency binding.
+- Added a final fail-closed `before_tool_call` guard for
+  `workboard_create`, plus result validation that persists only safe card
+  identity and status.
+- Added Owner-only preflight, status, read-only reconcile, and
+  revision-checked sticky cancel commands.
+- Added restart and uncertain-result recovery that blocks automatic card
+  recreation, Task Flow resume, child-task start, connector calls, and
+  external writes.
+- Kept `armed` activation, Workboard claim/dispatch, live connector execution,
+  publication, installation, Gateway restart, and production deployment out
+  of scope.
+
 ## Unreleased — NR-OC-WORK-003A
 
 - Added the strict NodeRooms Workdesk, OpenClaw Workboard, managed Task Flow,

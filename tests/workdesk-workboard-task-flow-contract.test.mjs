@@ -570,10 +570,24 @@ test("003A stores no claim token, session key, provider credential, prompt, or r
     }
 });
 
-test("003A module is packaged but disconnected from live OpenClaw hooks", async () => {
+test("003A authority contract enters only the disabled-by-default 003B shadow gate", async () => {
     const index = await readFile(new URL("../src/index.js", import.meta.url), "utf8");
+    const runtime = await readFile(
+        new URL("../src/safe-work-runtime-binding.js", import.meta.url),
+        "utf8",
+    );
     const manifest = await readJson("openclaw.plugin.json");
     assert.doesNotMatch(index, /workdesk-workboard-task-flow/);
+    assert.match(runtime, /validateWorkItemV1/);
+    assert.match(runtime, /LIVE_WORK_RUNTIME_ARMED_ALLOWED = false/);
+    assert.deepEqual(
+        manifest.configSchema.properties.workRuntime.properties.mode.enum,
+        ["off", "shadow"],
+    );
+    assert.equal(
+        manifest.configSchema.properties.workRuntime.properties.mode.default,
+        "off",
+    );
     assert.deepEqual(
         manifest.configSchema.properties.trustLayer.properties.mode.enum,
         ["off", "observe"],
