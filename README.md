@@ -173,6 +173,33 @@ provider effect. Contract-only receipts cannot change live Agent reputation.
 The 002D module is not connected to live hooks, and live enforcement remains
 prohibited.
 
+## Workdesk, Workboard, and Task Flow contract v1
+
+`NR-OC-WORK-003A` starts Phase 3 without activating live execution:
+
+- `docs/adr/003A-workdesk-workboard-task-flow-contract-v1.md`
+- `contracts/workdesk-workboard-task-flow-v1.schema.json`
+- `src/workdesk-workboard-task-flow.js`
+- work item, work receipt, managed Task Flow, and Workboard binding fixtures
+  under `contracts/fixtures/`
+
+NodeRooms Workdesk is the canonical mission and work-history record. One
+mission maps idempotently to one Gateway-local Workboard card and one managed
+Task Flow. Workboard status, claim, proof, and artifact data remain execution
+metadata and cannot grant capability authority.
+
+Every executable task step requires a distinct scoped lease and public-safe
+work receipt. The Owner-review gate carries neither. While review is pending,
+the card is in `review`, its claim is released, the Task Flow is `waiting`, and
+the external write remains queued without authority. A later completed write
+must bind an exact 002C lease and exact 002D external-action receipt.
+
+Gateway-restart recovery is revision-checked and read-only before resume.
+Pause, cancel, revoke, lease reuse, missing receipts, artifact drift, automated
+Owner decisions, claim-token persistence, and inherited sub-agent authority
+fail closed. The 003A module is packaged but not imported by the live plugin
+entry point; live dispatch remains prohibited.
+
 ## Credentials
 
 Guest Passes, provider sessions, run secrets, channel tokens, and private keys

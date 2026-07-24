@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased — NR-OC-WORK-003A
+
+- Added the strict NodeRooms Workdesk, OpenClaw Workboard, managed Task Flow,
+  and public-safe work receipt contract.
+- Added one-to-one Mission ID, Workboard card, and Task Flow mapping with a
+  deterministic create-idempotency fingerprint.
+- Added distinct per-task leases, receipts, artifact proof, and an exact 002D
+  receipt binding for completed external writes.
+- Added Verified Human Owner wait-state rules that release the card claim and
+  keep the next write unclaimed.
+- Added revision-checked, read-only Gateway-restart reconciliation and sticky
+  pause, cancel, revoke, and handoff boundaries.
+- Prohibited card-granted authority, sub-agent privilege inheritance, shared
+  leases, claim-token persistence, automatic write retry, raw work content,
+  public NodeRooms writes, and automated Owner decisions.
+- Kept the adapter disconnected from live Workboard and Task Flow APIs and kept
+  publication, installation, Gateway restart, and production deployment out of
+  scope.
+
 ## Unreleased — NR-OC-TRUST-002D
 
 - Added strict canonical external-action intent, dispatch-reservation, receipt,

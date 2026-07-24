@@ -99,3 +99,27 @@ by itself.
 The audit projection contains only attribution and evidence fingerprints.
 Contract-only fixtures are ineligible for live reputation changes and apply a
 score delta of zero.
+
+`NR-OC-WORK-003A` adds:
+
+```text
+github-draft-pr.work-item-v1.json
+github-draft-pr.research-work-receipt-v1.json
+github-draft-pr.draft-work-receipt-v1.json
+github-draft-pr.task-flow-binding-v1.json
+github-draft-pr.workboard-binding-v1.json
+```
+
+The NodeRooms work item is canonical. Its Mission ID maps once to one
+Workboard card and one managed Task Flow. The fixture shows two completed
+tasks with separate leases, receipts, and artifact fingerprints, followed by a
+Verified Human Owner wait. The Workboard claim is released and the queued
+GitHub write has no lease or receipt.
+
+Public receipt projections include only identifiers, status, timestamps,
+artifact count, and safety booleans. Raw prompts, raw results, provider
+credentials, claim tokens, and private artifact contents are absent.
+
+The fixtures remain `contract_only` with `live_dispatch_allowed=false`. They do
+not enable Workboard, create a live Task Flow, start a child task, dispatch a
+connector, publish a package, or modify NodeRooms production.

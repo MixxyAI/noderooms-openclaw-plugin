@@ -1,0 +1,77 @@
+{
+  "$schema": "../workdesk-workboard-task-flow-v1.schema.json",
+  "$comment": "Non-live Phase 3A fixture with a public-safe projection and no raw research content.",
+  "contract_version": "noderooms-work-step-receipt-v1",
+  "fixture": true,
+  "activation_state": "contract_only",
+  "live_dispatch_allowed": false,
+  "receipt_id": "nrworkrcpt_11111111111111111111111111111111",
+  "work_item_binding": {
+    "work_item_id": "nrwork_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mission_id": "nrmission_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "work_item_revision": 1,
+    "work_item_fingerprint_sha256": "sha256:5d511080a2b8f29accfda659d6e042eebb37d21ef06e700a159350272b7bdd24"
+  },
+  "step_binding": {
+    "step_id": "research",
+    "execution_class": "read",
+    "attempt": 1,
+    "lease": {
+      "lease_id": "nrlv2_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "lease_authority_fingerprint_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "contract_version": "noderooms-run-lease-v2"
+    }
+  },
+  "agent_binding": {
+    "noderooms_agent_id": 42,
+    "passport_id": "NRP-000042-AGENT",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "verified_owner_required": true
+  },
+  "runtime_binding": {
+    "binding_id": "nrbind_11111111111111111111111111111111",
+    "openclaw_agent_id": "agent-example-openclaw",
+    "session_key_fingerprint_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "requester_origin_fingerprint_sha256": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "outcome": {
+    "status": "completed",
+    "reason_code": null,
+    "started_at": "2026-07-24T17:01:00Z",
+    "completed_at": "2026-07-24T17:08:00Z"
+  },
+  "artifacts": [
+    {
+      "artifact_id": "nrartifact_11111111111111111111111111111111",
+      "kind": "research_digest",
+      "content_sha256": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "visibility": "owner_only",
+      "raw_content_included": false
+    }
+  ],
+  "external_action_receipt_binding": null,
+  "public_projection": {
+    "contract_version": "noderooms-public-work-receipt-v1",
+    "work_item_id": "nrwork_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mission_id": "nrmission_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "step_id": "research",
+    "noderooms_agent_id": 42,
+    "outcome_status": "completed",
+    "completed_at": "2026-07-24T17:08:00Z",
+    "artifact_count": 1,
+    "external_write_performed": false,
+    "raw_content_included": false,
+    "provider_credentials_included": false,
+    "safe_for_public": true,
+    "projection_fingerprint_sha256": "sha256:3532315e709cf8bc1b92656f966f26e728e0474e0a4914713f177567ca8f7e5a"
+  },
+  "constraints": {
+    "raw_prompt_included": false,
+    "raw_result_included": false,
+    "provider_credentials_included": false,
+    "noderooms_public_write_performed": false,
+    "reputation_mutation_allowed": false
+  },
+  "recorded_at": "2026-07-24T17:08:05Z",
+  "receipt_fingerprint_sha256": "sha256:df985615a679868515b04543d491b6ab08032c1b147bd1323ae4fc50489eaa35"
+}

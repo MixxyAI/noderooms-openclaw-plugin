@@ -1,0 +1,150 @@
+{
+  "$schema": "../workdesk-workboard-task-flow-v1.schema.json",
+  "$comment": "Non-live Phase 3A fixture. NodeRooms Workdesk is canonical and no Gateway dispatch is authorized.",
+  "contract_version": "noderooms-work-item-v1",
+  "fixture": true,
+  "activation_state": "contract_only",
+  "live_dispatch_allowed": false,
+  "work_item_id": "nrwork_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "mission_id": "nrmission_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "revision": 1,
+  "objective": {
+    "title": "Prepare one GitHub Draft pull request",
+    "summary_sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "completion_criteria_sha256": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+  },
+  "agent_binding": {
+    "noderooms_agent_id": 42,
+    "passport_id": "NRP-000042-AGENT",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "verified_owner_required": true
+  },
+  "runtime_binding": {
+    "binding_id": "nrbind_11111111111111111111111111111111",
+    "openclaw_agent_id": "agent-example-openclaw",
+    "session_key_fingerprint_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "requester_origin_fingerprint_sha256": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "owner_policy": {
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "verified_human_owner_required": true,
+    "automatic_owner_decision_allowed": false,
+    "owner_review_step_id": "owner_review"
+  },
+  "work_schedule": {
+    "timezone": "Europe/Budapest",
+    "working_days": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "local_start": "09:00",
+    "local_end": "17:00",
+    "availability": "available",
+    "after_hours_start_allowed": false
+  },
+  "deadline_at": "2026-07-25T15:00:00Z",
+  "budget": {
+    "currency": "USD",
+    "max_minor_units": 0,
+    "automatic_spend_allowed": false
+  },
+  "connector_allowlist": [
+    {
+      "profile_id": "nrscp_github_pull_request_draft_v1",
+      "scope": "connector.github.pull_request.draft",
+      "tool_name": "github_create_pull_request",
+      "resource": {
+        "resource_type": "github_repository",
+        "selector": {
+          "repository_full_name": "example-org/example-repo",
+          "base_ref": "main"
+        },
+        "selector_fingerprint_sha256": "sha256:81be1e24ca80417e891a50d6ad8f2c75907682d9fa078d19d4218b6b0f3be542"
+      },
+      "max_actions": 1,
+      "owner_review_required": true
+    }
+  ],
+  "steps": [
+    {
+      "step_id": "research",
+      "kind": "task",
+      "depends_on": [],
+      "execution_class": "read",
+      "connector_profile_id": null,
+      "owner_gate_required": false,
+      "lease_required": true,
+      "receipt_required": true
+    },
+    {
+      "step_id": "draft",
+      "kind": "task",
+      "depends_on": [
+        "research"
+      ],
+      "execution_class": "local",
+      "connector_profile_id": null,
+      "owner_gate_required": false,
+      "lease_required": true,
+      "receipt_required": true
+    },
+    {
+      "step_id": "owner_review",
+      "kind": "owner_gate",
+      "depends_on": [
+        "draft"
+      ],
+      "execution_class": "none",
+      "connector_profile_id": null,
+      "owner_gate_required": true,
+      "lease_required": false,
+      "receipt_required": false
+    },
+    {
+      "step_id": "create_draft_pr",
+      "kind": "task",
+      "depends_on": [
+        "owner_review"
+      ],
+      "execution_class": "write",
+      "connector_profile_id": "nrscp_github_pull_request_draft_v1",
+      "owner_gate_required": true,
+      "lease_required": true,
+      "receipt_required": true
+    }
+  ],
+  "workflow": {
+    "controller_id": "noderooms/workdesk-v1",
+    "status": "waiting_owner_review",
+    "current_step_id": "owner_review",
+    "ordered_step_ids": [
+      "research",
+      "draft",
+      "owner_review",
+      "create_draft_pr"
+    ]
+  },
+  "receipt_policy": {
+    "per_task_step_receipt_required": true,
+    "external_write_receipt_required": true,
+    "public_safe_projection_required": true,
+    "raw_work_content_persisted": false
+  },
+  "constraints": {
+    "noderooms_workdesk_is_canonical": true,
+    "workboard_can_grant_authority": false,
+    "per_task_step_lease_required": true,
+    "subagent_privilege_inheritance_allowed": false,
+    "shared_lease_allowed": false,
+    "wildcard_scope_allowed": false,
+    "public_write_allowed": false,
+    "automatic_external_write_retry_allowed": false,
+    "owner_decision_automated": false
+  },
+  "created_at": "2026-07-24T17:00:00Z",
+  "updated_at": "2026-07-24T17:20:00Z",
+  "work_item_fingerprint_sha256": "sha256:5d511080a2b8f29accfda659d6e042eebb37d21ef06e700a159350272b7bdd24"
+}

@@ -1,0 +1,77 @@
+{
+  "$schema": "../workdesk-workboard-task-flow-v1.schema.json",
+  "$comment": "Non-live Phase 3A fixture with a public-safe projection and no raw draft content.",
+  "contract_version": "noderooms-work-step-receipt-v1",
+  "fixture": true,
+  "activation_state": "contract_only",
+  "live_dispatch_allowed": false,
+  "receipt_id": "nrworkrcpt_22222222222222222222222222222222",
+  "work_item_binding": {
+    "work_item_id": "nrwork_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mission_id": "nrmission_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "work_item_revision": 1,
+    "work_item_fingerprint_sha256": "sha256:5d511080a2b8f29accfda659d6e042eebb37d21ef06e700a159350272b7bdd24"
+  },
+  "step_binding": {
+    "step_id": "draft",
+    "execution_class": "local",
+    "attempt": 1,
+    "lease": {
+      "lease_id": "nrlv2_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "lease_authority_fingerprint_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "contract_version": "noderooms-run-lease-v2"
+    }
+  },
+  "agent_binding": {
+    "noderooms_agent_id": 42,
+    "passport_id": "NRP-000042-AGENT",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "verified_owner_required": true
+  },
+  "runtime_binding": {
+    "binding_id": "nrbind_11111111111111111111111111111111",
+    "openclaw_agent_id": "agent-example-openclaw",
+    "session_key_fingerprint_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "requester_origin_fingerprint_sha256": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "outcome": {
+    "status": "completed",
+    "reason_code": null,
+    "started_at": "2026-07-24T17:09:00Z",
+    "completed_at": "2026-07-24T17:16:00Z"
+  },
+  "artifacts": [
+    {
+      "artifact_id": "nrartifact_22222222222222222222222222222222",
+      "kind": "draft_patch",
+      "content_sha256": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "visibility": "private_working",
+      "raw_content_included": false
+    }
+  ],
+  "external_action_receipt_binding": null,
+  "public_projection": {
+    "contract_version": "noderooms-public-work-receipt-v1",
+    "work_item_id": "nrwork_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mission_id": "nrmission_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "step_id": "draft",
+    "noderooms_agent_id": 42,
+    "outcome_status": "completed",
+    "completed_at": "2026-07-24T17:16:00Z",
+    "artifact_count": 1,
+    "external_write_performed": false,
+    "raw_content_included": false,
+    "provider_credentials_included": false,
+    "safe_for_public": true,
+    "projection_fingerprint_sha256": "sha256:1fea4dfa72b209ccb7ab2b9b597451a60d48ad4cb06ae1d61f35e471ccac2e6a"
+  },
+  "constraints": {
+    "raw_prompt_included": false,
+    "raw_result_included": false,
+    "provider_credentials_included": false,
+    "noderooms_public_write_performed": false,
+    "reputation_mutation_allowed": false
+  },
+  "recorded_at": "2026-07-24T17:16:05Z",
+  "receipt_fingerprint_sha256": "sha256:10ed87159ebb2ad2d8e756fdeadbf4f0ef4baf263209e8c8e2243f2ac9110bb5"
+}
