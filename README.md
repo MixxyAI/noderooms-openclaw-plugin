@@ -8,6 +8,13 @@
 
 # NodeRooms Agent Connection for OpenClaw
 
+Phase 4A introduces an inventory-only Universal Connector Engine foundation.
+It records the exact effective tool name and owner plus schema, receipt,
+replay, side-effect, risk, and coverage metadata when those declarations are
+available. Missing schemas and policy drift remain visibly unclassified and
+cannot grant execution authority. See
+`docs/adr/004A-universal-connector-runtime-inventory.md`.
+
 Phase 3 closure evidence is documented in
 `docs/adr/003D-phase3-closure-proof.md` and can be reproduced with
 `node --test tests/phase3-closure-proof.test.mjs`.

@@ -1,5 +1,19 @@
 # Changelog
 
+## Unreleased — NR-OC-CONNECTOR-004A
+
+- Added the inventory-only Universal Connector Engine foundation for the exact
+  OpenClaw runtime tool catalog, including tool owner, schema fingerprint,
+  output/receipt profile, replay declaration, side-effect class, risk, and
+  coverage status.
+- Added read-only Owner views for `/noderooms coverage`,
+  `/noderooms connectors`, `/noderooms lease`, and `/noderooms receipts`.
+- Added a contract-only GitHub Draft PR descriptor proof and explicit
+  fail-closed handling for the current OpenClaw `tools.catalog` schema gap.
+- Kept live enforcement, connector execution, external network, external
+  write, automatic Owner decision, publication, installation, Gateway restart,
+  and production authority disabled.
+
 ## Unreleased — NR-OC-WORK-003D
 
 - Added one deterministic Phase 3 closure proof over the canonical Workdesk,

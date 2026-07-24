@@ -1,0 +1,75 @@
+{
+  "$comment": "Contract-only Phase 4A descriptor. It inventories one exact GitHub Draft PR tool but grants no execution authority.",
+  "contract_version": "noderooms-runtime-tool-descriptor-set-v1",
+  "fixture": true,
+  "captured_at": "2026-07-24T20:45:00Z",
+  "refresh_reason": "contract_test",
+  "inventory_generation": 1,
+  "source": {
+    "platform": "openclaw",
+    "catalog_kind": "contract_fixture",
+    "agent_id": "agent-example-openclaw"
+  },
+  "tools": [
+    {
+      "tool_name": "github_create_pull_request",
+      "owner": {
+        "kind": "mcp",
+        "owner_id": "github",
+        "resolution": "exact"
+      },
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "repository_full_name",
+          "head_ref",
+          "base_ref",
+          "title",
+          "body",
+          "draft"
+        ],
+        "properties": {
+          "repository_full_name": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$",
+            "maxLength": 200
+          },
+          "head_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "base_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "draft": {
+            "const": true
+          }
+        }
+      },
+      "declared_output_profile": "external_action_receipt_v2",
+      "declared_replay_semantics": "at_most_once_dispatch",
+      "declared_replay_safe": false,
+      "declared_side_effect_class": "write",
+      "declared_risk": "high",
+      "host_optional": true,
+      "host_tags": [
+        "github",
+        "pull-request",
+        "write"
+      ]
+    }
+  ]
+}

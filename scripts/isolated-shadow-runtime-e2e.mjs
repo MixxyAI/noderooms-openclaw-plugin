@@ -20,7 +20,7 @@ const CONTRACT_VERSION =
 const EXPECTED_OPENCLAW_VERSION = "2026.7.1-2";
 const EXPECTED_PLUGIN_VERSION = "1.3.0-beta.2-dev.1";
 const EXPECTED_NODEROOMS_TOOL_COUNT = 14;
-const EXPECTED_NODEROOMS_HOOK_COUNT = 5;
+const EXPECTED_NODEROOMS_HOOK_COUNT = 6;
 const BOARD_ID = "noderooms-workdesk";
 
 function parseArguments(argv) {
@@ -270,6 +270,8 @@ function validateNodeRoomsInspect(inspect, workspaceDir) {
         entry.name === "before_tool_call" && entry.priority === -1_000));
     assert.ok(inspect.typedHooks.some((entry) =>
         entry.name === "after_tool_call" && entry.priority === 80));
+    assert.ok(inspect.typedHooks.some((entry) =>
+        entry.name === "gateway_start" && entry.priority === 100));
 }
 
 function validateWorkboardInspect(inspect, workspaceDir) {
