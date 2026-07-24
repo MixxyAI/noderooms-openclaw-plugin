@@ -69,6 +69,21 @@ parent 2:     d3084f9bc23e4330fa724e5920a4ecb0a72af571
 Verified Human Owner capability review and run-lease v2 validation foundation.
 It does not alter the published Beta.1 source or publication workflow.
 
+Pull request
+[#4](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/4) merged the
+reviewed 002C head into `main` as:
+
+```text
+merge commit: dbcb681b6f8191be4953c5ee026d9315d250fe05
+parent 1:     40513b13722745ec25eca34f5b73ff3a90ea98b6
+parent 2:     403d82301ae3d7c81a757448593133096d05b599
+```
+
+`NR-OC-TRUST-002D` is based on that exact merge and adds the contract-only
+canonical external-action intent, dispatch reservation, signed receipt, and
+read-only reconciliation foundation. It does not alter the published Beta.1
+source or publication workflow.
+
 Important boundaries:
 
 - `release-source/1.3.0-beta.1` is not modified.
@@ -82,5 +97,8 @@ Important boundaries:
   authorize a live tool call.
 - capability requests, Owner decisions, and run leases with
   `activation_state: contract_only` cannot authorize a live tool call.
+- external-action intents and receipts with
+  `activation_state: contract_only` cannot authorize a live tool call, dispatch
+  a provider write, or update Agent reputation.
 - source-language refactoring is a separate change and must preserve the
   tested runtime contract.

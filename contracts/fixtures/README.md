@@ -70,3 +70,32 @@ consumption, and prohibits wildcard authorization, shared leases, shared run
 secrets, provider credentials, and automated Owner decisions.
 
 All three records remain fixtures with `live_enforce_allowed=false`.
+
+`NR-OC-TRUST-002D` replaces the provisional intent and receipt shapes with the
+strict schema:
+
+```text
+canonical-external-action-intent-receipt-v2.schema.json
+```
+
+and adds these receipt outcomes:
+
+```text
+github-draft-pr.external-action-receipt-v2.json
+github-draft-pr.external-action-unknown-receipt-v2.json
+github-draft-pr.external-action-reconciled-receipt-v2.json
+```
+
+The intent atomically reserves one dispatch. The committed fixture records one
+provider response. The unknown fixture proves that a lost response blocks
+write replay. The reconciled fixture links that unknown receipt and resolves it
+with read-only evidence while the dispatch count remains one.
+
+Every receipt contains a valid fixture-only Ed25519 public key and signature.
+The private key is absent. Validation requires the expected public-key
+thumbprint as an external trust anchor; the embedded public key is not trusted
+by itself.
+
+The audit projection contains only attribution and evidence fingerprints.
+Contract-only fixtures are ineligible for live reputation changes and apply a
+score delta of zero.

@@ -1,12 +1,12 @@
 {
   "$schema": "../canonical-external-action-intent-receipt-v2.schema.json",
-  "$comment": "Non-live 002D fixture. Provider values are illustrative and live reputation remains unchanged.",
+  "$comment": "Non-live 002D lost-response fixture. The provider effect is unknown and write replay remains blocked.",
   "contract_version": "noderooms-external-action-receipt-v2",
   "fixture": true,
   "activation_state": "contract_only",
   "live_enforce_allowed": false,
   "receipt_kind": "dispatch_outcome",
-  "receipt_id": "nrear_33333333333333333333333333333333",
+  "receipt_id": "nrear_44444444444444444444444444444444",
   "receipt_sequence": 1,
   "previous_receipt_binding": null,
   "intent_binding": {
@@ -62,19 +62,14 @@
   },
   "payload_fingerprint_sha256": "sha256:e5987a9f6b5d77d52497f0a77275f6833cc434b5ea874e918d60b4599f7aa375",
   "outcome": {
-    "status": "committed",
-    "observed_via": "dispatch_response",
-    "provider_object": {
-      "type": "pull_request",
-      "id": "123",
-      "url": "https://github.com/example-org/example-repo/pull/123",
-      "state": "draft"
-    },
-    "reason_code": null
+    "status": "unknown",
+    "observed_via": "dispatch_response_lost",
+    "provider_object": null,
+    "reason_code": "OUTCOME_UNCERTAIN"
   },
-  "outcome_fingerprint_sha256": "sha256:70ad262ef9256f5a1bdd1465facbb2b19cce87afbd50756287673c666fcf04f9",
+  "outcome_fingerprint_sha256": "sha256:9fdd4835d04d68b6569337c432ad4eaccd7a9dd311ca6085ea14554070d7f7a5",
   "dispatch": {
-    "state": "committed",
+    "state": "unknown",
     "attempt_count": 1,
     "max_attempts": 1,
     "at_most_once_dispatch_enforced": true,
@@ -103,9 +98,9 @@
   },
   "audit_projection": {
     "event_type": "external_action_receipt",
-    "outcome_status": "committed",
+    "outcome_status": "unknown",
     "attribution_fingerprint_sha256": "sha256:f785092466161d095b2783f28cd56c5405f63630b820bdb91233e30bd706ac6d",
-    "evidence_fingerprint_sha256": "sha256:70ad262ef9256f5a1bdd1465facbb2b19cce87afbd50756287673c666fcf04f9",
+    "evidence_fingerprint_sha256": "sha256:9fdd4835d04d68b6569337c432ad4eaccd7a9dd311ca6085ea14554070d7f7a5",
     "raw_content_included": false
   },
   "reputation_projection": {
@@ -116,7 +111,7 @@
     "reason_code": "LIVE_REPUTATION_UPDATE_PROHIBITED"
   },
   "recorded_at": "2026-07-24T16:05:00Z",
-  "receipt_fingerprint_sha256": "sha256:0cb6f5dc2d435aab481d87c55809ce887776a9bb42d9eaa53ced2dd3266ed93d",
+  "receipt_fingerprint_sha256": "sha256:d8ec2b419e69cdaa7a00a93423bfffca47144624f01caf06de59b2c5ef153e43",
   "attestation": {
     "issuer": "noderooms",
     "algorithm": "Ed25519",
@@ -127,8 +122,8 @@
       "x": "8VtbtkC1EU8E9LEJuojBYQ1Sj3C9ahmTgy9OGBN0uUM"
     },
     "key_thumbprint_sha256": "sha256:90448a635a64d1ff63ef76dd6378c742253db76fd059b5783032aef3503c2458",
-    "signed_receipt_fingerprint_sha256": "sha256:0cb6f5dc2d435aab481d87c55809ce887776a9bb42d9eaa53ced2dd3266ed93d",
+    "signed_receipt_fingerprint_sha256": "sha256:d8ec2b419e69cdaa7a00a93423bfffca47144624f01caf06de59b2c5ef153e43",
     "signed_at": "2026-07-24T16:05:00Z",
-    "signature_base64url": "HCJdmU9OHb_q0C7Pb09XU_3RYqZGWTmsxriAKteWglgKhq_4Tp32VBwrLH9ri78xJbrW7nWMOXlLs0gKx4KuDw"
+    "signature_base64url": "kD_ohw066D37eFsnw9dbni5P8DDScTuVbr2PcP2BjbDRZvFocEtxIb_cFokJ0aPgMx3zA6cuQoNw8xhLN8LCDw"
   }
 }
