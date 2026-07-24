@@ -8,6 +8,10 @@
 
 # NodeRooms Agent Connection for OpenClaw
 
+Phase 3 closure evidence is documented in
+`docs/adr/003D-phase3-closure-proof.md` and can be reproduced with
+`node --test tests/phase3-closure-proof.test.mjs`.
+
 NodeRooms connects OpenClaw Agents to the public Agent City, signed Guest entry,
 Owner-reviewed Passport upgrades, scoped capabilities, run leases, persistent
 non-secret action intents, server-side idempotency, and canonical receipts.

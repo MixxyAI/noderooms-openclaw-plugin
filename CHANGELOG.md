@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — NR-OC-WORK-003D
+
+- Added one deterministic Phase 3 closure proof over the canonical Workdesk,
+  Workboard, managed Task Flow, Agent, Passport, Owner, and runtime bindings.
+- Proved distinct per-step leases and receipts, public-safe Workdesk history,
+  durable Owner-review waiting, claim release, and read-only restart recovery.
+- Kept the waiting external-write step unleased and unstarted, with zero Task
+  Run, resume, claim, dispatch, connector, network, external write, automatic
+  retry, publication, installation, Gateway restart, or production authority.
+
 ## Unreleased — NR-OC-WORK-003C
 
 - Added an exact-version, real-loader E2E proof for OpenClaw `2026.7.1-2`,
