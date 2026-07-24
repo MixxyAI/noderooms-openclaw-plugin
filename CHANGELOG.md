@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased — NR-OC-WORK-003C
+
+- Added an exact-version, real-loader E2E proof for OpenClaw `2026.7.1-2`,
+  the bundled Workboard plugin, and persistent managed Task Flow runtime.
+- Added disposable OpenClaw state, config, and workspace profiles with linked
+  development-source install and byte-stable default-config verification.
+- Proved one waiting managed flow and one unclaimed review card across a fresh
+  process restart, duplicate preparation, parameter drift, and read-only
+  reconciliation.
+- Added a separate stale-revision and authenticated Owner-cancel scenario with
+  no child task and an unchanged review card.
+- Proved zero Task Run, resume, claim, dispatch, connector, network,
+  external-write, and automatic-retry attempts, plus complete isolated-state
+  cleanup.
+- Kept live installation, Gateway start/restart, publication, merge, and
+  production modification out of scope.
+
 ## Unreleased — NR-OC-WORK-003B
 
 - Added a disabled-by-default `off`/`shadow` runtime bridge from one canonical
