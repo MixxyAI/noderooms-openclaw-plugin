@@ -51,3 +51,22 @@ the previous runtime authority and reuses no runtime key, lease, or run secret.
 The 002A lease, intent, and receipt fixtures are cross-bound to the exact 002B
 binding ID, Gateway, runtime instance, OpenClaw Agent, runtime key thumbprint,
 NodeRooms Agent, Passport, and Verified Owner binding.
+
+`NR-OC-TRUST-002C` adds:
+
+```text
+github-draft-pr.capability-request-v2.json
+github-draft-pr.owner-decision-v2.json
+```
+
+The request shows the exact Agent, Passport, Owner, runtime, channel, session,
+run, connector, tool-schema fingerprint, action, resource, risk, TTL, action
+count, goal, and resource limit that the Owner reviews.
+
+The decision requires a `verified_human_owner` and sets
+`decision_automated=false`. The grant cannot exceed the request. The updated
+run lease binds both fingerprints, records atomic one-time decision
+consumption, and prohibits wildcard authorization, shared leases, shared run
+secrets, provider credentials, and automated Owner decisions.
+
+All three records remain fixtures with `live_enforce_allowed=false`.

@@ -39,7 +39,8 @@
     "selector": {
       "repository_full_name": "example-org/example-repo",
       "base_ref": "main"
-    }
+    },
+    "selector_fingerprint_sha256": "sha256:81be1e24ca80417e891a50d6ad8f2c75907682d9fa078d19d4218b6b0f3be542"
   },
   "payload_projection": {
     "repository_full_name": "example-org/example-repo",

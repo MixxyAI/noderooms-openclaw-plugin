@@ -1,8 +1,19 @@
 {
+  "$schema": "../owner-reviewed-capability-run-lease-v2.schema.json",
   "$comment": "Non-live contract fixture. A runtime must reject fixture=true.",
   "contract_version": "noderooms-run-lease-v2",
   "fixture": true,
   "lease_id": "nrlv2_11111111111111111111111111111111",
+  "activation_state": "contract_only",
+  "live_enforce_allowed": false,
+  "request_binding": {
+    "request_id": "nrcapreq_22222222222222222222222222222222",
+    "request_fingerprint_sha256": "sha256:fb1a0d9068471dde0b5c3b6b95d09ac5146e422504c0d40ca3924a232698abb9"
+  },
+  "owner_decision_binding": {
+    "decision_id": "nrcapdec_33333333333333333333333333333333",
+    "decision_fingerprint_sha256": "sha256:67d3a3f3e3203ead1853ed42f9b0647f8030fb0f8d54a755401f02c60ac27fe4"
+  },
   "registry_version": "nrcr_2026-07-23.001",
   "policy_version": "nrp_2026-07-23.001",
   "profile_id": "nrscp_github_pull_request_draft_v1",
@@ -32,31 +43,64 @@
     "tool_name": "github_create_pull_request",
     "tool_schema_fingerprint": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37"
   },
+  "access_mode": "write",
+  "risk": "high",
+  "side_effect_class": "write",
   "action": "create_draft",
   "resource": {
     "resource_type": "github_repository",
     "selector": {
       "repository_full_name": "example-org/example-repo",
       "base_ref": "main"
-    }
+    },
+    "selector_fingerprint_sha256": "sha256:81be1e24ca80417e891a50d6ad8f2c75907682d9fa078d19d4218b6b0f3be542"
   },
   "approval": {
     "policy": "allow_once",
     "decision": "approved_once",
+    "decision_id": "nrcapdec_33333333333333333333333333333333",
+    "decision_fingerprint_sha256": "sha256:67d3a3f3e3203ead1853ed42f9b0647f8030fb0f8d54a755401f02c60ac27fe4",
     "approved_by": "verified_human_owner",
-    "approved_at": "2026-07-24T16:03:30Z",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "decision_automated": false,
+    "approved_at": "2026-07-24T16:03:00Z",
     "consumed": false
   },
   "limits": {
     "ttl_seconds": 900,
     "max_actions": 1,
-    "actions_remaining": 1
+    "actions_consumed": 0,
+    "actions_remaining": 1,
+    "cost_limit": null,
+    "goal_limit": {
+      "goal_id": "nrgoal_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "objective_fingerprint_sha256": "sha256:712e94894778b2cba4c6ba176d6ec5b1776318a3688f6a01445e7fb245489789"
+    },
+    "resource_limit": {
+      "max_distinct_resources": 1,
+      "selector_fingerprint_sha256": "sha256:81be1e24ca80417e891a50d6ad8f2c75907682d9fa078d19d4218b6b0f3be542"
+    }
+  },
+  "issuance": {
+    "issuer": "noderooms",
+    "decision_consumed_atomically": true,
+    "issued_once": true
   },
   "issued_at": "2026-07-24T16:03:30Z",
   "expires_at": "2026-07-24T16:18:30Z",
   "revocation": {
+    "state": "not_revoked",
     "revoked": false,
     "revoked_at": null,
-    "reason_code": null
-  }
+    "reason_code": null,
+    "sequence": 0
+  },
+  "constraints": {
+    "wildcard_authorization_allowed": false,
+    "shared_lease_allowed": false,
+    "shared_run_secret_allowed": false,
+    "provider_credentials_included": false,
+    "owner_decision_automatable": false
+  },
+  "lease_authority_fingerprint_sha256": "sha256:ba8da9896ecf7c79d429508bc579c9f8a35c99072e14a1bc5823f6120c83b4f9"
 }

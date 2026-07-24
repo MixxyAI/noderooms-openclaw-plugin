@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased — NR-OC-TRUST-002C
+
+- Added strict external capability request, Verified Human Owner decision, and
+  run lease v2 contracts.
+- Bound every request and lease to the exact Agent, Passport, Owner, runtime,
+  channel, session, run, registry, connector, tool schema, action, and resource.
+- Added non-automatable Owner review and one-request/one-decision/one-lease
+  replay protection.
+- Added TTL, maximum-action, optional cost, goal, and resource limits; Owner
+  grants may narrow but cannot expand requests.
+- Added fail-closed revocation, expiry, exhaustion, counter, wildcard, identity,
+  scope, resource, and fingerprint validation.
+- Kept the validator disconnected from live hooks and kept live enforcement,
+  publication, installation, Gateway restart, and production deployment out of
+  scope.
+
 ## Unreleased — NR-OC-TRUST-002B
 
 - Added the strict Agent–Passport–Verified Owner–OpenClaw runtime binding

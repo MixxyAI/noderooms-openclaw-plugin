@@ -1,0 +1,925 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:owner-reviewed-capability-run-lease:v2",
+  "title": "NodeRooms Owner-reviewed external capability and run lease v2",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/capabilityRequest"
+    },
+    {
+      "$ref": "#/$defs/ownerDecision"
+    },
+    {
+      "$ref": "#/$defs/runLease"
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "agentBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "noderooms_agent_id",
+        "passport_id",
+        "owner_binding_id",
+        "verified_owner_required"
+      ],
+      "properties": {
+        "noderooms_agent_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "passport_id": {
+          "type": "string",
+          "pattern": "^NRP-[0-9]{6}-AGENT$"
+        },
+        "owner_binding_id": {
+          "type": "string",
+          "pattern": "^NRPB-[A-F0-9]{24}$"
+        },
+        "verified_owner_required": {
+          "const": true
+        }
+      }
+    },
+    "runtimeBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binding_id",
+        "platform",
+        "gateway_id",
+        "runtime_instance_id",
+        "openclaw_agent_id",
+        "runtime_key_thumbprint",
+        "session_id",
+        "run_id",
+        "channel",
+        "owner_sender_binding_sha256"
+      ],
+      "properties": {
+        "binding_id": {
+          "type": "string",
+          "pattern": "^nrbind_[a-f0-9]{32}$"
+        },
+        "platform": {
+          "const": "openclaw"
+        },
+        "gateway_id": {
+          "type": "string",
+          "pattern": "^ocgw_[a-f0-9]{32}$"
+        },
+        "runtime_instance_id": {
+          "type": "string",
+          "pattern": "^ocruntime_[a-f0-9]{32}$"
+        },
+        "openclaw_agent_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,160}$"
+        },
+        "runtime_key_thumbprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "session_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:/-]{1,200}$"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:/-]{1,200}$"
+        },
+        "channel": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._:-]{1,63}$"
+        },
+        "owner_sender_binding_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "registryBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registry_version",
+        "policy_version",
+        "profile_id",
+        "scope",
+        "provider",
+        "connector_id",
+        "connector_version",
+        "tool_name",
+        "tool_schema_fingerprint",
+        "action",
+        "resource_type",
+        "risk",
+        "side_effect_class",
+        "approval_policy"
+      ],
+      "properties": {
+        "registry_version": {
+          "type": "string",
+          "pattern": "^nrcr_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "policy_version": {
+          "type": "string",
+          "pattern": "^nrp_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "profile_id": {
+          "type": "string",
+          "pattern": "^nrscp_[a-z0-9][a-z0-9_]{2,95}$"
+        },
+        "scope": {
+          "type": "string",
+          "pattern": "^connector\\.[a-z][a-z0-9_]{1,31}\\.[a-z][a-z0-9_]{1,47}\\.[a-z][a-z0-9_]{1,47}$"
+        },
+        "provider": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,31}$"
+        },
+        "connector_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._:-]{2,127}$"
+        },
+        "connector_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+        },
+        "tool_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+        },
+        "tool_schema_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "action": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "resource_type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "risk": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "side_effect_class": {
+          "enum": [
+            "read",
+            "write",
+            "destructive",
+            "admin"
+          ]
+        },
+        "approval_policy": {
+          "enum": [
+            "none",
+            "allow_once"
+          ]
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_type",
+        "selector",
+        "selector_fingerprint_sha256"
+      ],
+      "properties": {
+        "resource_type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "selector": {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 16,
+          "propertyNames": {
+            "pattern": "^[a-z][a-z0-9_]{1,63}$"
+          },
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          }
+        },
+        "selector_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "costLimit": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "currency",
+            "max_minor_units"
+          ],
+          "properties": {
+            "currency": {
+              "type": "string",
+              "pattern": "^[A-Z]{3}$"
+            },
+            "max_minor_units": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000000
+            }
+          }
+        }
+      ]
+    },
+    "goalLimit": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "goal_id",
+            "objective_fingerprint_sha256"
+          ],
+          "properties": {
+            "goal_id": {
+              "type": "string",
+              "pattern": "^nrgoal_[a-f0-9]{32}$"
+            },
+            "objective_fingerprint_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        }
+      ]
+    },
+    "resourceLimit": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "max_distinct_resources",
+            "selector_fingerprint_sha256"
+          ],
+          "properties": {
+            "max_distinct_resources": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16
+            },
+            "selector_fingerprint_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        }
+      ]
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ttl_seconds",
+        "max_actions",
+        "cost_limit",
+        "goal_limit",
+        "resource_limit"
+      ],
+      "properties": {
+        "ttl_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400
+        },
+        "max_actions": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "cost_limit": {
+          "$ref": "#/$defs/costLimit"
+        },
+        "goal_limit": {
+          "$ref": "#/$defs/goalLimit"
+        },
+        "resource_limit": {
+          "$ref": "#/$defs/resourceLimit"
+        }
+      }
+    },
+    "capabilityRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "request_id",
+        "activation_state",
+        "live_enforce_allowed",
+        "agent_binding",
+        "runtime_binding",
+        "registry_binding",
+        "access_mode",
+        "resource",
+        "requested_limits",
+        "review_state",
+        "requested_at",
+        "expires_at",
+        "request_fingerprint_sha256"
+      ],
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "$comment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_version": {
+          "const": "noderooms-external-capability-request-v2"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^nrcapreq_[a-f0-9]{32}$"
+        },
+        "activation_state": {
+          "const": "contract_only"
+        },
+        "live_enforce_allowed": {
+          "const": false
+        },
+        "agent_binding": {
+          "$ref": "#/$defs/agentBinding"
+        },
+        "runtime_binding": {
+          "$ref": "#/$defs/runtimeBinding"
+        },
+        "registry_binding": {
+          "$ref": "#/$defs/registryBinding"
+        },
+        "access_mode": {
+          "enum": [
+            "read",
+            "write"
+          ]
+        },
+        "resource": {
+          "$ref": "#/$defs/resource"
+        },
+        "requested_limits": {
+          "$ref": "#/$defs/limits"
+        },
+        "review_state": {
+          "const": "pending_owner_review"
+        },
+        "requested_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "request_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "ownerDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "decision_id",
+        "activation_state",
+        "live_enforce_allowed",
+        "request_id",
+        "request_fingerprint_sha256",
+        "registry_binding_fingerprint_sha256",
+        "resource_selector_fingerprint_sha256",
+        "decision",
+        "reviewer",
+        "granted_limits",
+        "reason_code",
+        "decided_at",
+        "expires_at",
+        "decision_fingerprint_sha256"
+      ],
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "$comment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_version": {
+          "const": "noderooms-owner-capability-decision-v2"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^nrcapdec_[a-f0-9]{32}$"
+        },
+        "activation_state": {
+          "const": "contract_only"
+        },
+        "live_enforce_allowed": {
+          "const": false
+        },
+        "request_id": {
+          "type": "string",
+          "pattern": "^nrcapreq_[a-f0-9]{32}$"
+        },
+        "request_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "registry_binding_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "resource_selector_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "decision": {
+          "enum": [
+            "approved_once",
+            "approved_bounded",
+            "denied"
+          ]
+        },
+        "reviewer": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "owner_binding_id",
+            "decision_automated",
+            "channel",
+            "owner_sender_binding_sha256"
+          ],
+          "properties": {
+            "kind": {
+              "const": "verified_human_owner"
+            },
+            "owner_binding_id": {
+              "type": "string",
+              "pattern": "^NRPB-[A-F0-9]{24}$"
+            },
+            "decision_automated": {
+              "const": false
+            },
+            "channel": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9._:-]{1,63}$"
+            },
+            "owner_sender_binding_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "granted_limits": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/limits"
+            }
+          ]
+        },
+        "reason_code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{2,63}$"
+        },
+        "decided_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "decision_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "runLease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "lease_id",
+        "activation_state",
+        "live_enforce_allowed",
+        "request_binding",
+        "owner_decision_binding",
+        "registry_version",
+        "policy_version",
+        "profile_id",
+        "scope",
+        "agent_binding",
+        "runtime_binding",
+        "connector_binding",
+        "access_mode",
+        "risk",
+        "side_effect_class",
+        "action",
+        "resource",
+        "approval",
+        "limits",
+        "issuance",
+        "issued_at",
+        "expires_at",
+        "revocation",
+        "constraints",
+        "lease_authority_fingerprint_sha256"
+      ],
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "$comment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_version": {
+          "const": "noderooms-run-lease-v2"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "lease_id": {
+          "type": "string",
+          "pattern": "^nrlv2_[a-f0-9]{32}$"
+        },
+        "activation_state": {
+          "const": "contract_only"
+        },
+        "live_enforce_allowed": {
+          "const": false
+        },
+        "request_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "request_id",
+            "request_fingerprint_sha256"
+          ],
+          "properties": {
+            "request_id": {
+              "type": "string",
+              "pattern": "^nrcapreq_[a-f0-9]{32}$"
+            },
+            "request_fingerprint_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "owner_decision_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "decision_id",
+            "decision_fingerprint_sha256"
+          ],
+          "properties": {
+            "decision_id": {
+              "type": "string",
+              "pattern": "^nrcapdec_[a-f0-9]{32}$"
+            },
+            "decision_fingerprint_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "registry_version": {
+          "type": "string",
+          "pattern": "^nrcr_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "policy_version": {
+          "type": "string",
+          "pattern": "^nrp_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "profile_id": {
+          "type": "string",
+          "pattern": "^nrscp_[a-z0-9][a-z0-9_]{2,95}$"
+        },
+        "scope": {
+          "type": "string",
+          "pattern": "^connector\\.[a-z][a-z0-9_]{1,31}\\.[a-z][a-z0-9_]{1,47}\\.[a-z][a-z0-9_]{1,47}$"
+        },
+        "agent_binding": {
+          "$ref": "#/$defs/agentBinding"
+        },
+        "runtime_binding": {
+          "$ref": "#/$defs/runtimeBinding"
+        },
+        "connector_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "provider",
+            "connector_id",
+            "connector_version",
+            "tool_name",
+            "tool_schema_fingerprint"
+          ],
+          "properties": {
+            "provider": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]{1,31}$"
+            },
+            "connector_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9._:-]{2,127}$"
+            },
+            "connector_version": {
+              "type": "string",
+              "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+            },
+            "tool_name": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+            },
+            "tool_schema_fingerprint": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "access_mode": {
+          "enum": [
+            "read",
+            "write"
+          ]
+        },
+        "risk": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "side_effect_class": {
+          "enum": [
+            "read",
+            "write",
+            "destructive",
+            "admin"
+          ]
+        },
+        "action": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "resource": {
+          "$ref": "#/$defs/resource"
+        },
+        "approval": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "policy",
+            "decision",
+            "decision_id",
+            "decision_fingerprint_sha256",
+            "approved_by",
+            "owner_binding_id",
+            "decision_automated",
+            "approved_at",
+            "consumed"
+          ],
+          "properties": {
+            "policy": {
+              "enum": [
+                "none",
+                "allow_once"
+              ]
+            },
+            "decision": {
+              "enum": [
+                "approved_once",
+                "approved_bounded"
+              ]
+            },
+            "decision_id": {
+              "type": "string",
+              "pattern": "^nrcapdec_[a-f0-9]{32}$"
+            },
+            "decision_fingerprint_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "approved_by": {
+              "const": "verified_human_owner"
+            },
+            "owner_binding_id": {
+              "type": "string",
+              "pattern": "^NRPB-[A-F0-9]{24}$"
+            },
+            "decision_automated": {
+              "const": false
+            },
+            "approved_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "consumed": {
+              "type": "boolean"
+            }
+          }
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ttl_seconds",
+            "max_actions",
+            "actions_consumed",
+            "actions_remaining",
+            "cost_limit",
+            "goal_limit",
+            "resource_limit"
+          ],
+          "properties": {
+            "ttl_seconds": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 86400
+            },
+            "max_actions": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "actions_consumed": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "actions_remaining": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "cost_limit": {
+              "$ref": "#/$defs/costLimit"
+            },
+            "goal_limit": {
+              "$ref": "#/$defs/goalLimit"
+            },
+            "resource_limit": {
+              "$ref": "#/$defs/resourceLimit"
+            }
+          }
+        },
+        "issuance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "issuer",
+            "decision_consumed_atomically",
+            "issued_once"
+          ],
+          "properties": {
+            "issuer": {
+              "const": "noderooms"
+            },
+            "decision_consumed_atomically": {
+              "const": true
+            },
+            "issued_once": {
+              "const": true
+            }
+          }
+        },
+        "issued_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "revocation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "revoked",
+            "revoked_at",
+            "reason_code",
+            "sequence"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "not_revoked",
+                "revoked"
+              ]
+            },
+            "revoked": {
+              "type": "boolean"
+            },
+            "revoked_at": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              ]
+            },
+            "reason_code": {
+              "oneOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]{2,63}$"
+                }
+              ]
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "wildcard_authorization_allowed",
+            "shared_lease_allowed",
+            "shared_run_secret_allowed",
+            "provider_credentials_included",
+            "owner_decision_automatable"
+          ],
+          "properties": {
+            "wildcard_authorization_allowed": {
+              "const": false
+            },
+            "shared_lease_allowed": {
+              "const": false
+            },
+            "shared_run_secret_allowed": {
+              "const": false
+            },
+            "provider_credentials_included": {
+              "const": false
+            },
+            "owner_decision_automatable": {
+              "const": false
+            }
+          }
+        },
+        "lease_authority_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

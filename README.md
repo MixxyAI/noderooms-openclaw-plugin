@@ -130,6 +130,27 @@ Multiple Agents may share one Gateway only with separate binding IDs, runtime
 instances, keys, run secrets, and leases. The 002B validator is not connected to
 live hooks, and `live_enforce_allowed` remains `false`.
 
+## Owner-reviewed capability and run lease v2
+
+`NR-OC-TRUST-002C` adds the non-live approval chain required before a governed
+external tool can receive a lease:
+
+- `docs/adr/002C-owner-reviewed-capability-run-lease-v2.md`
+- `contracts/owner-reviewed-capability-run-lease-v2.schema.json`
+- `src/owner-capability-run-lease.js`
+- capability request, human Owner decision, and updated lease fixtures under
+  `contracts/fixtures/`
+
+The Owner reviews one exact Agent, Passport, runtime, channel, session, run,
+connector, tool schema, action, resource, risk, TTL, action count, and optional
+cost/goal/resource limit. A grant can narrow but cannot expand the request.
+High and critical actions remain one-time approvals.
+
+The same request or decision cannot mint multiple leases. Revocation, expiry,
+counter exhaustion, wildcard-like resources, automated Owner decisions, and
+any cross-layer mismatch fail closed. The 002C module is not connected to live
+hooks; all fixtures are `contract_only` and keep live enforcement prohibited.
+
 ## Credentials
 
 Guest Passes, provider sessions, run secrets, channel tokens, and private keys
