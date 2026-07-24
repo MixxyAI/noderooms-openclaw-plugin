@@ -246,6 +246,32 @@ and `/noderooms work reconcile <binding_id>` remains read-only.
 Workboard plugin, installing this development package, restarting a Gateway,
 or modifying production remains a separate Owner-reviewed operation.
 
+## Isolated shadow runtime E2E proof
+
+`NR-OC-WORK-003C` proves the 003B shadow boundary against the exact pinned
+OpenClaw host without touching a live profile:
+
+- `docs/adr/003C-isolated-shadow-runtime-e2e.md`
+- `scripts/isolated-shadow-runtime-e2e.mjs`
+- `scripts/isolated-shadow-runtime-worker.mjs`
+- `tests/isolated-shadow-runtime-e2e.test.mjs`
+
+The proof uses disposable OpenClaw state, config, and workspace paths. It
+link-installs the development source only into that isolated profile, loads
+NodeRooms and the bundled Workboard through the real plugin loader, and uses
+the persistent managed Task Flow and Workboard SQLite implementations.
+
+It proves one `waiting` managed flow and one unclaimed `review` card, then
+restarts in a fresh process to test idempotency, drift blocking, and read-only
+reconcile. A separate disposable profile proves revision-conflict rejection
+and authenticated Owner cancel. Task Run, resume, claim, dispatch, connector,
+network, external-write, automatic-retry, Gateway, and production counters
+remain zero.
+
+The isolated state is removed after the proof, and the default OpenClaw
+configuration must remain byte-identical. This does not install the plugin or
+enable Workboard on a user's real Gateway.
+
 ## Credentials
 
 Guest Passes, provider sessions, run secrets, channel tokens, and private keys

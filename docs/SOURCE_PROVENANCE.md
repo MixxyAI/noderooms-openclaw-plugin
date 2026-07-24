@@ -115,6 +115,23 @@ uses the public managed Task Flow API and a guarded `workboard_create` agent
 tool call; it does not use cross-plugin Gateway RPC. It does not alter the
 published Beta.1 source or publication workflow.
 
+Pull request
+[#7](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/7) merged the
+reviewed 003B head into `main` as:
+
+```text
+merge commit: 09907fb745523a2c0b1f4784982efc31d1500a68
+parent 1:     98daacaaa9deea2a543f76d8b4e89adf0e0b516c
+parent 2:     1106bf97c55824d374030b02acea5766be33a10b
+```
+
+`NR-OC-WORK-003C` is based on that exact merge. It adds only an isolated
+real-loader/runtime proof, tests, and documentation. The proof creates
+disposable OpenClaw state, config, and workspace roots and removes them after
+each run. It does not alter the 003B live source, plugin manifest, immutable
+Beta.1 release source, publication workflow, a deployed Gateway, or
+production.
+
 Important boundaries:
 
 - `release-source/1.3.0-beta.1` is not modified.
@@ -140,6 +157,9 @@ Important boundaries:
   one waiting managed Task Flow, but cannot claim or dispatch the card, start
   a Task Run, resume a flow, invoke a connector, retry an uncertain create, or
   perform an external write.
+- Phase 3C link-installs only into a disposable test profile. It starts no
+  Gateway, invokes no connector or external network, and removes the isolated
+  state after proving loader, restart, reconcile, and cancel behavior.
 - `workRuntime.mode` defaults to `off`; `armed` activation is not exposed and
   remains hard-blocked.
 - source-language refactoring is a separate change and must preserve the
