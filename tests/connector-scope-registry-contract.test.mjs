@@ -3,6 +3,11 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 
+import {
+    validateExternalActionIntentV2,
+    validateExternalActionReceiptV2,
+} from "../src/external-action-intent-receipt.js";
+
 const readJson = async (relativePath) => JSON.parse(await readFile(
     new URL(`../${relativePath}`, import.meta.url),
     "utf8",
@@ -11,6 +16,12 @@ const readJson = async (relativePath) => JSON.parse(await readFile(
 const schema = await readJson("contracts/connector-scope-registry-v1.schema.json");
 const registry = await readJson("contracts/reference/github-draft-pr.v1.json");
 const lease = await readJson("contracts/fixtures/github-draft-pr.run-lease-v2.json");
+const request = await readJson(
+    "contracts/fixtures/github-draft-pr.capability-request-v2.json",
+);
+const decision = await readJson(
+    "contracts/fixtures/github-draft-pr.owner-decision-v2.json",
+);
 const intent = await readJson("contracts/fixtures/github-draft-pr.external-action-intent-v2.json");
 const receipt = await readJson("contracts/fixtures/github-draft-pr.external-action-receipt-v2.json");
 const runtimeBinding = await readJson(
@@ -55,7 +66,8 @@ function assertNoSensitiveMaterial(value, path = "$") {
     }
     for (const [key, entry] of Object.entries(value)) {
         const safePolicyBoolean = typeof entry === "boolean"
-            && /(?:allowed|included|automatable|automated)$/i.test(key);
+            && /(?:allowed|included|automatable|automated|persisted|attempted|claimed|required|supported|forwarded)$/i
+                .test(key);
         if (!safePolicyBoolean) {
             assert.doesNotMatch(
                 key,
@@ -185,9 +197,21 @@ function assertLeaseContract(value, profile, now = Date.parse("2026-07-24T16:10:
 }
 
 function assertIntentContract(value, leaseValue, profile) {
+    validateExternalActionIntentV2({
+        intent: value,
+        lease: leaseValue,
+        request,
+        decision,
+    }, {
+        registry,
+        runtimeBinding,
+        allowFixture: true,
+        allowContractOnly: true,
+        now: Date.parse("2026-07-24T16:10:00Z"),
+    });
     assert.equal(value.contract_version, "noderooms-external-action-intent-v2");
     assert.equal(value.fixture, true);
-    assert.equal(value.lease_id, leaseValue.lease_id);
+    assert.equal(value.lease_binding.lease_id, leaseValue.lease_id);
     for (const field of ["registry_version", "policy_version", "profile_id", "scope", "action"]) {
         assert.equal(value[field], leaseValue[field], `intent ${field} mismatch`);
     }
@@ -202,23 +226,39 @@ function assertIntentContract(value, leaseValue, profile) {
     assert.match(value.payload_projection.body_sha256, SHA256_PATTERN);
     assert.equal(value.payload_fingerprint_sha256, fingerprint(value.payload_projection));
     assert.equal(value.approval_consumption.policy, profile.approval_policy);
-    assert.equal(value.approval_consumption.decision, "approved_once");
+    assert.equal(value.approval_consumption.decision_id, decision.decision_id);
     assert.equal(value.approval_consumption.consumed, false);
-    assert.equal(value.dispatch.state, "reserved");
-    assert.equal(value.dispatch.attempt_count, 0);
-    assert.equal(value.dispatch.max_attempts, 1);
-    assert.equal(value.dispatch.automatic_write_retry, false);
-    assert.equal(value.dispatch.uncertain_outcome_state, "unknown");
-    assert.equal(value.dispatch.reconcile_mode, "read_only");
+    assert.equal(value.dispatch_reservation.state, "reserved");
+    assert.equal(value.dispatch_reservation.attempt_count, 0);
+    assert.equal(value.dispatch_reservation.max_attempts, 1);
+    assert.equal(value.dispatch_reservation.automatic_write_retry, false);
+    assert.equal(value.dispatch_reservation.uncertain_outcome_state, "not_dispatched");
+    assert.equal(value.dispatch_reservation.reconcile_mode, "read_only");
     assert.ok(Date.parse(value.expires_at) > Date.parse(value.created_at));
     assertNoSensitiveMaterial(value);
 }
 
 function assertReceiptContract(value, intentValue, leaseValue, profile) {
+    validateExternalActionReceiptV2({
+        receipt: value,
+        intent: intentValue,
+        lease: leaseValue,
+        request,
+        decision,
+    }, {
+        registry,
+        runtimeBinding,
+        allowFixture: true,
+        allowContractOnly: true,
+        trustedReceiptKeyThumbprint:
+            receipt.attestation.key_thumbprint_sha256,
+        trustedReceiptPublicKeyJwk:
+            receipt.attestation.public_key_jwk,
+    });
     assert.equal(value.contract_version, "noderooms-external-action-receipt-v2");
     assert.equal(value.fixture, true);
-    assert.equal(value.intent_id, intentValue.intent_id);
-    assert.equal(value.lease_id, leaseValue.lease_id);
+    assert.equal(value.intent_binding.intent_id, intentValue.intent_id);
+    assert.equal(value.lease_binding.lease_id, leaseValue.lease_id);
     for (const field of ["registry_version", "policy_version", "profile_id", "scope", "action"]) {
         assert.equal(value[field], intentValue[field], `receipt ${field} mismatch`);
     }
@@ -228,12 +268,12 @@ function assertReceiptContract(value, intentValue, leaseValue, profile) {
     assert.deepEqual(value.resource, intentValue.resource);
     assert.equal(value.payload_fingerprint_sha256, intentValue.payload_fingerprint_sha256);
     assert.equal(value.outcome.status, "committed");
-    assert.equal(value.outcome.provider_object.draft, true);
+    assert.equal(value.outcome.provider_object.state, "draft");
     assert.equal(value.dispatch.attempt_count, 1);
     assert.equal(value.dispatch.at_most_once_dispatch_enforced, true);
     assert.equal(value.dispatch.exactly_once_effect_claimed, false);
     assert.equal(value.dispatch.automatic_write_retry_attempted, false);
-    assert.equal(value.dispatch.reconcile_mode, "read_only");
+    assert.equal(value.reconciliation.mode, "read_only");
     assert.equal(value.approval_consumption.policy, profile.approval_policy);
     assert.equal(value.approval_consumption.consumed, true);
     assertNoSensitiveMaterial(value);
@@ -336,8 +376,8 @@ test("external action intent fails closed on binding or payload drift", () => {
         (value) => { value.resource.selector.base_ref = "release"; },
         (value) => { value.payload_projection.base_ref = "release"; },
         (value) => { value.payload_projection.head_ref = "other-head"; },
-        (value) => { value.dispatch.max_attempts = 2; },
-        (value) => { value.dispatch.automatic_write_retry = true; },
+        (value) => { value.dispatch_reservation.max_attempts = 2; },
+        (value) => { value.dispatch_reservation.automatic_write_retry = true; },
     ]) {
         const value = clone(intent);
         mutate(value);

@@ -1,5 +1,20 @@
 # Changelog
 
+## Unreleased — NR-OC-TRUST-002D
+
+- Added strict canonical external-action intent, dispatch-reservation, receipt,
+  and read-only reconciliation contracts.
+- Bound every payload fingerprint and receipt to the exact reviewed lease,
+  Agent, Passport, Owner, runtime, connector, tool schema, action, and resource.
+- Added one-lease/one-intent/one-dispatch replay protection and prohibited
+  automatic write retries after uncertain outcomes.
+- Added Ed25519 receipt attestation with an external trust-anchor requirement.
+- Added bounded audit evidence and explicitly prohibited live reputation
+  mutation from contract-only fixtures.
+- Kept the validator disconnected from live hooks and kept live enforcement,
+  publication, installation, Gateway restart, and production deployment out of
+  scope.
+
 ## Unreleased — NR-OC-TRUST-002C
 
 - Added strict external capability request, Verified Human Owner decision, and

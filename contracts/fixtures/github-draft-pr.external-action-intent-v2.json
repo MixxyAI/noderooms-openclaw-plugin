@@ -1,9 +1,15 @@
 {
-  "$comment": "Non-live contract fixture. No provider write is represented.",
+  "$schema": "../canonical-external-action-intent-receipt-v2.schema.json",
+  "$comment": "Non-live 002D fixture. It reserves one dispatch but cannot authorize or execute a provider write.",
   "contract_version": "noderooms-external-action-intent-v2",
   "fixture": true,
+  "activation_state": "contract_only",
+  "live_enforce_allowed": false,
   "intent_id": "nreai_22222222222222222222222222222222",
-  "lease_id": "nrlv2_11111111111111111111111111111111",
+  "lease_binding": {
+    "lease_id": "nrlv2_11111111111111111111111111111111",
+    "lease_authority_fingerprint_sha256": "sha256:ba8da9896ecf7c79d429508bc579c9f8a35c99072e14a1bc5823f6120c83b4f9"
+  },
   "registry_version": "nrcr_2026-07-23.001",
   "policy_version": "nrp_2026-07-23.001",
   "profile_id": "nrscp_github_pull_request_draft_v1",
@@ -33,6 +39,9 @@
     "tool_name": "github_create_pull_request",
     "tool_schema_fingerprint": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37"
   },
+  "access_mode": "write",
+  "risk": "high",
+  "side_effect_class": "write",
   "action": "create_draft",
   "resource": {
     "resource_type": "github_repository",
@@ -53,19 +62,34 @@
   "payload_fingerprint_sha256": "sha256:e5987a9f6b5d77d52497f0a77275f6833cc434b5ea874e918d60b4599f7aa375",
   "approval_consumption": {
     "policy": "allow_once",
-    "decision": "approved_once",
+    "decision_id": "nrcapdec_33333333333333333333333333333333",
+    "decision_fingerprint_sha256": "sha256:67d3a3f3e3203ead1853ed42f9b0647f8030fb0f8d54a755401f02c60ac27fe4",
+    "state": "reserved",
     "consumed": false
   },
-  "dispatch": {
+  "dispatch_reservation": {
     "reservation_id": "nrdispatch_44444444444444444444444444444444",
+    "reservation_fingerprint_sha256": "sha256:388499d11bb17be2e754982818a638084152684e10f0a52a216cf57c2f1ef959",
     "state": "reserved",
     "attempt_count": 0,
     "max_attempts": 1,
+    "provider_idempotency": {
+      "supported": false,
+      "key_binding_fingerprint_sha256": null,
+      "forward_on_dispatch": false
+    },
     "automatic_write_retry": false,
-    "provider_idempotency_key_supported": false,
-    "uncertain_outcome_state": "unknown",
+    "uncertain_outcome_state": "not_dispatched",
     "reconcile_mode": "read_only"
   },
+  "constraints": {
+    "at_most_once_dispatch_required": true,
+    "exactly_once_effect_claimed": false,
+    "raw_payload_persisted": false,
+    "provider_credentials_included": false,
+    "raw_provider_response_persisted": false
+  },
   "created_at": "2026-07-24T16:04:00Z",
-  "expires_at": "2026-07-24T16:18:30Z"
+  "expires_at": "2026-07-24T16:18:30Z",
+  "intent_fingerprint_sha256": "sha256:7804e9c708b723f05eacf043f2a4988781577b3d5a8b41536b69fe2db9329faf"
 }

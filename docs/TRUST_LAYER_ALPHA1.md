@@ -148,6 +148,21 @@ lease v2 chain:
 The 002C validator is not imported by live hooks. The fixtures remain
 `contract_only`, and an exact match returns `LIVE_ENFORCE_PROHIBITED`.
 
+## Contract-only 002D milestone
+
+The repository also contains the canonical external-action evidence chain:
+
+1. a public-safe payload projection and canonical fingerprint;
+2. one immutable intent bound to the reviewed lease;
+3. one atomic dispatch reservation and maximum one provider call;
+4. no automatic write retry after an uncertain result;
+5. one optional read-only reconciliation of an unknown outcome;
+6. Ed25519-signed canonical receipts with an external trust anchor;
+7. bounded audit fingerprints and no live reputation mutation.
+
+The 002D validator is not imported by live hooks. It proves only a
+`contract_only` match and returns `LIVE_ENFORCE_PROHIBITED`.
+
 ## Owner command
 
 ```text
@@ -168,7 +183,9 @@ and prove:
    contracts;
 4. atomically consumed scoped lease issuance based on 002C;
 5. online revocation, expiry, and action-counter validation;
-6. canonical external-work receipt endpoints.
+6. canonical external-work intent, reservation, receipt, and read-only
+   reconciliation endpoints based on the 002D contract;
+7. production receipt-signing key management and trust-anchor rotation.
 
 Until then:
 

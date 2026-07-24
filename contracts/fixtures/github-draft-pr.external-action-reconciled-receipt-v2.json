@@ -1,14 +1,17 @@
 {
   "$schema": "../canonical-external-action-intent-receipt-v2.schema.json",
-  "$comment": "Non-live 002D fixture. Provider values are illustrative and live reputation remains unchanged.",
+  "$comment": "Non-live 002D fixture. One read-only observation resolves the lost response without another provider write.",
   "contract_version": "noderooms-external-action-receipt-v2",
   "fixture": true,
   "activation_state": "contract_only",
   "live_enforce_allowed": false,
-  "receipt_kind": "dispatch_outcome",
-  "receipt_id": "nrear_33333333333333333333333333333333",
-  "receipt_sequence": 1,
-  "previous_receipt_binding": null,
+  "receipt_kind": "reconciliation_outcome",
+  "receipt_id": "nrear_55555555555555555555555555555555",
+  "receipt_sequence": 2,
+  "previous_receipt_binding": {
+    "receipt_id": "nrear_44444444444444444444444444444444",
+    "receipt_fingerprint_sha256": "sha256:d8ec2b419e69cdaa7a00a93423bfffca47144624f01caf06de59b2c5ef153e43"
+  },
   "intent_binding": {
     "intent_id": "nreai_22222222222222222222222222222222",
     "intent_fingerprint_sha256": "sha256:7804e9c708b723f05eacf043f2a4988781577b3d5a8b41536b69fe2db9329faf",
@@ -63,7 +66,7 @@
   "payload_fingerprint_sha256": "sha256:e5987a9f6b5d77d52497f0a77275f6833cc434b5ea874e918d60b4599f7aa375",
   "outcome": {
     "status": "committed",
-    "observed_via": "dispatch_response",
+    "observed_via": "read_only_reconcile",
     "provider_object": {
       "type": "pull_request",
       "id": "123",
@@ -72,7 +75,7 @@
     },
     "reason_code": null
   },
-  "outcome_fingerprint_sha256": "sha256:70ad262ef9256f5a1bdd1465facbb2b19cce87afbd50756287673c666fcf04f9",
+  "outcome_fingerprint_sha256": "sha256:2eb6161234912b1d7b577a6dd9e977d1d6dd934e317223470a578a8d99186ca6",
   "dispatch": {
     "state": "committed",
     "attempt_count": 1,
@@ -88,10 +91,10 @@
   },
   "reconciliation": {
     "mode": "read_only",
-    "attempted": false,
+    "attempted": true,
     "provider_write_attempted": false,
-    "observation_fingerprint_sha256": null,
-    "resolved_from_unknown": false
+    "observation_fingerprint_sha256": "sha256:2eb6161234912b1d7b577a6dd9e977d1d6dd934e317223470a578a8d99186ca6",
+    "resolved_from_unknown": true
   },
   "approval_consumption": {
     "policy": "allow_once",
@@ -105,7 +108,7 @@
     "event_type": "external_action_receipt",
     "outcome_status": "committed",
     "attribution_fingerprint_sha256": "sha256:f785092466161d095b2783f28cd56c5405f63630b820bdb91233e30bd706ac6d",
-    "evidence_fingerprint_sha256": "sha256:70ad262ef9256f5a1bdd1465facbb2b19cce87afbd50756287673c666fcf04f9",
+    "evidence_fingerprint_sha256": "sha256:2eb6161234912b1d7b577a6dd9e977d1d6dd934e317223470a578a8d99186ca6",
     "raw_content_included": false
   },
   "reputation_projection": {
@@ -115,8 +118,8 @@
     "score_delta": 0,
     "reason_code": "LIVE_REPUTATION_UPDATE_PROHIBITED"
   },
-  "recorded_at": "2026-07-24T16:05:00Z",
-  "receipt_fingerprint_sha256": "sha256:0cb6f5dc2d435aab481d87c55809ce887776a9bb42d9eaa53ced2dd3266ed93d",
+  "recorded_at": "2026-07-24T16:07:00Z",
+  "receipt_fingerprint_sha256": "sha256:c81b29de9c251b3b925c80a621cb9ebbc12fcc95cf3d32cad319034c121a490a",
   "attestation": {
     "issuer": "noderooms",
     "algorithm": "Ed25519",
@@ -127,8 +130,8 @@
       "x": "8VtbtkC1EU8E9LEJuojBYQ1Sj3C9ahmTgy9OGBN0uUM"
     },
     "key_thumbprint_sha256": "sha256:90448a635a64d1ff63ef76dd6378c742253db76fd059b5783032aef3503c2458",
-    "signed_receipt_fingerprint_sha256": "sha256:0cb6f5dc2d435aab481d87c55809ce887776a9bb42d9eaa53ced2dd3266ed93d",
-    "signed_at": "2026-07-24T16:05:00Z",
-    "signature_base64url": "HCJdmU9OHb_q0C7Pb09XU_3RYqZGWTmsxriAKteWglgKhq_4Tp32VBwrLH9ri78xJbrW7nWMOXlLs0gKx4KuDw"
+    "signed_receipt_fingerprint_sha256": "sha256:c81b29de9c251b3b925c80a621cb9ebbc12fcc95cf3d32cad319034c121a490a",
+    "signed_at": "2026-07-24T16:07:00Z",
+    "signature_base64url": "lC29k2CrlJDaRSrjSJNENdd4xlkQNRxo1UENn3jxUkvRe5bcglkFi4YWVQ5Hro0MJp2vJJQSZCwehOedVchQDQ"
   }
 }

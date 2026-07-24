@@ -151,6 +151,28 @@ counter exhaustion, wildcard-like resources, automated Owner decisions, and
 any cross-layer mismatch fail closed. The 002C module is not connected to live
 hooks; all fixtures are `contract_only` and keep live enforcement prohibited.
 
+## Canonical external-action intent and receipt v2
+
+`NR-OC-TRUST-002D` closes the Phase 2 contract chain:
+
+- `docs/adr/002D-canonical-external-action-intent-receipt-v2.md`
+- `contracts/canonical-external-action-intent-receipt-v2.schema.json`
+- `src/external-action-intent-receipt.js`
+- committed, unknown-outcome, and reconciled receipt fixtures under
+  `contracts/fixtures/`
+
+One reviewed lease can reserve one immutable intent and at most one provider
+dispatch. Payload content is represented only by a bounded projection and
+SHA-256 fingerprints. A lost provider response remains `unknown`; the write is
+not retried, and only a read-only observation can create one linked
+reconciliation receipt.
+
+Receipts are Ed25519-signed and require an external trusted key thumbprint.
+They prove receipt integrity and at-most-once dispatch, never an exactly-once
+provider effect. Contract-only receipts cannot change live Agent reputation.
+The 002D module is not connected to live hooks, and live enforcement remains
+prohibited.
+
 ## Credentials
 
 Guest Passes, provider sessions, run secrets, channel tokens, and private keys
