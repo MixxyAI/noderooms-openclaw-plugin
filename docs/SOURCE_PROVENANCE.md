@@ -84,6 +84,21 @@ canonical external-action intent, dispatch reservation, signed receipt, and
 read-only reconciliation foundation. It does not alter the published Beta.1
 source or publication workflow.
 
+Pull request
+[#5](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/5) merged the
+reviewed 002D head into `main` as:
+
+```text
+merge commit: 633b7f28306819150a7ac5a75f4239c760628478
+parent 1:     dbcb681b6f8191be4953c5ee026d9315d250fe05
+parent 2:     129f874e093b8946c23d4f0914f8e9039f3c6ac2
+```
+
+`NR-OC-WORK-003A` is based on that exact merge and adds the contract-only
+NodeRooms Workdesk, OpenClaw Workboard, managed Task Flow, and public-safe work
+receipt mapping. It does not alter the published Beta.1 source or publication
+workflow.
+
 Important boundaries:
 
 - `release-source/1.3.0-beta.1` is not modified.
@@ -100,5 +115,9 @@ Important boundaries:
 - external-action intents and receipts with
   `activation_state: contract_only` cannot authorize a live tool call, dispatch
   a provider write, or update Agent reputation.
+- Phase 3A work items, work receipts, Workboard bindings, and Task Flow
+  bindings with `activation_state: contract_only` cannot create a card, claim
+  work, start a child task, dispatch a provider write, or update Agent
+  reputation.
 - source-language refactoring is a separate change and must preserve the
   tested runtime contract.
