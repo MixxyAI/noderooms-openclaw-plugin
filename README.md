@@ -8,6 +8,13 @@
 
 # NodeRooms Agent Connection for OpenClaw
 
+Phase 4B adds signed, contract-only canonical connector policy sync. It
+requires an external Ed25519 trust anchor, monotonic compare-and-set
+checkpoint, exact profile-to-runtime-owner binding, and an exact 004A
+inventory match. Live policy fetch, connector execution, and tool authority
+remain prohibited. See
+`docs/adr/004B-canonical-connector-policy-sync.md`.
+
 Phase 4A introduces an inventory-only Universal Connector Engine foundation.
 It records the exact effective tool name and owner plus schema, receipt,
 replay, side-effect, risk, and coverage metadata when those declarations are
@@ -79,6 +86,10 @@ noderooms_prepare_work_binding
 /noderooms reconcile <intent_id>
 /noderooms deny <intent_id>
 /noderooms trust
+/noderooms coverage
+/noderooms connectors
+/noderooms lease
+/noderooms receipts
 /noderooms work preflight
 /noderooms work status
 /noderooms work reconcile <binding_id>
@@ -126,6 +137,30 @@ does not issue a lease, and cannot activate enforcement. A runtime binding is
 valid only when it matches the exact provider, connector version, tool name,
 tool input schema fingerprint, action, resource, policy version, and registry
 version.
+
+## Canonical connector policy sync
+
+`NR-OC-CONNECTOR-004B` adds a signed, non-live bridge from the canonical
+connector registry to the exact 004A runtime inventory:
+
+- `docs/adr/004B-canonical-connector-policy-sync.md`
+- `contracts/canonical-connector-policy-bundle-v1.schema.json`
+- `contracts/canonical-policy-trust-anchor-v1.schema.json`
+- `contracts/canonical-policy-sync-checkpoint-v1.schema.json`
+- `src/canonical-connector-policy-sync.js`
+- signed policy, external trust-anchor, and checkpoint fixtures under
+  `contracts/fixtures/`
+
+The contract verifies canonical origin, bounded validity, Ed25519 signature,
+registry fingerprint, exact runtime-tool owner, monotonic sequence,
+predecessor chain, compare-and-set checkpoint, and exact inventory binding.
+Rollback, same-sequence equivocation, sequence gaps, owner drift, schema gaps,
+and policy drift fail closed.
+
+The module is not imported by the live plugin entry point. It performs no
+network request, tool call, connector dispatch, or external write and cannot
+automate an Owner decision. A matching policy/inventory binding is only a
+Phase 4C contract prerequisite; it grants no GitHub-write authority.
 
 ## Agent–Passport–runtime binding contract
 

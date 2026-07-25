@@ -85,3 +85,20 @@ operation, and a one-use invite source.
 - A ledger write failure does not turn a denied call into an allowed call.
 - Unlisted tools remain outside the Alpha 1 policy boundary.
 - Live enforcement is prohibited until the NodeRooms server issues canonical connector scopes.
+
+## Canonical connector policy sync boundary
+
+- Phase 4B accepts only a signed `contract_only` policy fixture and an external
+  Ed25519 trust anchor; an active policy is rejected.
+- The signed bundle binds the exact canonical origin, registry fingerprint,
+  profile, tool name, runtime owner kind, and runtime owner ID.
+- The checkpoint uses monotonic sequence, predecessor, equivocation, gap, and
+  compare-and-set checks. An exact replay is idempotent.
+- The policy-to-inventory binding requires exact owner, schema, registry,
+  policy, profile, scope, connector, action, resource, and approval matches.
+- Missing schemas, unresolved or drifted owners, policy drift, and
+  unclassified side-effecting tools block the Phase 4C prerequisite.
+- The verifier is not imported by the live plugin entry point and contains no
+  live HTTP, Gateway, connector, task, browser, shell, or credential path.
+- A successful contract binding grants no tool authority, performs no external
+  write, and cannot automate a Verified Human Owner decision.

@@ -13,6 +13,10 @@ const connectorEngine = await readFile(
     new URL("../dist/universal-connector-engine.js", import.meta.url),
     "utf8",
 );
+const connectorPolicySync = await readFile(
+    new URL("../dist/canonical-connector-policy-sync.js", import.meta.url),
+    "utf8",
+);
 
 test("package and manifest versions match trust alpha development version", () => {
     assert.equal(pkg.version, "1.3.0-beta.2-dev.1");
@@ -86,6 +90,27 @@ test("Phase 4A inventory can only call the read-only OpenClaw catalog", () => {
         connectorEngine,
         /UNIVERSAL_CONNECTOR_ENGINE_LIVE_ENFORCE_ALLOWED = false/,
     );
+});
+
+test("Phase 4B policy sync remains pure, signed, contract-only, and non-live", () => {
+    assert.doesNotMatch(index, /CanonicalConnectorPolicySyncController/);
+    assert.match(connectorPolicySync, /createPublicKey/);
+    assert.match(connectorPolicySync, /\bverify\(/);
+    assert.match(connectorPolicySync, /compareAndSet/);
+    assert.match(
+        connectorPolicySync,
+        /CANONICAL_POLICY_SYNC_LIVE_FETCH_ALLOWED = false/,
+    );
+    assert.match(
+        connectorPolicySync,
+        /CANONICAL_POLICY_SYNC_GRANTS_TOOL_AUTHORITY = false/,
+    );
+    assert.doesNotMatch(connectorPolicySync, /\bfetch\(/);
+    assert.doesNotMatch(connectorPolicySync, /"tools\.invoke"/);
+    assert.doesNotMatch(connectorPolicySync, /"tools\.catalog"/);
+    assert.doesNotMatch(connectorPolicySync, /\.runTask\(/);
+    assert.doesNotMatch(connectorPolicySync, /\.resume\(/);
+    assert.doesNotMatch(connectorPolicySync, /child_process/);
 });
 
 test("Phase 4 owner inventory commands are present and Owner-gated", () => {

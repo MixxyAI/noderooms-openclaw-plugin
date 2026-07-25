@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:canonical-policy-trust-anchor:v1",
+  "title": "NodeRooms canonical connector policy trust anchor v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "fixture",
+    "activation_state",
+    "canonical_origin",
+    "key_id",
+    "algorithm",
+    "public_key_jwk",
+    "key_thumbprint_sha256",
+    "valid_from",
+    "valid_until"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "minLength": 1
+    },
+    "$comment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "contract_version": {
+      "const": "noderooms-canonical-policy-trust-anchor-v1"
+    },
+    "fixture": {
+      "const": true
+    },
+    "activation_state": {
+      "const": "contract_only"
+    },
+    "canonical_origin": {
+      "const": "https://noderooms.com"
+    },
+    "key_id": {
+      "type": "string",
+      "pattern": "^nrpk_[a-z0-9][a-z0-9._-]{2,63}$"
+    },
+    "algorithm": {
+      "const": "Ed25519"
+    },
+    "public_key_jwk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kty",
+        "crv",
+        "x"
+      ],
+      "properties": {
+        "kty": {
+          "const": "OKP"
+        },
+        "crv": {
+          "const": "Ed25519"
+        },
+        "x": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        }
+      }
+    },
+    "key_thumbprint_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "valid_from": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

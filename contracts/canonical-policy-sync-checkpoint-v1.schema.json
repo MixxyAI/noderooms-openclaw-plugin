@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:canonical-policy-sync-checkpoint:v1",
+  "title": "NodeRooms canonical connector policy sync checkpoint v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "canonical_origin",
+    "sequence",
+    "bundle_id",
+    "bundle_fingerprint_sha256",
+    "registry_version",
+    "policy_version",
+    "registry_fingerprint_sha256",
+    "accepted_at",
+    "checkpoint_fingerprint_sha256"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "noderooms-canonical-policy-sync-checkpoint-v1"
+    },
+    "canonical_origin": {
+      "const": "https://noderooms.com"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "bundle_id": {
+      "type": "string",
+      "pattern": "^nrpolicy_[a-f0-9]{32}$"
+    },
+    "bundle_fingerprint_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "registry_version": {
+      "type": "string",
+      "pattern": "^nrcr_[a-z0-9][a-z0-9._-]{2,63}$"
+    },
+    "policy_version": {
+      "type": "string",
+      "pattern": "^nrp_[a-z0-9][a-z0-9._-]{2,63}$"
+    },
+    "registry_fingerprint_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "accepted_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "checkpoint_fingerprint_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  }
+}
