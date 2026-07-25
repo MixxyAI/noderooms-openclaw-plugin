@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased — NR-OC-CONNECTOR-004B
+
+- Added an externally anchored, Ed25519-signed canonical connector policy
+  bundle contract with exact origin, bounded validity, registry fingerprint,
+  and explicit profile-to-runtime-owner bindings.
+- Added monotonic compare-and-set policy checkpoints with fail-closed rollback,
+  same-sequence equivocation, sequence-gap, predecessor-chain, and concurrent
+  update detection.
+- Added exact binding from a verified policy bundle to one validated 004A
+  runtime inventory, including owner, schema, registry, policy, profile, scope,
+  connector, action, resource, and approval dimensions.
+- Added contract proof for idempotent restart, external trust-anchor
+  verification, schema-unavailable blocking, and zero connector authority.
+- Kept the verifier disconnected from the live plugin entry point and kept
+  live policy fetch, tool execution, external write, automatic Owner decision,
+  publication, installation, Gateway restart, and production authority
+  disabled.
+
 ## Unreleased — NR-OC-CONNECTOR-004A
 
 - Added the inventory-only Universal Connector Engine foundation for the exact

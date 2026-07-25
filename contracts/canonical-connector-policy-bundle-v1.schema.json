@@ -1,0 +1,286 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:canonical-connector-policy-bundle:v1",
+  "title": "NodeRooms canonical connector policy bundle v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "fixture",
+    "activation_state",
+    "live_policy_sync_allowed",
+    "live_enforce_allowed",
+    "bundle_id",
+    "sequence",
+    "canonical_source",
+    "issued_at",
+    "not_before",
+    "expires_at",
+    "previous_bundle_fingerprint_sha256",
+    "registry",
+    "registry_fingerprint_sha256",
+    "runtime_tool_bindings",
+    "safety",
+    "bundle_fingerprint_sha256",
+    "attestation"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "minLength": 1
+    },
+    "$comment": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "contract_version": {
+      "const": "noderooms-canonical-connector-policy-bundle-v1"
+    },
+    "fixture": {
+      "const": true
+    },
+    "activation_state": {
+      "const": "contract_only"
+    },
+    "live_policy_sync_allowed": {
+      "const": false
+    },
+    "live_enforce_allowed": {
+      "const": false
+    },
+    "bundle_id": {
+      "type": "string",
+      "pattern": "^nrpolicy_[a-f0-9]{32}$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "canonical_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "origin",
+        "path",
+        "transport",
+        "redirects_allowed"
+      ],
+      "properties": {
+        "origin": {
+          "const": "https://noderooms.com"
+        },
+        "path": {
+          "const": "/.well-known/noderooms/connector-policy-v1.json"
+        },
+        "transport": {
+          "const": "contract_fixture"
+        },
+        "redirects_allowed": {
+          "const": false
+        }
+      }
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "not_before": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "previous_bundle_fingerprint_sha256": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      ]
+    },
+    "registry": {
+      "allOf": [
+        {
+          "$ref": "connector-scope-registry-v1.schema.json"
+        },
+        {
+          "properties": {
+            "activation_state": {
+              "const": "contract_only"
+            },
+            "live_enforce_allowed": {
+              "const": false
+            },
+            "profiles": {
+              "items": {
+                "properties": {
+                  "status": {
+                    "const": "reference_only"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "registry_fingerprint_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "runtime_tool_bindings": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 256,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "profile_id",
+          "tool_name",
+          "owner"
+        ],
+        "properties": {
+          "profile_id": {
+            "type": "string",
+            "pattern": "^nrscp_[a-z0-9][a-z0-9_]{2,95}$"
+          },
+          "tool_name": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+          },
+          "owner": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "owner_id",
+              "resolution"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "core",
+                  "plugin",
+                  "channel",
+                  "mcp"
+                ]
+              },
+              "owner_id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._:@/-]{1,160}$"
+              },
+              "resolution": {
+                "const": "exact"
+              }
+            }
+          }
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grants_tool_authority",
+        "grants_connector_execution_authority",
+        "performs_network_request",
+        "invokes_connector",
+        "performs_external_write",
+        "automates_owner_decision",
+        "persists_provider_credentials"
+      ],
+      "properties": {
+        "grants_tool_authority": {
+          "const": false
+        },
+        "grants_connector_execution_authority": {
+          "const": false
+        },
+        "performs_network_request": {
+          "const": false
+        },
+        "invokes_connector": {
+          "const": false
+        },
+        "performs_external_write": {
+          "const": false
+        },
+        "automates_owner_decision": {
+          "const": false
+        },
+        "persists_provider_credentials": {
+          "const": false
+        }
+      }
+    },
+    "bundle_fingerprint_sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key_id",
+        "algorithm",
+        "key_thumbprint_sha256",
+        "signed_at",
+        "signature_base64url"
+      ],
+      "properties": {
+        "key_id": {
+          "type": "string",
+          "pattern": "^nrpk_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "algorithm": {
+          "const": "Ed25519"
+        },
+        "key_thumbprint_sha256": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "signed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "signature_base64url": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "sequence": {
+            "const": 1
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "previous_bundle_fingerprint_sha256": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "previous_bundle_fingerprint_sha256": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          }
+        }
+      }
+    }
+  ]
+}

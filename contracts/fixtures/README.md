@@ -137,3 +137,23 @@ The first is the exact, schema-capable inventory descriptor for
 `tools.catalog` gap and must fail closed as `schema_unavailable`.
 
 Neither fixture grants execution authority or performs a connector write.
+
+`NR-OC-CONNECTOR-004B` adds:
+
+```text
+noderooms-canonical-policy.trust-anchor-v1.json
+github-draft-pr.canonical-policy-bundle-v1.json
+github-draft-pr.policy-sync-checkpoint-v1.json
+```
+
+The trust anchor is external to the signed bundle and contains only a
+fixture-only Ed25519 public key. The private signing key is absent. The bundle
+binds the exact canonical origin, validity window, registry fingerprint,
+GitHub Draft PR profile, tool name, and runtime owner
+`mcp:github`. It is `contract_only`, names no live transport, and grants no
+tool or connector authority.
+
+The checkpoint proves monotonic, restart-safe comparison metadata without
+storing a schema, signature, raw parameter, result, or credential. Exact
+replay is idempotent; rollback, equivocation, sequence gaps, invalid
+predecessors, and checkpoint drift fail closed.
