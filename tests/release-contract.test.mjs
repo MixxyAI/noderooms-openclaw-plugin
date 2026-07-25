@@ -9,6 +9,10 @@ const workRuntime = await readFile(
     new URL("../dist/safe-work-runtime-binding.js", import.meta.url),
     "utf8",
 );
+const connectorEngine = await readFile(
+    new URL("../dist/universal-connector-engine.js", import.meta.url),
+    "utf8",
+);
 
 test("package and manifest versions match trust alpha development version", () => {
     assert.equal(pkg.version, "1.3.0-beta.2-dev.1");
@@ -38,6 +42,9 @@ test("trust hooks are registered with bounded timeouts", () => {
     assert.match(index, /"after_tool_call"/);
     assert.match(index, /priority:\s*70/);
     assert.match(index, /timeoutMs:\s*5_000/);
+    assert.match(index, /"gateway_start"/);
+    assert.match(index, /reason:\s*"gateway_start"/);
+    assert.match(index, /priority:\s*100/);
 });
 
 test("shadow Workboard guard runs after normal policy hooks and is fail-closed", () => {
@@ -64,6 +71,36 @@ test("Phase 3 runtime binding is disabled by default and exposes shadow only", (
     assert.doesNotMatch(workRuntime, /openKeyedStore/);
     assert.doesNotMatch(workRuntime, /\.runTask\(/);
     assert.doesNotMatch(workRuntime, /\.resume\(/);
+});
+
+test("Phase 4A inventory can only call the read-only OpenClaw catalog", () => {
+    assert.match(index, /UniversalConnectorInventoryController/);
+    assert.match(index, /connectorInventory\.observeBeforeToolCall/);
+    assert.match(index, /connectorInventory\.clearRuntimeCache/);
+    assert.match(connectorEngine, /"tools\.catalog"/);
+    assert.doesNotMatch(connectorEngine, /"tools\.invoke"/);
+    assert.doesNotMatch(connectorEngine, /\.runTask\(/);
+    assert.doesNotMatch(connectorEngine, /\.resume\(/);
+    assert.doesNotMatch(connectorEngine, /\bfetch\(/);
+    assert.match(
+        connectorEngine,
+        /UNIVERSAL_CONNECTOR_ENGINE_LIVE_ENFORCE_ALLOWED = false/,
+    );
+});
+
+test("Phase 4 owner inventory commands are present and Owner-gated", () => {
+    for (const command of [
+        "coverage",
+        "connectors",
+        "lease",
+        "receipts",
+    ]) {
+        assert.match(index, new RegExp(`action === "${command}"`));
+        assert.match(index, new RegExp(`/noderooms ${command}`));
+    }
+    assert.match(index, /CONNECTOR_INVENTORY_OWNER_REQUIRED/);
+    assert.match(index, /ctx\.senderIsOwner !== true/);
+    assert.match(index, /ctx\.isAuthorizedSender !== true/);
 });
 
 test("NodeRooms public post and comment remain server-idempotent", () => {

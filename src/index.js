@@ -16,6 +16,9 @@ import {
 import { TrustEventLedger } from "./trust-ledger.js";
 import { NodeRoomsTrustMiddleware } from "./trust-middleware.js";
 import { normalizeTrustLayerConfig } from "./trust-policy.js";
+import {
+    UniversalConnectorInventoryController,
+} from "./universal-connector-engine.js";
 const PLUGIN_ID = "noderooms";
 const TOOL_NAMES = Object.freeze({
     discover: "noderooms_discover",
@@ -171,6 +174,9 @@ const plugin = definePluginEntry({
             ),
             taskRuntime: api.runtime.tasks?.managedFlows,
         });
+        const connectorInventory = new UniversalConnectorInventoryController({
+            gateway: api.runtime.gateway,
+        });
         const secretStore = {
             setGuestPass,
             guestHeaders,
@@ -213,7 +219,10 @@ const plugin = definePluginEntry({
         );
         api.on(
             "before_tool_call",
-            async (event, ctx) => trustMiddleware.beforeToolCall(event, ctx),
+            async (event, ctx) => {
+                connectorInventory.observeBeforeToolCall(event);
+                return trustMiddleware.beforeToolCall(event, ctx);
+            },
             { priority: 70, timeoutMs: 5_000 },
         );
         api.on(
@@ -221,10 +230,20 @@ const plugin = definePluginEntry({
             async (event, ctx) => trustMiddleware.afterToolCall(event, ctx),
             { priority: 70, timeoutMs: 5_000 },
         );
+        api.on(
+            "gateway_start",
+            async () => {
+                await connectorInventory.refresh({
+                    reason: "gateway_start",
+                });
+            },
+            { priority: 100, timeoutMs: 5_000 },
+        );
         api.on("gateway_stop", () => {
             intents.clearRuntimeCache();
             workRuntime.clearRuntimeCache();
             trustMiddleware.clearRuntimeCache();
+            connectorInventory.clearRuntimeCache();
             sdk.clearSecrets();
         });
         api.registerCommand({
@@ -255,6 +274,75 @@ const plugin = definePluginEntry({
                     }
                     if (action === "trust") {
                         return { text: JSON.stringify(await trustMiddleware.status(), null, 2) };
+                    }
+                    if (action === "coverage"
+                        || action === "connectors"
+                        || action === "lease"
+                        || action === "receipts") {
+                        if (ctx.senderIsOwner !== true
+                            || ctx.isAuthorizedSender !== true) {
+                            throw new NodeRoomsError(
+                                "CONNECTOR_INVENTORY_OWNER_REQUIRED",
+                                "Only the authenticated human OpenClaw Owner may inspect connector coverage, leases, or receipts.",
+                            );
+                        }
+                        if (action === "coverage") {
+                            if (!connectorInventory.status().snapshot) {
+                                await connectorInventory.refresh({
+                                    reason: "owner_inspection",
+                                    agentId: ctx.agentId,
+                                });
+                            }
+                            return {
+                                text: JSON.stringify(
+                                    connectorInventory.status(),
+                                    null,
+                                    2,
+                                ),
+                            };
+                        }
+                        if (action === "connectors") {
+                            if (!connectorInventory.status().snapshot) {
+                                await connectorInventory.refresh({
+                                    reason: "owner_inspection",
+                                    agentId: ctx.agentId,
+                                });
+                            }
+                            return {
+                                text: JSON.stringify(
+                                    connectorInventory.connectors(),
+                                    null,
+                                    2,
+                                ),
+                            };
+                        }
+                        if (action === "lease") {
+                            return {
+                                text: JSON.stringify({
+                                    contract_version:
+                                        "noderooms-owner-lease-status-v1",
+                                    ...safeState(),
+                                    run_secret_exposed: false,
+                                    run_secret_persisted: false,
+                                    authority_expanded: false,
+                                }, null, 2),
+                            };
+                        }
+                        const [ledger, actionIntents] = await Promise.all([
+                            trustLedger.summary(),
+                            intents.list(owner),
+                        ]);
+                        return {
+                            text: JSON.stringify({
+                                contract_version:
+                                    "noderooms-owner-receipts-status-v1",
+                                trust_ledger: ledger,
+                                action_intents: actionIntents,
+                                raw_parameters_included: false,
+                                raw_results_included: false,
+                                provider_credentials_included: false,
+                            }, null, 2),
+                        };
                     }
                     if (action === "work") {
                         const workAction = tokens[1]?.toLowerCase() ?? "status";
@@ -322,6 +410,10 @@ const plugin = definePluginEntry({
                             "NodeRooms owner command usage:",
                             "/noderooms list",
                             "/noderooms trust",
+                            "/noderooms coverage",
+                            "/noderooms connectors",
+                            "/noderooms lease",
+                            "/noderooms receipts",
                             "/noderooms work preflight",
                             "/noderooms work status",
                             "/noderooms work reconcile <binding_id>",

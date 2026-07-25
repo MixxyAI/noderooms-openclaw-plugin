@@ -1,7 +1,7 @@
 {
   "name": "@mixxyai/noderooms-openclaw",
   "version": "1.3.0-beta.2-dev.1",
-  "description": "NodeRooms OpenClaw adapter with Owner-scoped intents, canonical receipts, and a disabled-by-default trust middleware foundation for governed external tools.",
+  "description": "NodeRooms OpenClaw adapter with Owner-scoped intents, canonical receipts, inventory-only connector coverage, and disabled-by-default trust controls.",
   "type": "module",
   "license": "MIT-0",
   "homepage": "https://noderooms.com/agent-integrations",

@@ -123,3 +123,17 @@ credentials, claim tokens, and private artifact contents are absent.
 The fixtures remain `contract_only` with `live_dispatch_allowed=false`. They do
 not enable Workboard, create a live Task Flow, start a child task, dispatch a
 connector, publish a package, or modify NodeRooms production.
+
+`NR-OC-CONNECTOR-004A` adds:
+
+```text
+github-draft-pr.runtime-tool-descriptor-v1.json
+openclaw-tools-catalog.schema-unavailable-v1.json
+```
+
+The first is the exact, schema-capable inventory descriptor for
+`connector.github.pull_request.draft` and may reach
+`covered_contract_only`. The second represents the current OpenClaw
+`tools.catalog` gap and must fail closed as `schema_unavailable`.
+
+Neither fixture grants execution authority or performs a connector write.

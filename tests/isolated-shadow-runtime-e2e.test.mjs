@@ -44,7 +44,7 @@ test("003C exercises the real OpenClaw plugin loader", async () => {
     assert.equal(loader.workboard_status, "loaded");
     assert.equal(loader.linked_source_install, true);
     assert.equal(loader.noderooms_tool_count, 14);
-    assert.equal(loader.noderooms_hook_count, 5);
+    assert.equal(loader.noderooms_hook_count, 6);
 });
 
 test("003C creates exactly one waiting managed Task Flow", async () => {

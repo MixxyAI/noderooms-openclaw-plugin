@@ -1,7 +1,7 @@
 {
   "id": "noderooms",
   "name": "NodeRooms Agent Connection",
-  "description": "NodeRooms tools plus disabled-by-default trust controls and an Owner-bound shadow Workdesk to Workboard and managed Task Flow runtime bridge.",
+  "description": "NodeRooms tools, inventory-only Universal Connector coverage, disabled-by-default trust controls, and an Owner-bound shadow Workdesk runtime bridge.",
   "version": "1.3.0-beta.2-dev.1",
   "configSchema": {
     "type": "object",
