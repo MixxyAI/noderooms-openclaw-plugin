@@ -29,6 +29,10 @@ export const GITHUB_DRAFT_PR_E2E_PROFILE_ID =
     "nrscp_github_pull_request_draft_v1";
 export const GITHUB_DRAFT_PR_E2E_TOOL_NAME =
     "github_create_pull_request";
+export const GITHUB_DRAFT_PR_E2E_OWNER_ID =
+    "github";
+export const GITHUB_DRAFT_PR_E2E_CANONICAL_SCHEMA_FINGERPRINT =
+    "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37";
 export const GITHUB_DRAFT_PR_E2E_TRANSPORT_ADAPTER =
     "noderooms-github-mcp-create-pull-request-adapter-v1";
 export const GITHUB_DRAFT_PR_E2E_MCP_SERVER_NAME =
@@ -39,9 +43,12 @@ export const GITHUB_DRAFT_PR_E2E_MCP_RAW_TOOL_NAME =
     "create_pull_request";
 export const GITHUB_DRAFT_PR_E2E_MCP_RAW_SCHEMA_FINGERPRINT =
     "sha256:e249ccd5a1f2364cbfc0a5d9e11bebdc298626351cc7e43fd59b851c3d520238";
+export const GITHUB_DRAFT_PR_E2E_DISPATCH_RESERVATION_CONTRACT_VERSION =
+    "noderooms-github-draft-pr-dispatch-reservation-v1";
 export const GITHUB_DRAFT_PR_E2E_LIVE_PLUGIN_ARMED = false;
 
 const STORE_VERSION = 1;
+const DISPATCH_RESERVATION_STORE_VERSION = 1;
 const MAX_STORE_BYTES = 1_048_576;
 const LOCK_RETRY_COUNT = 100;
 const LOCK_RETRY_DELAY_MS = 10;
@@ -493,6 +500,7 @@ function validateConnectorBinding(value) {
     ], [], "connector_binding");
     if (value.provider !== "github"
         || value.owner_kind !== "mcp"
+        || value.owner_id !== GITHUB_DRAFT_PR_E2E_OWNER_ID
         || value.owner_resolution !== "exact") {
         fail(
             "CONNECTOR_OWNER_INVALID",
@@ -512,6 +520,13 @@ function validateConnectorBinding(value) {
         SHA256_PATTERN,
         "tool_schema_fingerprint",
     );
+    if (value.tool_schema_fingerprint
+        !== GITHUB_DRAFT_PR_E2E_CANONICAL_SCHEMA_FINGERPRINT) {
+        fail(
+            "TOOL_SCHEMA_MISMATCH",
+            "The canonical GitHub Draft PR schema has drifted.",
+        );
+    }
     boundedString(
         value.effective_catalog_fingerprint_sha256,
         SHA256_PATTERN,
@@ -632,6 +647,20 @@ function validatePhase4BPrerequisite(value, connector) {
         "phase4c_external_write_authority_granted",
     );
     return value;
+}
+
+function validateCatalogChain(runtime, connector, prerequisite) {
+    const runtimeCatalog =
+        runtime.runtime_catalog_fingerprint_sha256;
+    if (runtimeCatalog
+            !== connector.effective_catalog_fingerprint_sha256
+        || runtimeCatalog
+            !== prerequisite.inventory_snapshot_fingerprint_sha256) {
+        fail(
+            "CATALOG_BINDING_MISMATCH",
+            "Runtime, connector, and Phase 4B inventory catalogs differ.",
+        );
+    }
 }
 
 function validateTarget(value) {
@@ -777,6 +806,11 @@ export function createGitHubDraftPrE2EPlan(input, options = {}) {
         input.phase4b_prerequisite,
         connectorBinding,
     ));
+    validateCatalogChain(
+        runtimeBinding,
+        connectorBinding,
+        prerequisite,
+    );
     const receiptTrustAnchor = cloneJson(validateReceiptTrustAnchor(
         input.receipt_trust_anchor,
     ));
@@ -934,6 +968,11 @@ export function validateGitHubDraftPrE2EPlan(plan, options = {}) {
     validatePhase4BPrerequisite(
         plan.phase4b_prerequisite,
         plan.connector_binding,
+    );
+    validateCatalogChain(
+        plan.runtime_binding,
+        plan.connector_binding,
+        plan.phase4b_prerequisite,
     );
     validateReceiptTrustAnchor(plan.receipt_trust_anchor);
     const target = validateTarget(plan.target);
@@ -1639,11 +1678,128 @@ function validateProofRecord(record) {
     return deepFreeze(cloneJson(record));
 }
 
+function dispatchReservationProjection(reservation) {
+    return {
+        contract_version: reservation.contract_version,
+        proof_id: reservation.proof_id,
+        plan_fingerprint_sha256:
+            reservation.plan_fingerprint_sha256,
+        reservation_id: reservation.reservation_id,
+        tool_call_id: reservation.tool_call_id,
+        provider_attempt_count: reservation.provider_attempt_count,
+        approval_consumed: reservation.approval_consumed,
+        reserved_at: reservation.reserved_at,
+    };
+}
+
+function validateDispatchReservation(reservation) {
+    assertExactKeys(reservation, [
+        "contract_version",
+        "proof_id",
+        "plan_fingerprint_sha256",
+        "reservation_id",
+        "tool_call_id",
+        "provider_attempt_count",
+        "approval_consumed",
+        "reserved_at",
+        "reservation_fingerprint_sha256",
+    ], [], "dispatch reservation");
+    if (reservation.contract_version
+        !== GITHUB_DRAFT_PR_E2E_DISPATCH_RESERVATION_CONTRACT_VERSION) {
+        fail(
+            "STORE_RESERVATION_INVALID",
+            "Dispatch reservation version is invalid.",
+        );
+    }
+    boundedString(
+        reservation.proof_id,
+        PROOF_ID_PATTERN,
+        "dispatch_reservation.proof_id",
+    );
+    boundedString(
+        reservation.plan_fingerprint_sha256,
+        SHA256_PATTERN,
+        "dispatch_reservation.plan_fingerprint_sha256",
+    );
+    boundedString(
+        reservation.reservation_id,
+        RESERVATION_ID_PATTERN,
+        "dispatch_reservation.reservation_id",
+    );
+    boundedString(
+        reservation.tool_call_id,
+        CONTEXT_ID_PATTERN,
+        "dispatch_reservation.tool_call_id",
+    );
+    if (reservation.provider_attempt_count !== 1) {
+        fail(
+            "STORE_RESERVATION_INVALID",
+            "Dispatch reservation must consume the only provider attempt.",
+        );
+    }
+    exactBoolean(
+        reservation.approval_consumed,
+        true,
+        "dispatch_reservation.approval_consumed",
+    );
+    parseTime(
+        reservation.reserved_at,
+        "dispatch_reservation.reserved_at",
+    );
+    boundedString(
+        reservation.reservation_fingerprint_sha256,
+        SHA256_PATTERN,
+        "dispatch_reservation.reservation_fingerprint_sha256",
+    );
+    if (reservation.reservation_fingerprint_sha256
+        !== sha256Fingerprint(
+            dispatchReservationProjection(reservation),
+        )) {
+        fail(
+            "STORE_RESERVATION_INVALID",
+            "Dispatch reservation fingerprint has drifted.",
+        );
+    }
+    assertNoSensitiveFields(reservation);
+    return deepFreeze(cloneJson(reservation));
+}
+
+function createDispatchReservation(plan, toolCallId, now) {
+    const reservation = {
+        contract_version:
+            GITHUB_DRAFT_PR_E2E_DISPATCH_RESERVATION_CONTRACT_VERSION,
+        proof_id: plan.proof_id,
+        plan_fingerprint_sha256: plan.plan_fingerprint_sha256,
+        reservation_id: plan.intent.reservation_id,
+        tool_call_id: toolCallId,
+        provider_attempt_count: 1,
+        approval_consumed: true,
+        reserved_at: now.toISOString(),
+    };
+    reservation.reservation_fingerprint_sha256 =
+        sha256Fingerprint(dispatchReservationProjection(reservation));
+    return validateDispatchReservation(reservation);
+}
+
 export function createInMemoryGitHubDraftPrProofStore(initial = null) {
     let record = initial === null ? null : validateProofRecord(initial);
+    let dispatchReservation = null;
     return Object.freeze({
         async load() {
             return record === null ? null : cloneJson(record);
+        },
+        async loadDispatchReservation() {
+            return dispatchReservation === null
+                ? null
+                : cloneJson(dispatchReservation);
+        },
+        async reserveDispatch(nextReservation) {
+            if (dispatchReservation !== null) {
+                return false;
+            }
+            dispatchReservation =
+                validateDispatchReservation(nextReservation);
+            return true;
         },
         async compareAndSet(expectedRevision, nextRecord) {
             const currentRevision = record?.revision ?? null;
@@ -1714,12 +1870,94 @@ async function readStoreDocument(filePath) {
     return validateProofRecord(document.record);
 }
 
+async function readDispatchReservationDocument(filePath) {
+    let raw;
+    try {
+        raw = await readFile(filePath, "utf8");
+    }
+    catch (error) {
+        if (error?.code === "ENOENT") {
+            return null;
+        }
+        throw error;
+    }
+    if (Buffer.byteLength(raw) > MAX_STORE_BYTES) {
+        fail(
+            "STORE_RESERVATION_INVALID",
+            "Phase 4C dispatch reservation file is too large.",
+        );
+    }
+    let document;
+    try {
+        document = JSON.parse(raw);
+    }
+    catch {
+        fail(
+            "STORE_RESERVATION_INVALID",
+            "Phase 4C dispatch reservation is invalid JSON.",
+        );
+    }
+    assertExactKeys(
+        document,
+        ["version", "reservation"],
+        [],
+        "dispatch reservation store",
+    );
+    if (document.version !== DISPATCH_RESERVATION_STORE_VERSION) {
+        fail(
+            "STORE_RESERVATION_INVALID",
+            "Phase 4C dispatch reservation store version is unsupported.",
+        );
+    }
+    return validateDispatchReservation(document.reservation);
+}
+
 export function createFileGitHubDraftPrProofStore(filePath) {
     const resolved = path.resolve(filePath);
     const lockPath = `${resolved}.lock`;
+    const dispatchReservationPath =
+        `${resolved}.dispatch-reservation`;
     return Object.freeze({
         async load() {
             return readStoreDocument(resolved);
+        },
+        async loadDispatchReservation() {
+            return readDispatchReservationDocument(
+                dispatchReservationPath,
+            );
+        },
+        async reserveDispatch(nextReservation) {
+            const validated =
+                validateDispatchReservation(nextReservation);
+            await mkdir(path.dirname(resolved), { recursive: true });
+            let handle;
+            try {
+                handle = await open(
+                    dispatchReservationPath,
+                    "wx",
+                    0o600,
+                );
+            }
+            catch (error) {
+                if (error?.code === "EEXIST") {
+                    return false;
+                }
+                throw error;
+            }
+            try {
+                await handle.writeFile(
+                    `${JSON.stringify({
+                        version: DISPATCH_RESERVATION_STORE_VERSION,
+                        reservation: validated,
+                    }, null, 2)}\n`,
+                    { encoding: "utf8" },
+                );
+                await handle.sync();
+            }
+            finally {
+                await handle.close();
+            }
+            return true;
         },
         async compareAndSet(expectedRevision, nextRecord) {
             await mkdir(path.dirname(resolved), { recursive: true });
@@ -1901,6 +2139,59 @@ function assertRecordMatchesPlan(plan, record) {
     }
 }
 
+function validateProofStore(store) {
+    if (!isRecord(store)
+        || typeof store.load !== "function"
+        || typeof store.loadDispatchReservation !== "function"
+        || typeof store.reserveDispatch !== "function"
+        || typeof store.compareAndSet !== "function") {
+        fail(
+            "STORE_INVALID",
+            "Phase 4C requires a rollback-aware proof store.",
+        );
+    }
+    return store;
+}
+
+async function assertStoreMatchesPlan(plan, store, record) {
+    assertRecordMatchesPlan(plan, record);
+    const reservation = await store.loadDispatchReservation();
+    if (reservation === null) {
+        if (record?.provider_attempt_count === 1) {
+            fail(
+                "STORE_RESERVATION_MISSING",
+                "Consumed proof state is missing its dispatch reservation.",
+            );
+        }
+        return null;
+    }
+    const validated = validateDispatchReservation(reservation);
+    if (validated.proof_id !== plan.proof_id
+        || validated.plan_fingerprint_sha256
+            !== plan.plan_fingerprint_sha256
+        || validated.reservation_id !== plan.intent.reservation_id) {
+        fail(
+            "STORE_PLAN_CONFLICT",
+            "Dispatch reservation belongs to another approved plan.",
+        );
+    }
+    if (record === null
+        || record.provider_attempt_count !== 1
+        || record.approval_consumed !== true) {
+        fail(
+            "STORE_ROLLBACK_DETECTED",
+            "Persistent proof state predates its dispatch reservation.",
+        );
+    }
+    if (record.tool_call_id !== validated.tool_call_id) {
+        fail(
+            "STORE_RESERVATION_CONFLICT",
+            "Proof state and dispatch reservation disagree.",
+        );
+    }
+    return validated;
+}
+
 export class GitHubDraftPrE2EController {
     constructor(options = {}) {
         this.plan = validateGitHubDraftPrE2EPlan(options.plan, {
@@ -1928,8 +2219,10 @@ export class GitHubDraftPrE2EController {
             );
         }
         this.receiptSigner = options.receiptSigner;
-        this.store = options.store
-            ?? createInMemoryGitHubDraftPrProofStore();
+        this.store = validateProofStore(
+            options.store
+                ?? createInMemoryGitHubDraftPrProofStore(),
+        );
         this.now = typeof options.now === "function"
             ? options.now
             : () => new Date();
@@ -1939,7 +2232,7 @@ export class GitHubDraftPrE2EController {
         const now = normalizeNow(this.now());
         validateGitHubDraftPrE2EPlan(this.plan, { now });
         const current = await this.store.load();
-        assertRecordMatchesPlan(this.plan, current);
+        await assertStoreMatchesPlan(this.plan, this.store, current);
         if (current !== null) {
             if (current.state === "armed") {
                 return Object.freeze({
@@ -2008,7 +2301,7 @@ export class GitHubDraftPrE2EController {
             );
         }
         const current = await this.store.load();
-        assertRecordMatchesPlan(this.plan, current);
+        await assertStoreMatchesPlan(this.plan, this.store, current);
         if (!current) {
             fail("PROOF_NOT_ARMED", "Phase 4C proof is not armed.");
         }
@@ -2022,6 +2315,17 @@ export class GitHubDraftPrE2EController {
             fail(
                 "REPLAY_BLOCKED",
                 "Phase 4C permits no second provider attempt.",
+            );
+        }
+        const dispatchReservation = createDispatchReservation(
+            this.plan,
+            event.tool_call_id,
+            now,
+        );
+        if (!await this.store.reserveDispatch(dispatchReservation)) {
+            fail(
+                "REPLAY_BLOCKED",
+                "A durable Phase 4C dispatch reservation already exists.",
             );
         }
         const next = {
@@ -2080,7 +2384,7 @@ export class GitHubDraftPrE2EController {
             );
         }
         const current = await this.store.load();
-        assertRecordMatchesPlan(this.plan, current);
+        await assertStoreMatchesPlan(this.plan, this.store, current);
         if (!current
             || current.state !== "dispatching"
             || current.provider_attempt_count !== 1
@@ -2135,7 +2439,7 @@ export class GitHubDraftPrE2EController {
             );
         }
         const current = await this.store.load();
-        assertRecordMatchesPlan(this.plan, current);
+        await assertStoreMatchesPlan(this.plan, this.store, current);
         if (!current || current.state !== "unknown" || current.receipt === null) {
             fail(
                 "RECONCILIATION_NOT_ALLOWED",
@@ -2193,7 +2497,7 @@ export class GitHubDraftPrE2EController {
         boundedString(reasonCode, REASON_PATTERN, "reason_code");
         const now = normalizeNow(this.now());
         const current = await this.store.load();
-        assertRecordMatchesPlan(this.plan, current);
+        await assertStoreMatchesPlan(this.plan, this.store, current);
         if (!current) {
             fail("PROOF_NOT_ARMED", "Phase 4C proof is not armed.");
         }
@@ -2230,7 +2534,7 @@ export class GitHubDraftPrE2EController {
 
     async status() {
         const current = await this.store.load();
-        assertRecordMatchesPlan(this.plan, current);
+        await assertStoreMatchesPlan(this.plan, this.store, current);
         if (!current) {
             return Object.freeze({
                 contract_version: GITHUB_DRAFT_PR_E2E_CONTRACT_VERSION,

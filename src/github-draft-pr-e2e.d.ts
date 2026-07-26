@@ -8,6 +8,10 @@ export declare const GITHUB_DRAFT_PR_E2E_PROFILE_ID:
     "nrscp_github_pull_request_draft_v1";
 export declare const GITHUB_DRAFT_PR_E2E_TOOL_NAME:
     "github_create_pull_request";
+export declare const GITHUB_DRAFT_PR_E2E_OWNER_ID:
+    "github";
+export declare const GITHUB_DRAFT_PR_E2E_CANONICAL_SCHEMA_FINGERPRINT:
+    "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37";
 export declare const GITHUB_DRAFT_PR_E2E_TRANSPORT_ADAPTER:
     "noderooms-github-mcp-create-pull-request-adapter-v1";
 export declare const GITHUB_DRAFT_PR_E2E_MCP_SERVER_NAME:
@@ -18,6 +22,8 @@ export declare const GITHUB_DRAFT_PR_E2E_MCP_RAW_TOOL_NAME:
     "create_pull_request";
 export declare const GITHUB_DRAFT_PR_E2E_MCP_RAW_SCHEMA_FINGERPRINT:
     "sha256:e249ccd5a1f2364cbfc0a5d9e11bebdc298626351cc7e43fd59b851c3d520238";
+export declare const GITHUB_DRAFT_PR_E2E_DISPATCH_RESERVATION_CONTRACT_VERSION:
+    "noderooms-github-draft-pr-dispatch-reservation-v1";
 export declare const GITHUB_DRAFT_PR_E2E_LIVE_PLUGIN_ARMED: false;
 
 export declare class GitHubDraftPrE2EError extends Error {
@@ -82,6 +88,8 @@ export declare function validateGitHubDraftPrE2EReceipt(
 
 export interface GitHubDraftPrProofStore {
     load(): Promise<JsonObject | null>;
+    loadDispatchReservation(): Promise<JsonObject | null>;
+    reserveDispatch(reservation: JsonObject): Promise<boolean>;
     compareAndSet(
         expectedRevision: number | null,
         nextRecord: JsonObject,

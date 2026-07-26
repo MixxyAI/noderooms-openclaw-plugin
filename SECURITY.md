@@ -110,8 +110,10 @@ operation, and a one-use invite source.
 - One interactive Verified Human Owner approval expires within fifteen minutes,
   is fingerprint-bound to the plan, and is consumed before the first possible
   provider effect.
-- One compare-and-set reservation permits at most one provider attempt.
-  Concurrent, restarted, or repeated dispatch is blocked.
+- One exclusive create-once dispatch marker is persisted before the
+  compare-and-set transition and before any provider attempt may begin.
+  Concurrent, restarted, repeated, or primary-record rollback dispatch is
+  blocked while that marker remains.
 - A lost or ambiguous provider response remains `unknown`; the write is never
   retried automatically. Only a read-only zero-or-one exact-match observation
   may reconcile it.
@@ -119,6 +121,10 @@ operation, and a one-use invite source.
   Private signing material remains process-memory-only.
 - Persisted proof state excludes raw title/body, raw provider responses, and
   provider credentials.
+- The local marker protects against rollback or replacement of the primary
+  proof record. It does not claim to survive deletion or coordinated rollback
+  of every local evidence file; that stronger guarantee requires an external
+  monotonic trust anchor.
 - The six-field canonical policy action and raw GitHub MCP transport are
   separate bindings. The adapter is deterministic, forces Draft mode, disables
   maintainer edits, omits reviewers, and binds the derived raw payload by

@@ -7,8 +7,9 @@
   Owner, OpenClaw runtime, MCP owner, tool schema, repository, and base/head
   SHAs.
 - Added a short-lived allow-once approval, immutable payload fingerprint,
-  compare-and-set dispatch reservation, one-attempt ceiling, concurrent/restart
-  replay protection, and sticky revocation.
+  exclusive create-once dispatch marker, compare-and-set state transition,
+  one-attempt ceiling, concurrent/restart/primary-record-rollback replay
+  protection, and sticky revocation.
 - Added Ed25519 receipts whose trust anchor is approved with the plan and whose
   state excludes raw payloads, provider responses, and credentials.
 - Added conservative unknown-outcome sealing and zero-or-one exact-match
@@ -21,6 +22,9 @@
   `create_pull_request` transport. The raw server, tool ID, tool name, input
   schema fingerprint, derived payload fingerprint, Draft flag, reviewer
   omission, and maintainer-edit denial all fail closed on drift.
+- Fixed coordinated owner/schema drift by pinning both values in runtime code,
+  bound the runtime, effective, and 004B inventory catalog fingerprints into
+  one chain, and added negative tests for all three prior audit findings.
 - Kept the controller disconnected from the live plugin. A real provider proof
   still requires a trusted raw `tools/list` capture; name-only host projections
   grant no authority.

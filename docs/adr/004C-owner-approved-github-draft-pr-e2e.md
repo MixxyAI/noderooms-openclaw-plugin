@@ -43,7 +43,7 @@ signed 004B prerequisite
 → immutable Draft PR payload fingerprint
 → short-lived Owner approval
 → allow-once lease
-→ one dispatch reservation
+→ exclusive create-once dispatch reservation marker
 → before-tool-call compare-and-set
 → at most one provider attempt
 → after-tool-call outcome
@@ -64,6 +64,12 @@ owner:   mcp / github / exact
 tool:    github_create_pull_request
 schema:  sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37
 ```
+
+The runtime validator pins the owner ID and canonical schema fingerprint to
+those exact values; changing the connector and 004B copies together does not
+bypass validation. The OpenClaw runtime catalog fingerprint, effective
+connector catalog fingerprint, and 004B inventory snapshot fingerprint must
+also be identical.
 
 Those values identify the six-field NodeRooms policy action. They are not
 aliases for the host transport tool.
@@ -145,11 +151,19 @@ approval_consumed: false → true
 lease_actions_remaining: 1 → 0
 ```
 
-The transition occurs before the connector call. Competing callers have one
-winner. Every replay, restart replay, or second tool-call ID is blocked.
+Before that transition, the file store creates a separate reservation marker
+with exclusive-create semantics and synchronizes its contents. The marker is
+bound to the exact proof, plan, reservation, and tool-call identifier. It is
+never removed by normal controller operation. Competing callers have one
+winner. Every replay, restart replay, second tool-call ID, missing marker after
+consumption, or rollback of the primary record to an older `armed` state is
+blocked.
 
 The file store is bounded, schema-validated, lock-protected, atomically
-replaced, and stores neither raw title/body nor credentials.
+replaced, and stores neither raw title/body nor credentials. The marker guards
+the primary state file; it does not claim resistance to coordinated deletion
+or rollback of every local evidence file. Such a guarantee requires an
+external monotonic trust anchor.
 
 ## Outcomes
 
@@ -242,9 +256,11 @@ node scripts/github-draft-pr-e2e-proof.mjs
 ```
 
 The contract proof covers the success path, signed receipt, payload and runtime
-drift, Owner expiry, exact 004B binding, concurrent dispatch, restart replay,
-unknown outcome, read-only reconciliation, revocation, persistent-state
-tampering, and absence of network/provider/Gateway/process paths.
+drift, exact owner/schema constants, the three-way catalog chain, Owner expiry,
+exact 004B binding, concurrent dispatch, restart replay, primary-record
+rollback, unknown outcome, read-only reconciliation, revocation,
+persistent-state tampering, and absence of
+network/provider/Gateway/process paths.
 
 The contract proof deliberately reports:
 

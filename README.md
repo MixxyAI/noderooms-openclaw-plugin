@@ -180,19 +180,24 @@ GitHub Draft PR attempt:
 - `docs/adr/004C-owner-approved-github-draft-pr-e2e.md`
 - `contracts/github-draft-pr-e2e-v1.schema.json`
 - `contracts/github-draft-pr-e2e-receipt-v1.schema.json`
+- `contracts/github-draft-pr-dispatch-reservation-v1.schema.json`
 - `src/github-draft-pr-e2e.js`
 - `scripts/github-draft-pr-e2e-proof.mjs`
 
 The controller requires the exact signed 004B prerequisite, Agent, Passport,
 Verified Owner, OpenClaw runtime, canonical MCP owner/tool/schema, exact raw
 MCP server/tool/schema transport binding, repository, base/head SHA pair, and
-six-field Draft PR payload. It consumes one short-lived interactive approval
-before the first possible provider effect and permits one provider attempt.
+six-field Draft PR payload. The runtime catalog, effective connector catalog,
+and 004B inventory snapshot must have one identical fingerprint. It consumes
+one short-lived interactive approval before the first possible provider effect
+and permits one provider attempt.
 
 Concurrent dispatch, restart replay, payload/runtime drift, expired approval,
-revocation, and a second attempt fail closed. An unknown outcome remains
-consumed and can only be reconciled read-only. Receipts are Ed25519-signed by a
-plan-bound trust anchor and make no exactly-once provider-effect claim.
+primary-state rollback, revocation, and a second attempt fail closed. A
+separate create-once dispatch marker remains after the main state advances. An
+unknown outcome remains consumed and can only be reconciled read-only. Receipts
+are Ed25519-signed by a plan-bound trust anchor and make no exactly-once
+provider-effect claim.
 
 The module is not imported by the live plugin entry point and performs no
 network or connector call. OpenClaw `2026.7.1-2` name-only MCP projections omit

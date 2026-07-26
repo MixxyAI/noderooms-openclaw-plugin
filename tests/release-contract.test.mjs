@@ -123,6 +123,19 @@ test("Phase 4C Draft PR proof remains pure, signed, isolated, and non-live", () 
     assert.match(githubDraftPrE2E, /\bsign\(/);
     assert.match(githubDraftPrE2E, /\bverify\(/);
     assert.match(githubDraftPrE2E, /compareAndSet/);
+    assert.match(githubDraftPrE2E, /reserveDispatch/);
+    assert.match(githubDraftPrE2E, /"wx"/);
+    assert.match(githubDraftPrE2E, /await handle\.sync\(\)/);
+    assert.match(
+        githubDraftPrE2E,
+        /GITHUB_DRAFT_PR_E2E_OWNER_ID =\s*"github"/,
+    );
+    assert.match(
+        githubDraftPrE2E,
+        /GITHUB_DRAFT_PR_E2E_CANONICAL_SCHEMA_FINGERPRINT/,
+    );
+    assert.match(githubDraftPrE2E, /CATALOG_BINDING_MISMATCH/);
+    assert.match(githubDraftPrE2E, /STORE_ROLLBACK_DETECTED/);
     assert.match(
         githubDraftPrE2E,
         /GITHUB_DRAFT_PR_E2E_LIVE_PLUGIN_ARMED = false/,

@@ -9,11 +9,14 @@ import {
     createGitHubDraftPrE2EPlan,
     createGitHubDraftPrE2EReceiptSigner,
     createInMemoryGitHubDraftPrProofStore,
+    GITHUB_DRAFT_PR_E2E_CANONICAL_SCHEMA_FINGERPRINT,
+    GITHUB_DRAFT_PR_E2E_DISPATCH_RESERVATION_CONTRACT_VERSION,
     GITHUB_DRAFT_PR_E2E_LIVE_PLUGIN_ARMED,
     GITHUB_DRAFT_PR_E2E_MCP_EXACT_TOOL_ID,
     GITHUB_DRAFT_PR_E2E_MCP_RAW_SCHEMA_FINGERPRINT,
     GITHUB_DRAFT_PR_E2E_MCP_RAW_TOOL_NAME,
     GITHUB_DRAFT_PR_E2E_MCP_SERVER_NAME,
+    GITHUB_DRAFT_PR_E2E_OWNER_ID,
     GITHUB_DRAFT_PR_E2E_PROFILE_ID,
     GITHUB_DRAFT_PR_E2E_SCOPE,
     GITHUB_DRAFT_PR_E2E_TOOL_NAME,
@@ -100,7 +103,7 @@ function planInput(receiptSigner) {
             registry_version: "nrcr_2026-07-23.001",
             policy_version: "nrp_2026-07-23.001",
             registry_fingerprint_sha256: HASH_F,
-            inventory_snapshot_fingerprint_sha256: HASH_A,
+            inventory_snapshot_fingerprint_sha256: HASH_C,
             inventory_binding_fingerprint_sha256: HASH_B,
             profile_id: GITHUB_DRAFT_PR_E2E_PROFILE_ID,
             scope: GITHUB_DRAFT_PR_E2E_SCOPE,
@@ -246,8 +249,8 @@ test("004C stays isolated and binds one exact GitHub Draft PR profile", () => {
     assert.equal(plan.intent.exactly_once_effect_claimed, false);
 });
 
-test("004C schemas freeze allow-once, draft-only, and zero-retry boundaries", async () => {
-    const [planSchema, receiptSchema] = await Promise.all([
+test("004C schemas freeze exact trust and one-use boundaries", async () => {
+    const [planSchema, receiptSchema, reservationSchema] = await Promise.all([
         readFile(
             new URL(
                 "../contracts/github-draft-pr-e2e-v1.schema.json",
@@ -258,6 +261,14 @@ test("004C schemas freeze allow-once, draft-only, and zero-retry boundaries", as
         readFile(
             new URL(
                 "../contracts/github-draft-pr-e2e-receipt-v1.schema.json",
+                import.meta.url,
+            ),
+            "utf8",
+        ).then(JSON.parse),
+        readFile(
+            new URL(
+                "../contracts/"
+                + "github-draft-pr-dispatch-reservation-v1.schema.json",
                 import.meta.url,
             ),
             "utf8",
@@ -304,6 +315,27 @@ test("004C schemas freeze allow-once, draft-only, and zero-retry boundaries", as
         receiptSchema.properties.dispatch.properties
             .raw_input_schema_fingerprint.const,
         GITHUB_DRAFT_PR_E2E_MCP_RAW_SCHEMA_FINGERPRINT,
+    );
+    assert.equal(
+        planSchema.properties.connector_binding.properties.owner_id.const,
+        GITHUB_DRAFT_PR_E2E_OWNER_ID,
+    );
+    assert.equal(
+        planSchema.properties.connector_binding.properties
+            .tool_schema_fingerprint.const,
+        GITHUB_DRAFT_PR_E2E_CANONICAL_SCHEMA_FINGERPRINT,
+    );
+    assert.equal(
+        reservationSchema.properties.contract_version.const,
+        GITHUB_DRAFT_PR_E2E_DISPATCH_RESERVATION_CONTRACT_VERSION,
+    );
+    assert.equal(
+        reservationSchema.properties.provider_attempt_count.const,
+        1,
+    );
+    assert.equal(
+        reservationSchema.properties.approval_consumed.const,
+        true,
     );
 });
 
@@ -462,6 +494,62 @@ test("owner, schema, profile, and policy drift fail closed", () => {
         assert.throws(
             () => createGitHubDraftPrE2EPlan(input, { now: NOW }),
             GitHubDraftPrE2EError,
+        );
+    }
+});
+
+test("coordinated owner and canonical-schema drift fail closed", () => {
+    const signer = createGitHubDraftPrE2EReceiptSigner();
+    for (const [expectedCode, mutate] of [
+        [
+            "CONNECTOR_OWNER_INVALID",
+            (input) => {
+                input.connector_binding.owner_id = "another-github";
+                input.phase4b_prerequisite.owner_id = "another-github";
+            },
+        ],
+        [
+            "TOOL_SCHEMA_MISMATCH",
+            (input) => {
+                input.connector_binding.tool_schema_fingerprint = HASH_E;
+                input.phase4b_prerequisite.tool_schema_fingerprint = HASH_E;
+            },
+        ],
+    ]) {
+        const input = planInput(signer);
+        mutate(input);
+        assert.throws(
+            () => createGitHubDraftPrE2EPlan(input, { now: NOW }),
+            (error) =>
+                error instanceof GitHubDraftPrE2EError
+                && error.code === expectedCode,
+        );
+    }
+});
+
+test("runtime, connector, and 004B inventory catalogs form one chain", () => {
+    const signer = createGitHubDraftPrE2EReceiptSigner();
+    for (const mutate of [
+        (input) => {
+            input.runtime_binding.runtime_catalog_fingerprint_sha256 =
+                HASH_D;
+        },
+        (input) => {
+            input.connector_binding
+                .effective_catalog_fingerprint_sha256 = HASH_D;
+        },
+        (input) => {
+            input.phase4b_prerequisite
+                .inventory_snapshot_fingerprint_sha256 = HASH_D;
+        },
+    ]) {
+        const input = planInput(signer);
+        mutate(input);
+        assert.throws(
+            () => createGitHubDraftPrE2EPlan(input, { now: NOW }),
+            (error) =>
+                error instanceof GitHubDraftPrE2EError
+                && error.code === "CATALOG_BINDING_MISMATCH",
         );
     }
 });
@@ -776,6 +864,88 @@ test("file store survives restart and still blocks replay", async () => {
         const raw = await readFile(filePath, "utf8");
         assert.doesNotMatch(raw, /Phase 4C isolated Draft PR proof/);
         assert.doesNotMatch(raw, /Contract fixture only/);
+    }
+    finally {
+        await rm(temporary, { recursive: true, force: true });
+    }
+});
+
+test("durable reservation detects rollback to an older armed record", async () => {
+    const temporary = await mkdtemp(
+        path.join(os.tmpdir(), "nr-004c-rollback-"),
+    );
+    try {
+        const filePath = path.join(temporary, "proof.json");
+        const receiptSigner = createGitHubDraftPrE2EReceiptSigner();
+        const first = fixture({
+            receiptSigner,
+            store: createFileGitHubDraftPrProofStore(filePath),
+        });
+        await first.controller.arm();
+        const armedDocument = await readFile(filePath, "utf8");
+        await first.controller.beforeToolCall(
+            beforeEvent(first.payload),
+            first.runtime,
+        );
+        const reservationDocument = JSON.parse(await readFile(
+            `${filePath}.dispatch-reservation`,
+            "utf8",
+        ));
+        assert.equal(
+            reservationDocument.reservation.contract_version,
+            GITHUB_DRAFT_PR_E2E_DISPATCH_RESERVATION_CONTRACT_VERSION,
+        );
+        assert.equal(
+            reservationDocument.reservation.reservation_id,
+            first.plan.intent.reservation_id,
+        );
+
+        await writeFile(filePath, armedDocument, "utf8");
+        const restarted = new GitHubDraftPrE2EController({
+            plan: first.plan,
+            receiptSigner,
+            store: createFileGitHubDraftPrProofStore(filePath),
+            now: () => NOW,
+        });
+        await expectReject(
+            "STORE_ROLLBACK_DETECTED",
+            () => restarted.status(),
+        );
+        await expectReject(
+            "STORE_ROLLBACK_DETECTED",
+            () => restarted.beforeToolCall(
+                beforeEvent(
+                    first.payload,
+                    "tool-call-after-record-rollback",
+                ),
+                first.runtime,
+            ),
+        );
+    }
+    finally {
+        await rm(temporary, { recursive: true, force: true });
+    }
+});
+
+test("consumed file state without its reservation marker fails closed", async () => {
+    const temporary = await mkdtemp(
+        path.join(os.tmpdir(), "nr-004c-missing-reservation-"),
+    );
+    try {
+        const filePath = path.join(temporary, "proof.json");
+        const value = fixture({
+            store: createFileGitHubDraftPrProofStore(filePath),
+        });
+        await value.controller.arm();
+        await value.controller.beforeToolCall(
+            beforeEvent(value.payload),
+            value.runtime,
+        );
+        await rm(`${filePath}.dispatch-reservation`);
+        await expectReject(
+            "STORE_RESERVATION_MISSING",
+            () => value.controller.status(),
+        );
     }
     finally {
         await rm(temporary, { recursive: true, force: true });
