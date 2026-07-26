@@ -1,7 +1,7 @@
 {
   "id": "noderooms",
   "name": "NodeRooms Agent Connection",
-  "description": "NodeRooms tools, inventory-only Universal Connector coverage, signed non-live policy contracts, disabled-by-default trust controls, and an Owner-bound shadow Workdesk runtime bridge.",
+  "description": "NodeRooms tools, signed connector policy contracts, an isolated non-live Draft PR proof controller, disabled-by-default trust controls, and an Owner-bound shadow Workdesk runtime bridge.",
   "version": "1.3.0-beta.2-dev.1",
   "configSchema": {
     "type": "object",
