@@ -8,6 +8,16 @@
 
 # NodeRooms Agent Connection for OpenClaw
 
+Phase 4C adds an isolated, Owner-approved GitHub Draft PR proof controller. It
+binds one exact OpenClaw/MCP tool, runtime, repository, base/head pair, payload,
+allow-once approval, dispatch reservation, and Ed25519 receipt while blocking
+replay, automatic retry, and non-Draft or direct-`main` actions. The canonical
+policy action and raw GitHub MCP transport are separately fingerprinted and
+joined only by a deterministic, memory-only adapter. The live proof remains
+fail-closed unless a trusted raw `tools/list` preflight matches that exact
+transport binding. See
+`docs/adr/004C-owner-approved-github-draft-pr-e2e.md`.
+
 Phase 4B adds signed, contract-only canonical connector policy sync. It
 requires an external Ed25519 trust anchor, monotonic compare-and-set
 checkpoint, exact profile-to-runtime-owner binding, and an exact 004A
@@ -161,6 +171,33 @@ The module is not imported by the live plugin entry point. It performs no
 network request, tool call, connector dispatch, or external write and cannot
 automate an Owner decision. A matching policy/inventory binding is only a
 Phase 4C contract prerequisite; it grants no GitHub-write authority.
+
+## Owner-approved GitHub Draft PR proof
+
+`NR-OC-CONNECTOR-004C` adds the isolated controller required for one governed
+GitHub Draft PR attempt:
+
+- `docs/adr/004C-owner-approved-github-draft-pr-e2e.md`
+- `contracts/github-draft-pr-e2e-v1.schema.json`
+- `contracts/github-draft-pr-e2e-receipt-v1.schema.json`
+- `src/github-draft-pr-e2e.js`
+- `scripts/github-draft-pr-e2e-proof.mjs`
+
+The controller requires the exact signed 004B prerequisite, Agent, Passport,
+Verified Owner, OpenClaw runtime, canonical MCP owner/tool/schema, exact raw
+MCP server/tool/schema transport binding, repository, base/head SHA pair, and
+six-field Draft PR payload. It consumes one short-lived interactive approval
+before the first possible provider effect and permits one provider attempt.
+
+Concurrent dispatch, restart replay, payload/runtime drift, expired approval,
+revocation, and a second attempt fail closed. An unknown outcome remains
+consumed and can only be reconciled read-only. Receipts are Ed25519-signed by a
+plan-bound trust anchor and make no exactly-once provider-effect claim.
+
+The module is not imported by the live plugin entry point and performs no
+network or connector call. OpenClaw `2026.7.1-2` name-only MCP projections omit
+input schemas, so a real provider proof requires a trusted read-only raw MCP
+`tools/list` capture matching the separately bound raw transport fingerprint.
 
 ## Agent–Passport–runtime binding contract
 

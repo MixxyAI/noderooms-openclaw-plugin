@@ -1,5 +1,30 @@
 # Changelog
 
+## Unreleased — NR-OC-CONNECTOR-004C
+
+- Added an isolated Owner-approved GitHub Draft PR proof plan and receipt
+  contract bound to the exact 004B prerequisite, Agent, Passport, Verified
+  Owner, OpenClaw runtime, MCP owner, tool schema, repository, and base/head
+  SHAs.
+- Added a short-lived allow-once approval, immutable payload fingerprint,
+  compare-and-set dispatch reservation, one-attempt ceiling, concurrent/restart
+  replay protection, and sticky revocation.
+- Added Ed25519 receipts whose trust anchor is approved with the plan and whose
+  state excludes raw payloads, provider responses, and credentials.
+- Added conservative unknown-outcome sealing and zero-or-one exact-match
+  read-only reconciliation with no automatic write retry.
+- Added contract proof coverage for success, replay, concurrency, drift,
+  expiry, unknown, reconciliation, revocation, persistent-state tampering, and
+  source-path isolation.
+- Added a deterministic, memory-only adapter binding between the six-field
+  canonical policy action and the exact namespaced GitHub MCP
+  `create_pull_request` transport. The raw server, tool ID, tool name, input
+  schema fingerprint, derived payload fingerprint, Draft flag, reviewer
+  omission, and maintainer-edit denial all fail closed on drift.
+- Kept the controller disconnected from the live plugin. A real provider proof
+  still requires a trusted raw `tools/list` capture; name-only host projections
+  grant no authority.
+
 ## Unreleased — NR-OC-CONNECTOR-004B
 
 - Added an externally anchored, Ed25519-signed canonical connector policy

@@ -102,3 +102,31 @@ operation, and a one-use invite source.
   live HTTP, Gateway, connector, task, browser, shell, or credential path.
 - A successful contract binding grants no tool authority, performs no external
   write, and cannot automate a Verified Human Owner decision.
+
+## Owner-approved GitHub Draft PR E2E boundary
+
+- Phase 4C accepts one exact Draft PR profile, repository, `main` base, non-main
+  head, base/head SHA pair, and immutable six-field provider payload.
+- One interactive Verified Human Owner approval expires within fifteen minutes,
+  is fingerprint-bound to the plan, and is consumed before the first possible
+  provider effect.
+- One compare-and-set reservation permits at most one provider attempt.
+  Concurrent, restarted, or repeated dispatch is blocked.
+- A lost or ambiguous provider response remains `unknown`; the write is never
+  retried automatically. Only a read-only zero-or-one exact-match observation
+  may reconcile it.
+- The receipt signer’s public trust anchor is bound into the approved plan.
+  Private signing material remains process-memory-only.
+- Persisted proof state excludes raw title/body, raw provider responses, and
+  provider credentials.
+- The six-field canonical policy action and raw GitHub MCP transport are
+  separate bindings. The adapter is deterministic, forces Draft mode, disables
+  maintainer edits, omits reviewers, and binds the derived raw payload by
+  fingerprint without persisting title or body.
+- Workflow, secret, credential, key-material, traversal, direct-`main`,
+  non-Draft, merge, publish, and production paths are prohibited.
+- The controller is not imported by the live plugin and contains no network,
+  connector, Gateway, task, browser, shell, or child-process path.
+- A name-only MCP inventory is insufficient. Missing or drifted raw MCP server,
+  exact tool ID, raw tool name, raw schema, or adapter evidence blocks the
+  provider proof with zero connector attempts.

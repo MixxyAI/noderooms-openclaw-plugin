@@ -17,6 +17,10 @@ const connectorPolicySync = await readFile(
     new URL("../dist/canonical-connector-policy-sync.js", import.meta.url),
     "utf8",
 );
+const githubDraftPrE2E = await readFile(
+    new URL("../dist/github-draft-pr-e2e.js", import.meta.url),
+    "utf8",
+);
 
 test("package and manifest versions match trust alpha development version", () => {
     assert.equal(pkg.version, "1.3.0-beta.2-dev.1");
@@ -111,6 +115,24 @@ test("Phase 4B policy sync remains pure, signed, contract-only, and non-live", (
     assert.doesNotMatch(connectorPolicySync, /\.runTask\(/);
     assert.doesNotMatch(connectorPolicySync, /\.resume\(/);
     assert.doesNotMatch(connectorPolicySync, /child_process/);
+});
+
+test("Phase 4C Draft PR proof remains pure, signed, isolated, and non-live", () => {
+    assert.doesNotMatch(index, /GitHubDraftPrE2EController/);
+    assert.match(githubDraftPrE2E, /generateKeyPairSync/);
+    assert.match(githubDraftPrE2E, /\bsign\(/);
+    assert.match(githubDraftPrE2E, /\bverify\(/);
+    assert.match(githubDraftPrE2E, /compareAndSet/);
+    assert.match(
+        githubDraftPrE2E,
+        /GITHUB_DRAFT_PR_E2E_LIVE_PLUGIN_ARMED = false/,
+    );
+    assert.doesNotMatch(githubDraftPrE2E, /\bfetch\(/);
+    assert.doesNotMatch(githubDraftPrE2E, /"tools\.invoke"/);
+    assert.doesNotMatch(githubDraftPrE2E, /"tools\.catalog"/);
+    assert.doesNotMatch(githubDraftPrE2E, /\.runTask\(/);
+    assert.doesNotMatch(githubDraftPrE2E, /\.resume\(/);
+    assert.doesNotMatch(githubDraftPrE2E, /child_process/);
 });
 
 test("Phase 4 owner inventory commands are present and Owner-gated", () => {
