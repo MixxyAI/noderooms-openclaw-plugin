@@ -132,6 +132,81 @@ each run. It does not alter the 003B live source, plugin manifest, immutable
 Beta.1 release source, publication workflow, a deployed Gateway, or
 production.
 
+Pull request
+[#8](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/8) merged the
+reviewed 003C head into `main` as:
+
+```text
+merge commit: 67d2435225d74832c29d8ec1271f1bc8ad85b491
+parent 1:     09907fb745523a2c0b1f4784982efc31d1500a68
+parent 2:     908191a1451f058ce56133f5f328ffe575b7484d
+```
+
+`NR-OC-WORK-003D` is based on that exact merge. It adds the deterministic
+Phase 3 closure proof and read-only tests. It does not alter the published
+Beta.1 source or publication workflow.
+
+Pull request
+[#9](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/9) merged the
+reviewed 003D head into `main` as:
+
+```text
+merge commit: d11c4ef7a6796bafe2254c7c9a9a1b503d971661
+parent 1:     67d2435225d74832c29d8ec1271f1bc8ad85b491
+parent 2:     fdb01269bf00f9b660d8486488e034f8c1f9e1a8
+```
+
+`NR-OC-CONNECTOR-004A` is based on that exact merge. It adds the validated
+runtime tool inventory foundation while keeping connector use disabled and
+reference-only. It does not alter the published Beta.1 source or publication
+workflow.
+
+Pull request
+[#10](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/10) merged the
+reviewed 004A head into `main` as:
+
+```text
+merge commit: 53c348c401273b3a32fb8771baa5323dbf60e56a
+parent 1:     d11c4ef7a6796bafe2254c7c9a9a1b503d971661
+parent 2:     b2050872e0a49920e0b24ada1ffc6389899df533
+```
+
+`NR-OC-CONNECTOR-004B` is based on that exact merge. It adds the signed,
+fail-closed canonical connector policy-sync foundation. It does not alter the
+published Beta.1 source or publication workflow.
+
+Pull request
+[#11](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/11) merged the
+reviewed 004B head into `main` as:
+
+```text
+merge commit: 50af96e0e0da80adac96eb4409cd14b758498d45
+parent 1:     53c348c401273b3a32fb8771baa5323dbf60e56a
+parent 2:     1680062fb218203dfdf931d6313f4b3c510d9dc1
+```
+
+`NR-OC-CONNECTOR-004C` is based on that exact merge. It adds one isolated,
+Owner-approved GitHub Draft PR end-to-end controller, exact canonical-to-MCP
+transport binding, create-once dispatch reservation, signed receipt, replay
+block, read-only reconciliation, and sticky revocation proof.
+
+Pull request
+[#12](https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/12) merged the
+reviewed and hardened 004C head into `main` as:
+
+```text
+merge commit: c77757948e052b06d6a61077c4703e39be656509
+parent 1:     50af96e0e0da80adac96eb4409cd14b758498d45
+parent 2:     006c9481442d9b730601499939e2a4398e414fd9
+main tree:    80a62f0a3314491bc864008f4e7f86bffd865bd9
+```
+
+The exact merge commit passed the full `246 pass / 0 fail / 1 skip` regression,
+ClawHub package validation with zero breakages, warnings, deprecations, or
+issues, and a non-publishing package dry-run. The feature branch remains
+preserved. No package was published or installed, no Gateway was changed or
+restarted, and production was not modified.
+
 Important boundaries:
 
 - `release-source/1.3.0-beta.1` is not modified.
