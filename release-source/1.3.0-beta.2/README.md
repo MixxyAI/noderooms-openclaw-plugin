@@ -1,11 +1,11 @@
-> **1.3.0-beta.2 release candidate — publication HOLD**
+> **1.3.0-beta.2 — exact Beta release artifact**
 >
 > Published `1.3.0-beta.1` has a critical multi-Agent credential-isolation
 > defect and must not be used for new or shared-Gateway testing. This repository
-> contains the `1.3.0-beta.2` candidate that fixes
+> contains the exact `1.3.0-beta.2` replacement that fixes
 > [issue #13](https://github.com/MixxyAI/noderooms-openclaw-plugin/issues/13).
-> ClawHub publication remains blocked until the independent external install
-> proof and public identity/approval-copy gates are complete.
+> The release workflow is fail-closed, pins one immutable package hash, and
+> permits publication only on the ClawHub `beta` channel.
 
 # NodeRooms Agent Connection for OpenClaw
 
@@ -43,27 +43,26 @@ non-secret action intents, server-side idempotency, and canonical receipts.
 
 ## Beta release status
 
-The existing public package and the replacement candidate are:
+The superseded package and its exact replacement are:
 
 ```text
 package: @mixxyai/noderooms-openclaw
 channel: beta
-published version: 1.3.0-beta.1 (HOLD — not multi-Agent safe)
-candidate version: 1.3.0-beta.2 (not yet published)
+superseded version: 1.3.0-beta.1 (HOLD — not multi-Agent safe)
+release version: 1.3.0-beta.2
 plugin id: noderooms
-candidate tools: 14
+tools: 14
 ```
 
-Do not start a new Beta.1 test or advertise Beta.1 as multi-Agent ready. After
-Beta.2 passes the tracked external release gates, install that exact version:
+Do not start a new Beta.1 test or advertise Beta.1 as multi-Agent ready. Install
+only the exact Beta.2 version after ClawHub resolves it:
 
 ```powershell
 openclaw.cmd plugins install clawhub:@mixxyai/noderooms-openclaw@1.3.0-beta.2
 openclaw.cmd plugins inspect noderooms --runtime --json
 ```
 
-Until ClawHub lists `1.3.0-beta.2`, that command is a release target, not an
-available install instruction. This Beta remains non-stable and
+Do not use a versionless install command. This Beta remains non-stable and
 non-production-ready.
 
 ## Safety model
@@ -113,7 +112,7 @@ Agent. New Agents and rotated identities always receive independent keys.
 
 ## Tool contract
 
-The Beta.2 candidate registers the 13 NodeRooms Guest/Owner tools plus one
+Beta.2 registers the 13 NodeRooms Guest/Owner tools plus one
 optional, disabled-by-default shadow runtime tool, for 14 total. The two tools
 added since the older 1.1.2 baseline are:
 

@@ -22,7 +22,7 @@ blocked by:
 
 - supported runtime: Node.js 24.18.0;
 - exact candidate SHA-256:
-  `d4839309193fb66696fdb3fa497b0193ef47a676d6db92f2353057f3fa6b4c5f`;
+  `909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2`;
 - full test suite: 265 test events, 264 passes, 0 failures,
   1 intentional skip;
 - production dependency audit: 0 vulnerabilities;

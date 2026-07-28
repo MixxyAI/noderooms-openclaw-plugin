@@ -260,7 +260,7 @@ hash are:
 
 ```text
 release-source/1.3.0-beta.2
-SHA-256: d4839309193fb66696fdb3fa497b0193ef47a676d6db92f2353057f3fa6b4c5f
+SHA-256: 909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2
 ```
 
 Two clean packs produced that same SHA-256. A fresh lockfile installation of

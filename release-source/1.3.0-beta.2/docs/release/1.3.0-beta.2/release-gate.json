@@ -5,7 +5,7 @@
     "version": "1.3.0-beta.2",
     "source_path": "release-source/1.3.0-beta.2",
     "package_file": "mixxyai-noderooms-openclaw-1.3.0-beta.2.tgz",
-    "package_sha256": "d4839309193fb66696fdb3fa497b0193ef47a676d6db92f2353057f3fa6b4c5f"
+    "package_sha256": "909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2"
   },
   "evaluated_on": "2026-07-28",
   "status": "HOLD",
@@ -104,8 +104,8 @@
     {
       "id": "clean_local_clawpack_archive_install",
       "blocking": true,
-      "status": "PASS",
-      "evidence": "The exact d4839309193fb66696fdb3fa497b0193ef47a676d6db92f2353057f3fa6b4c5f archive installed through OpenClaw npm-pack semantics into a fresh isolated state, loaded 14 tools with no diagnostics, and produced a byte-identical installed dist/index.js (SHA-256 15565cda66e68a4a96d0ad274338626eb073521f8aa8539b71a145f7619a4f97)."
+      "status": "PENDING",
+      "evidence": "The final 909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2 archive must complete a fresh isolated OpenClaw install and 14-tool runtime inspection before release closure."
     },
     {
       "id": "production_dependency_audit",
