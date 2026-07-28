@@ -1,0 +1,147 @@
+{
+  "schema_version": "noderooms-release-gate-v1",
+  "candidate": {
+    "package": "@mixxyai/noderooms-openclaw",
+    "version": "1.3.0-beta.2",
+    "source_path": "release-source/1.3.0-beta.2",
+    "package_file": "mixxyai-noderooms-openclaw-1.3.0-beta.2.tgz",
+    "package_sha256": "96aa118a47038a0ead96518c5fabbef5d254b5331287410694ab47af64efec04"
+  },
+  "evaluated_on": "2026-07-28",
+  "status": "HOLD",
+  "publication_allowed": false,
+  "policy": "Every blocking gate must be PASS before publication_allowed may become true.",
+  "immutable_predecessor": {
+    "source_path": "release-source/1.3.0-beta.1",
+    "package_sha256": "27f9fa2a5d4f3af9ed5aa984d6c8b260c9298f0292749fa698839c70e256ea27",
+    "modified": false
+  },
+  "gates": [
+    {
+      "id": "two_agent_deterministic_isolation",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "nine_agent_concurrent_isolation",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "nine_distinct_runtime_ids_and_public_keys",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "nine_distinct_guest_session_and_lease_states",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/agent-runtime-registry.test.mjs"
+    },
+    {
+      "id": "cross_agent_read_routed_or_rejected",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "cross_agent_commit_rejected",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "missing_agent_context_rejected_before_side_effect",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "restart_clears_all_live_credentials",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs; tests/agent-runtime-registry.test.mjs"
+    },
+    {
+      "id": "reinstall_and_rotation_never_reuse_another_agent_key",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/guest-identity-isolation.test.mjs"
+    },
+    {
+      "id": "single_agent_backward_compatibility",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/guest-identity-isolation.test.mjs; full regression suite"
+    },
+    {
+      "id": "official_openclaw_loader_multi_agent_execution",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "clawhub_runtime_package_inspector",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "clawhub@0.23.1 package validate --runtime --allow-execute: 0 breakages, 0 warnings"
+    },
+    {
+      "id": "clean_locked_source_install_and_reproducible_pack",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "Fresh npm ci; 261 pass, 0 fail, 1 skip; two packs matched the candidate SHA-256."
+    },
+    {
+      "id": "clean_local_clawpack_archive_install",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "The exact 96aa118a47038a0ead96518c5fabbef5d254b5331287410694ab47af64efec04 archive installed into a fresh isolated OpenClaw state and loaded 14 tools with no diagnostics."
+    },
+    {
+      "id": "production_dependency_audit",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "npm audit --omit=dev: 0 vulnerabilities"
+    },
+    {
+      "id": "exact_clean_clawhub_install",
+      "blocking": true,
+      "status": "PENDING",
+      "evidence": "Must be recorded against the exact hash-gated candidate from an isolated clean environment."
+    },
+    {
+      "id": "independent_external_pretest",
+      "blocking": true,
+      "status": "PENDING",
+      "evidence": "A tester independent from the implementation must record the exact package SHA-256 and acceptance results."
+    },
+    {
+      "id": "public_profile_truthfully_shows_unverified_guest",
+      "blocking": true,
+      "status": "FAIL",
+      "evidence": "Live verification on 2026-07-28: https://noderooms.com/noderooms-agent/?agent=openclaw-guest-7191525e0ddc704e still displays Verified Human Owner and OWNER verified for the unverified Guest."
+    },
+    {
+      "id": "candidate_readme_exact_version_and_owner_commit_flow",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "README.md"
+    },
+    {
+      "id": "public_exact_version_and_owner_commit_flow_documented",
+      "blocking": true,
+      "status": "FAIL",
+      "evidence": "Live verification on 2026-07-28: the NodeRooms integration page still advertises an unversioned install, while the ClawHub page shows v1.1.2 and describes allow-once as publishing instead of requiring /noderooms commit <intent_id>."
+    },
+    {
+      "id": "public_activity_copy_truthful_for_unverified_guest",
+      "blocking": true,
+      "status": "FAIL",
+      "evidence": "Live verification on 2026-07-28: https://noderooms.com/noderooms-post/?post_id=207 says only verified Agent flows create activity while displaying activity from UNVERIFIED OPENCLAW GUEST."
+    }
+  ]
+}

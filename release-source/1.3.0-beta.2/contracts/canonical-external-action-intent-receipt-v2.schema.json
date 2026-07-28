@@ -1,0 +1,1207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:canonical-external-action-intent-receipt:v2",
+  "title": "NodeRooms canonical external-action intent and receipt v2",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/intent"
+    },
+    {
+      "$ref": "#/$defs/receipt"
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "agentBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "noderooms_agent_id",
+        "passport_id",
+        "owner_binding_id",
+        "verified_owner_required"
+      ],
+      "properties": {
+        "noderooms_agent_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "passport_id": {
+          "type": "string",
+          "pattern": "^NRP-[0-9]{6}-AGENT$"
+        },
+        "owner_binding_id": {
+          "type": "string",
+          "pattern": "^NRPB-[A-F0-9]{24}$"
+        },
+        "verified_owner_required": {
+          "const": true
+        }
+      }
+    },
+    "runtimeBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binding_id",
+        "platform",
+        "gateway_id",
+        "runtime_instance_id",
+        "openclaw_agent_id",
+        "runtime_key_thumbprint",
+        "session_id",
+        "run_id",
+        "channel",
+        "owner_sender_binding_sha256"
+      ],
+      "properties": {
+        "binding_id": {
+          "type": "string",
+          "pattern": "^nrbind_[a-f0-9]{32}$"
+        },
+        "platform": {
+          "const": "openclaw"
+        },
+        "gateway_id": {
+          "type": "string",
+          "pattern": "^ocgw_[a-f0-9]{32}$"
+        },
+        "runtime_instance_id": {
+          "type": "string",
+          "pattern": "^ocruntime_[a-f0-9]{32}$"
+        },
+        "openclaw_agent_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,160}$"
+        },
+        "runtime_key_thumbprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "session_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:/-]{1,200}$"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:/-]{1,200}$"
+        },
+        "channel": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._:-]{1,63}$"
+        },
+        "owner_sender_binding_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "connectorBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "connector_id",
+        "connector_version",
+        "tool_name",
+        "tool_schema_fingerprint"
+      ],
+      "properties": {
+        "provider": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,31}$"
+        },
+        "connector_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._:-]{2,127}$"
+        },
+        "connector_version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$"
+        },
+        "tool_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+        },
+        "tool_schema_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "leaseBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lease_id",
+        "lease_authority_fingerprint_sha256"
+      ],
+      "properties": {
+        "lease_id": {
+          "type": "string",
+          "pattern": "^nrlv2_[a-f0-9]{32}$"
+        },
+        "lease_authority_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resource_type",
+        "selector",
+        "selector_fingerprint_sha256"
+      ],
+      "properties": {
+        "resource_type": {
+          "const": "github_repository"
+        },
+        "selector": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "repository_full_name",
+            "base_ref"
+          ],
+          "properties": {
+            "repository_full_name": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$",
+              "maxLength": 200
+            },
+            "base_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            }
+          }
+        },
+        "selector_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "payloadProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_full_name",
+        "head_ref",
+        "base_ref",
+        "draft",
+        "title_sha256",
+        "body_sha256"
+      ],
+      "properties": {
+        "repository_full_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$",
+          "maxLength": 200
+        },
+        "head_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "base_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255
+        },
+        "draft": {
+          "const": true
+        },
+        "title_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "body_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "providerIdempotencyIntent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supported",
+        "key_binding_fingerprint_sha256",
+        "forward_on_dispatch"
+      ],
+      "properties": {
+        "supported": {
+          "type": "boolean"
+        },
+        "key_binding_fingerprint_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "forward_on_dispatch": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "supported": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "key_binding_fingerprint_sha256": {
+                "$ref": "#/$defs/sha256"
+              },
+              "forward_on_dispatch": {
+                "const": true
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "key_binding_fingerprint_sha256": {
+                "type": "null"
+              },
+              "forward_on_dispatch": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "providerIdempotencyReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "supported",
+        "key_binding_fingerprint_sha256",
+        "forwarded"
+      ],
+      "properties": {
+        "supported": {
+          "type": "boolean"
+        },
+        "key_binding_fingerprint_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "forwarded": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "supported": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "key_binding_fingerprint_sha256": {
+                "$ref": "#/$defs/sha256"
+              },
+              "forwarded": {
+                "const": true
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "key_binding_fingerprint_sha256": {
+                "type": "null"
+              },
+              "forwarded": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    },
+    "approvalReservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy",
+        "decision_id",
+        "decision_fingerprint_sha256",
+        "state",
+        "consumed"
+      ],
+      "properties": {
+        "policy": {
+          "const": "allow_once"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^nrcapdec_[a-f0-9]{32}$"
+        },
+        "decision_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "state": {
+          "const": "reserved"
+        },
+        "consumed": {
+          "const": false
+        }
+      }
+    },
+    "dispatchReservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reservation_id",
+        "reservation_fingerprint_sha256",
+        "state",
+        "attempt_count",
+        "max_attempts",
+        "provider_idempotency",
+        "automatic_write_retry",
+        "uncertain_outcome_state",
+        "reconcile_mode"
+      ],
+      "properties": {
+        "reservation_id": {
+          "type": "string",
+          "pattern": "^nrdispatch_[a-f0-9]{32}$"
+        },
+        "reservation_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "state": {
+          "const": "reserved"
+        },
+        "attempt_count": {
+          "const": 0
+        },
+        "max_attempts": {
+          "const": 1
+        },
+        "provider_idempotency": {
+          "$ref": "#/$defs/providerIdempotencyIntent"
+        },
+        "automatic_write_retry": {
+          "const": false
+        },
+        "uncertain_outcome_state": {
+          "const": "not_dispatched"
+        },
+        "reconcile_mode": {
+          "const": "read_only"
+        }
+      }
+    },
+    "intentConstraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "at_most_once_dispatch_required",
+        "exactly_once_effect_claimed",
+        "raw_payload_persisted",
+        "provider_credentials_included",
+        "raw_provider_response_persisted"
+      ],
+      "properties": {
+        "at_most_once_dispatch_required": {
+          "const": true
+        },
+        "exactly_once_effect_claimed": {
+          "const": false
+        },
+        "raw_payload_persisted": {
+          "const": false
+        },
+        "provider_credentials_included": {
+          "const": false
+        },
+        "raw_provider_response_persisted": {
+          "const": false
+        }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "activation_state",
+        "live_enforce_allowed",
+        "intent_id",
+        "lease_binding",
+        "registry_version",
+        "policy_version",
+        "profile_id",
+        "scope",
+        "agent_binding",
+        "runtime_binding",
+        "connector_binding",
+        "access_mode",
+        "risk",
+        "side_effect_class",
+        "action",
+        "resource",
+        "payload_projection",
+        "payload_fingerprint_sha256",
+        "approval_consumption",
+        "dispatch_reservation",
+        "constraints",
+        "created_at",
+        "expires_at",
+        "intent_fingerprint_sha256"
+      ],
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "$comment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_version": {
+          "const": "noderooms-external-action-intent-v2"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "activation_state": {
+          "const": "contract_only"
+        },
+        "live_enforce_allowed": {
+          "const": false
+        },
+        "intent_id": {
+          "type": "string",
+          "pattern": "^nreai_[a-f0-9]{32}$"
+        },
+        "lease_binding": {
+          "$ref": "#/$defs/leaseBinding"
+        },
+        "registry_version": {
+          "type": "string",
+          "pattern": "^nrcr_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "policy_version": {
+          "type": "string",
+          "pattern": "^nrp_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "profile_id": {
+          "const": "nrscp_github_pull_request_draft_v1"
+        },
+        "scope": {
+          "const": "connector.github.pull_request.draft"
+        },
+        "agent_binding": {
+          "$ref": "#/$defs/agentBinding"
+        },
+        "runtime_binding": {
+          "$ref": "#/$defs/runtimeBinding"
+        },
+        "connector_binding": {
+          "$ref": "#/$defs/connectorBinding"
+        },
+        "access_mode": {
+          "const": "write"
+        },
+        "risk": {
+          "const": "high"
+        },
+        "side_effect_class": {
+          "const": "write"
+        },
+        "action": {
+          "const": "create_draft"
+        },
+        "resource": {
+          "$ref": "#/$defs/resource"
+        },
+        "payload_projection": {
+          "$ref": "#/$defs/payloadProjection"
+        },
+        "payload_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "approval_consumption": {
+          "$ref": "#/$defs/approvalReservation"
+        },
+        "dispatch_reservation": {
+          "$ref": "#/$defs/dispatchReservation"
+        },
+        "constraints": {
+          "$ref": "#/$defs/intentConstraints"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "intent_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "intentBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intent_id",
+        "intent_fingerprint_sha256",
+        "dispatch_reservation_id",
+        "dispatch_reservation_fingerprint_sha256"
+      ],
+      "properties": {
+        "intent_id": {
+          "type": "string",
+          "pattern": "^nreai_[a-f0-9]{32}$"
+        },
+        "intent_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "dispatch_reservation_id": {
+          "type": "string",
+          "pattern": "^nrdispatch_[a-f0-9]{32}$"
+        },
+        "dispatch_reservation_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "previousReceiptBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receipt_id",
+        "receipt_fingerprint_sha256"
+      ],
+      "properties": {
+        "receipt_id": {
+          "type": "string",
+          "pattern": "^nrear_[a-f0-9]{32}$"
+        },
+        "receipt_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "providerObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "id",
+        "url",
+        "state"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:/-]{1,256}$"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "observed_via",
+        "provider_object",
+        "reason_code"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "committed",
+            "failed",
+            "unknown"
+          ]
+        },
+        "observed_via": {
+          "enum": [
+            "dispatch_response",
+            "dispatch_response_lost",
+            "read_only_reconcile"
+          ]
+        },
+        "provider_object": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/providerObject"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason_code": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]{2,95}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "committed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "provider_object": {
+                "$ref": "#/$defs/providerObject"
+              },
+              "reason_code": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "provider_object": {
+                "type": "null"
+              },
+              "reason_code": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]{2,95}$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "receiptDispatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "attempt_count",
+        "max_attempts",
+        "at_most_once_dispatch_enforced",
+        "provider_idempotency",
+        "exactly_once_effect_claimed",
+        "automatic_write_retry_attempted"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "committed",
+            "failed",
+            "unknown"
+          ]
+        },
+        "attempt_count": {
+          "const": 1
+        },
+        "max_attempts": {
+          "const": 1
+        },
+        "at_most_once_dispatch_enforced": {
+          "const": true
+        },
+        "provider_idempotency": {
+          "$ref": "#/$defs/providerIdempotencyReceipt"
+        },
+        "exactly_once_effect_claimed": {
+          "const": false
+        },
+        "automatic_write_retry_attempted": {
+          "const": false
+        }
+      }
+    },
+    "reconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "attempted",
+        "provider_write_attempted",
+        "observation_fingerprint_sha256",
+        "resolved_from_unknown"
+      ],
+      "properties": {
+        "mode": {
+          "const": "read_only"
+        },
+        "attempted": {
+          "type": "boolean"
+        },
+        "provider_write_attempted": {
+          "const": false
+        },
+        "observation_fingerprint_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "resolved_from_unknown": {
+          "type": "boolean"
+        }
+      }
+    },
+    "approvalConsumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy",
+        "decision_id",
+        "decision_fingerprint_sha256",
+        "consumed",
+        "lease_actions_before",
+        "lease_actions_after"
+      ],
+      "properties": {
+        "policy": {
+          "const": "allow_once"
+        },
+        "decision_id": {
+          "type": "string",
+          "pattern": "^nrcapdec_[a-f0-9]{32}$"
+        },
+        "decision_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "consumed": {
+          "const": true
+        },
+        "lease_actions_before": {
+          "const": 0
+        },
+        "lease_actions_after": {
+          "const": 1
+        }
+      }
+    },
+    "auditProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_type",
+        "outcome_status",
+        "attribution_fingerprint_sha256",
+        "evidence_fingerprint_sha256",
+        "raw_content_included"
+      ],
+      "properties": {
+        "event_type": {
+          "const": "external_action_receipt"
+        },
+        "outcome_status": {
+          "enum": [
+            "committed",
+            "failed",
+            "unknown"
+          ]
+        },
+        "attribution_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "evidence_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "raw_content_included": {
+          "const": false
+        }
+      }
+    },
+    "reputationProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "eligible_for_reputation",
+        "score_delta_applied",
+        "score_delta",
+        "reason_code"
+      ],
+      "properties": {
+        "state": {
+          "const": "contract_only"
+        },
+        "eligible_for_reputation": {
+          "const": false
+        },
+        "score_delta_applied": {
+          "const": false
+        },
+        "score_delta": {
+          "const": 0
+        },
+        "reason_code": {
+          "const": "LIVE_REPUTATION_UPDATE_PROHIBITED"
+        }
+      }
+    },
+    "publicJwk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kty",
+        "crv",
+        "x"
+      ],
+      "properties": {
+        "kty": {
+          "const": "OKP"
+        },
+        "crv": {
+          "const": "Ed25519"
+        },
+        "x": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        }
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issuer",
+        "algorithm",
+        "key_id",
+        "public_key_jwk",
+        "key_thumbprint_sha256",
+        "signed_receipt_fingerprint_sha256",
+        "signed_at",
+        "signature_base64url"
+      ],
+      "properties": {
+        "issuer": {
+          "const": "noderooms"
+        },
+        "algorithm": {
+          "const": "Ed25519"
+        },
+        "key_id": {
+          "type": "string",
+          "pattern": "^nrreceiptkey_[a-z0-9][a-z0-9._-]{2,95}$"
+        },
+        "public_key_jwk": {
+          "$ref": "#/$defs/publicJwk"
+        },
+        "key_thumbprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "signed_receipt_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "signed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "signature_base64url": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        }
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "activation_state",
+        "live_enforce_allowed",
+        "receipt_kind",
+        "receipt_id",
+        "receipt_sequence",
+        "previous_receipt_binding",
+        "intent_binding",
+        "lease_binding",
+        "registry_version",
+        "policy_version",
+        "profile_id",
+        "scope",
+        "agent_binding",
+        "runtime_binding",
+        "connector_binding",
+        "access_mode",
+        "risk",
+        "side_effect_class",
+        "action",
+        "resource",
+        "payload_fingerprint_sha256",
+        "outcome",
+        "outcome_fingerprint_sha256",
+        "dispatch",
+        "reconciliation",
+        "approval_consumption",
+        "audit_projection",
+        "reputation_projection",
+        "recorded_at",
+        "receipt_fingerprint_sha256",
+        "attestation"
+      ],
+      "properties": {
+        "$schema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "$comment": {
+          "type": "string",
+          "minLength": 1
+        },
+        "contract_version": {
+          "const": "noderooms-external-action-receipt-v2"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "activation_state": {
+          "const": "contract_only"
+        },
+        "live_enforce_allowed": {
+          "const": false
+        },
+        "receipt_kind": {
+          "enum": [
+            "dispatch_outcome",
+            "reconciliation_outcome"
+          ]
+        },
+        "receipt_id": {
+          "type": "string",
+          "pattern": "^nrear_[a-f0-9]{32}$"
+        },
+        "receipt_sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 2
+        },
+        "previous_receipt_binding": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/previousReceiptBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "intent_binding": {
+          "$ref": "#/$defs/intentBinding"
+        },
+        "lease_binding": {
+          "$ref": "#/$defs/leaseBinding"
+        },
+        "registry_version": {
+          "type": "string",
+          "pattern": "^nrcr_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "policy_version": {
+          "type": "string",
+          "pattern": "^nrp_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "profile_id": {
+          "const": "nrscp_github_pull_request_draft_v1"
+        },
+        "scope": {
+          "const": "connector.github.pull_request.draft"
+        },
+        "agent_binding": {
+          "$ref": "#/$defs/agentBinding"
+        },
+        "runtime_binding": {
+          "$ref": "#/$defs/runtimeBinding"
+        },
+        "connector_binding": {
+          "$ref": "#/$defs/connectorBinding"
+        },
+        "access_mode": {
+          "const": "write"
+        },
+        "risk": {
+          "const": "high"
+        },
+        "side_effect_class": {
+          "const": "write"
+        },
+        "action": {
+          "const": "create_draft"
+        },
+        "resource": {
+          "$ref": "#/$defs/resource"
+        },
+        "payload_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "outcome": {
+          "$ref": "#/$defs/outcome"
+        },
+        "outcome_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "dispatch": {
+          "$ref": "#/$defs/receiptDispatch"
+        },
+        "reconciliation": {
+          "$ref": "#/$defs/reconciliation"
+        },
+        "approval_consumption": {
+          "$ref": "#/$defs/approvalConsumption"
+        },
+        "audit_projection": {
+          "$ref": "#/$defs/auditProjection"
+        },
+        "reputation_projection": {
+          "$ref": "#/$defs/reputationProjection"
+        },
+        "recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "receipt_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "attestation": {
+          "$ref": "#/$defs/attestation"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "receipt_kind": {
+                "const": "dispatch_outcome"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "receipt_sequence": {
+                "const": 1
+              },
+              "previous_receipt_binding": {
+                "type": "null"
+              },
+              "reconciliation": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/reconciliation"
+                  },
+                  {
+                    "properties": {
+                      "attempted": {
+                        "const": false
+                      },
+                      "observation_fingerprint_sha256": {
+                        "type": "null"
+                      },
+                      "resolved_from_unknown": {
+                        "const": false
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "receipt_sequence": {
+                "const": 2
+              },
+              "previous_receipt_binding": {
+                "$ref": "#/$defs/previousReceiptBinding"
+              },
+              "outcome": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/outcome"
+                  },
+                  {
+                    "properties": {
+                      "status": {
+                        "enum": [
+                          "committed",
+                          "failed"
+                        ]
+                      },
+                      "observed_via": {
+                        "const": "read_only_reconcile"
+                      }
+                    }
+                  }
+                ]
+              },
+              "reconciliation": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/reconciliation"
+                  },
+                  {
+                    "properties": {
+                      "attempted": {
+                        "const": true
+                      },
+                      "observation_fingerprint_sha256": {
+                        "$ref": "#/$defs/sha256"
+                      },
+                      "resolved_from_unknown": {
+                        "const": true
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

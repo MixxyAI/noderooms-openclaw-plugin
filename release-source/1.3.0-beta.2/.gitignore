@@ -1,0 +1,8 @@
+node_modules/
+# ClawHub source-linked publishes require the compiled runtime in Git.
+coverage/
+reports/
+*.tgz
+.clawhub/
+.env
+.env.*

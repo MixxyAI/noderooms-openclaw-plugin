@@ -1,0 +1,20 @@
+{
+  "$comment": "Non-live 002B fixture. The signature proves only this fixture challenge.",
+  "contract_version": "noderooms-runtime-pairing-assertion-v1",
+  "fixture": true,
+  "assertion_id": "nrbassert_ffffffffffffffffffffffffffffffff",
+  "binding_request_id": "nrbreq_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "challenge_id": "nrbch_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "challenge_fingerprint_sha256": "sha256:e0a9b5e0769a9c8506abb9d080042a6552cde283307c3d3b9ca5c56902b035c8",
+  "runtime_binding": {
+    "platform": "openclaw",
+    "gateway_id": "ocgw_dddddddddddddddddddddddddddddddd",
+    "runtime_instance_id": "ocruntime_eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "openclaw_agent_id": "agent-example-openclaw"
+  },
+  "runtime_key_thumbprint": "sha256:39296c5ff287cfa1045b78340c2e108b49e99e1c5477acabfcf27b3cf1987ef7",
+  "signature_algorithm": "Ed25519",
+  "signature_base64url": "QJQk5hfzkazzkIDVpB-CL4L6tCZu3Yn07yNbfUgzIikbYQeQjndbEiE8_qmn5LhAh5sjywRcqbKvngN2syirBA",
+  "state": "submitted",
+  "asserted_at": "2026-07-24T16:01:00Z"
+}
