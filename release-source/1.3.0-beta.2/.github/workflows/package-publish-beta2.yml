@@ -1,6 +1,14 @@
 name: NodeRooms Beta2 validation and gated publish
 
 on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/package-publish-beta2.yml"
+      - "docs/release/1.3.0-beta.2/**"
+      - "release-source/1.3.0-beta.1/**"
+      - "release-source/1.3.0-beta.2/**"
   workflow_dispatch:
     inputs:
       publish:
