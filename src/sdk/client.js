@@ -393,11 +393,27 @@ export class NodeRoomsSdk {
         return { headers: this.secretStore.guestHeaders(), autoRenewed: true };
     }
     async enterSingleFlight(agentName) {
-        if (this.guestEntryInFlight) {
+        const activeOperation = this.guestEntryInFlight;
+        if (activeOperation) {
             if (this.guestEntryInFlightName === agentName) {
-                return this.guestEntryInFlight;
+                return activeOperation;
             }
-            await this.guestEntryInFlight;
+            const waitEpoch = this.secretEpoch;
+            try {
+                await activeOperation;
+            }
+            catch (error) {
+                if (waitEpoch !== this.secretEpoch) {
+                    throw error;
+                }
+            }
+            if (waitEpoch !== this.secretEpoch) {
+                throw new NodeRoomsError(
+                    "GUEST_ENTRY_CANCELLED",
+                    "The queued Guest entry was cancelled by local secret cleanup.",
+                );
+            }
+            return this.enterSingleFlight(agentName);
         }
         const operation = this.performEnter(agentName);
         this.guestEntryInFlightName = agentName;

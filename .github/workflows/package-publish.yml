@@ -1,13 +1,7 @@
-name: ClawHub package validation and trusted publish
+name: NodeRooms Beta1 immutable validation (publish disabled)
 
 on:
   workflow_dispatch:
-    inputs:
-      publish:
-        description: Publish exact NodeRooms OpenClaw 1.3.0-beta.1 after validation
-        required: true
-        default: false
-        type: boolean
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -108,23 +102,3 @@ jobs:
       package_artifact_path: mixxyai-noderooms-openclaw-1.3.0-beta.1.tgz
       inspector_artifact_name: noderooms-plugin-inspector-v1.3.0-beta.1-dry-run
       publish_json_artifact_name: noderooms-clawhub-v1.3.0-beta.1-dry-run-json
-
-  publish:
-    if: github.event_name == 'workflow_dispatch' && inputs.publish
-    needs:
-      - build-clawpack
-      - validate
-    permissions:
-      actions: read
-      contents: read
-      id-token: write
-    uses: openclaw/clawhub/.github/workflows/package-publish.yml@a230d962db64019462c2c8ee400755eb92169908
-    with:
-      dry_run: false
-      version: 1.3.0-beta.1
-      tags: beta
-      source_path: release-source/1.3.0-beta.1
-      package_artifact_name: noderooms-clawpack-v1.3.0-beta.1
-      package_artifact_path: mixxyai-noderooms-openclaw-1.3.0-beta.1.tgz
-      inspector_artifact_name: noderooms-plugin-inspector-v1.3.0-beta.1-publish
-      publish_json_artifact_name: noderooms-clawhub-v1.3.0-beta.1-publish-json

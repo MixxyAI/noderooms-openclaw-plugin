@@ -42,7 +42,7 @@ test("package and manifest versions match the Beta.2 release candidate", () => {
     assert.equal(manifest.version, pkg.version);
 });
 
-test("immutable Beta.1 publish workflow remains pinned to its exact source and hash", () => {
+test("immutable Beta.1 workflow remains pinned and validation-only", () => {
     assert.match(
         beta1PublishWorkflow,
         /RELEASE_SOURCE_PATH: release-source\/1\.3\.0-beta\.1/,
@@ -52,6 +52,12 @@ test("immutable Beta.1 publish workflow remains pinned to its exact source and h
         /RELEASE_PACKAGE_SHA256: 27f9fa2a5d4f3af9ed5aa984d6c8b260c9298f0292749fa698839c70e256ea27/,
     );
     assert.doesNotMatch(beta1PublishWorkflow, /1\.3\.0-beta\.2/);
+    assert.match(
+        beta1PublishWorkflow,
+        /name: NodeRooms Beta1 immutable validation \(publish disabled\)/,
+    );
+    assert.doesNotMatch(beta1PublishWorkflow, /^\s{2}publish:\s*$/m);
+    assert.doesNotMatch(beta1PublishWorkflow, /dry_run:\s*false/);
 });
 
 test("Beta.2 publication workflow fails closed while external release gates are open", () => {
@@ -66,12 +72,39 @@ test("Beta.2 publication workflow fails closed while external release gates are 
             .filter((gate) => gate.blocking && gate.status !== "PASS")
             .map((gate) => [gate.id, gate.status]),
     );
-    assert.equal(blockers.get("exact_clean_clawhub_install"), "PENDING");
+    assert.equal(
+        blockers.get("clawhub_remote_dry_run_validation"),
+        "PENDING",
+    );
     assert.equal(blockers.get("independent_external_pretest"), "PENDING");
     assert.equal(
         blockers.get("public_profile_truthfully_shows_unverified_guest"),
         "FAIL",
     );
+    assert.equal(
+        beta2ReleaseGate.gates.find(
+            (gate) => gate.id === "agent_local_guest_entry_serialization",
+        )?.status,
+        "PASS",
+    );
+    for (const id of [
+        "openclaw_host_dependency_audit",
+        "locked_dependency_tree_integrity",
+    ]) {
+        const advisory = beta2ReleaseGate.gates.find((gate) => gate.id === id);
+        assert.equal(advisory?.blocking, false);
+        assert.equal(advisory?.status, "UPSTREAM_WARN");
+    }
+    for (const id of [
+        "exact_clean_clawhub_install_post_publish",
+        "clawhub_listing_truth_check_post_publish",
+    ]) {
+        const postPublish = beta2ReleaseGate.gates.find(
+            (gate) => gate.id === id,
+        );
+        assert.equal(postPublish?.blocking, false);
+        assert.equal(postPublish?.status, "POST_PUBLISH_PENDING");
+    }
 
     assert.match(
         beta2PublishWorkflow,

@@ -18,6 +18,9 @@
   read, and cross-Agent commit fail closed before credential use or side
   effects.
 - Scoped trust-lease inspection and policy decisions to the active Agent.
+- Serialized every Agent-local Guest entry operation: matching names share one
+  in-flight request, differing names queue, and Gateway secret cleanup cancels
+  both active and queued entry work.
 - Added deterministic 2-Agent and concurrent 9-Agent isolation tests, including
   nine distinct runtime IDs, keys, Guest Passes, provider sessions, and run
   leases.

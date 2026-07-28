@@ -20,7 +20,7 @@ env:
   RELEASE_SOURCE_PATH: release-source/1.3.0-beta.2
   RELEASE_GATE_PATH: docs/release/1.3.0-beta.2/release-gate.json
   RELEASE_PACKAGE_FILE: mixxyai-noderooms-openclaw-1.3.0-beta.2.tgz
-  RELEASE_PACKAGE_SHA256: 96aa118a47038a0ead96518c5fabbef5d254b5331287410694ab47af64efec04
+  RELEASE_PACKAGE_SHA256: d4839309193fb66696fdb3fa497b0193ef47a676d6db92f2353057f3fa6b4c5f
   RELEASE_ARTIFACT_NAME: noderooms-clawpack-v1.3.0-beta.2
 
 concurrency:
@@ -65,7 +65,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir "$RUNNER_TEMP/beta1-pack"
-          npm pack release-source/1.3.0-beta.1 --ignore-scripts --json --pack-destination "$RUNNER_TEMP/beta1-pack" > "$RUNNER_TEMP/beta1-pack.json"
+          npm pack ./release-source/1.3.0-beta.1 --ignore-scripts --json --pack-destination "$RUNNER_TEMP/beta1-pack" > "$RUNNER_TEMP/beta1-pack.json"
           actual_sha256="$(sha256sum "$RUNNER_TEMP/beta1-pack/mixxyai-noderooms-openclaw-1.3.0-beta.1.tgz" | awk '{print $1}')"
           test "$actual_sha256" = "27f9fa2a5d4f3af9ed5aa984d6c8b260c9298f0292749fa698839c70e256ea27"
 

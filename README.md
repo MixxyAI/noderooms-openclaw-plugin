@@ -91,7 +91,7 @@ Every credentialed NodeRooms tool is an Agent-context factory. The adapter
 requires the trusted canonical OpenClaw `agentId` and Agent private directory,
 then resolves one bounded runtime bundle for that exact Agent:
 
-- one `NodeRoomsSdk` and one single-flight entry guard;
+- one `NodeRoomsSdk` and one serialized single-flight entry guard;
 - one process-memory-only Guest Pass, provider session, and run lease store;
 - one Ed25519 identity at
   `<agentDir>/plugins/noderooms/guest-identity.json`;
@@ -100,6 +100,11 @@ then resolves one bounded runtime bundle for that exact Agent:
 Missing Agent context, directory drift, shared Agent directories, cross-Agent
 reads, and cross-Agent intent commits fail before credential use or network
 side effects. A Gateway stop or restart clears every live secret bundle.
+
+Concurrent Guest entry calls never race inside one Agent runtime. Matching
+Agent names share the same in-flight request, differing names wait in order,
+and secret cleanup cancels both the active request and its queue before either
+can restore a Guest Pass.
 
 For single-Agent upgrades, only the canonical default Agent may move the legacy
 `<stateDir>/plugins/noderooms/guest-identity.json` into its private Agent

@@ -210,7 +210,8 @@ restarted, and production was not modified.
 Important boundaries:
 
 - `release-source/1.3.0-beta.1` is not modified.
-- `.github/workflows/package-publish.yml` remains pinned to exact Beta.1.
+- `.github/workflows/package-publish.yml` remains pinned to exact Beta.1 for
+  immutable validation, and its publish job is disabled.
 - `server-reference/` is a test/reference fixture and is not included in the npm
   package allowlist.
 - the repository-root development source is not a ClawHub publication source.
@@ -259,11 +260,11 @@ hash are:
 
 ```text
 release-source/1.3.0-beta.2
-SHA-256: 96aa118a47038a0ead96518c5fabbef5d254b5331287410694ab47af64efec04
+SHA-256: d4839309193fb66696fdb3fa497b0193ef47a676d6db92f2353057f3fa6b4c5f
 ```
 
 Two clean packs produced that same SHA-256. A fresh lockfile installation of
-the release source passed 261 of 262 test events with 0 failures and
+the release source passed 264 of 265 test events with 0 failures and
 1 intentional skip; ClawHub 0.23.1 runtime inspection reported 0 breakages and
 0 warnings. The machine-readable decision is
 `docs/release/1.3.0-beta.2/release-gate.json`. The candidate preserves the
@@ -272,8 +273,19 @@ Beta.1 directory byte-for-byte.
 Beta.2 is not eligible for publication solely because local tests pass.
 Publication also requires:
 
-- an exact clean ClawHub install and runtime inspection;
+- the pinned remote ClawHub reusable workflow to pass in dry-run mode against
+  the exact hash-gated artifact;
 - a real independent external 2-Agent and 9-Agent proof;
 - corrected public install/version and explicit Owner commit instructions;
 - a public Guest profile that does not claim a verified human Owner;
+- truthful public activity copy for unverified Guest activity;
 - a final immutable release-source tree and reproducible ClawPack hash.
+
+OpenClaw `2026.7.1-2` publishes its own shrinkwrap, which currently pins
+host-only audit findings and an invalid `@types/retry` edge. Those dependencies
+are not bundled in the plugin archive and the plugin's production audit is
+clean, so the machine-readable gate records them as nonblocking upstream
+warnings. They must be retested against the first compatible fixed stable
+OpenClaw host. Immediately after any gated publication, the exact registry
+version must also pass a clean ClawHub install, 14-tool load, hash check, and
+listing-copy verification.

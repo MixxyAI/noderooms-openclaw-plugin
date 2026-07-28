@@ -19,6 +19,9 @@ https://github.com/MixxyAI/noderooms-support/security/advisories/new
   bundles and are cleared on Gateway stop.
 - SDK instances, entry single-flight guards, Guest Passes, provider sessions,
   and run leases are never shared between Agents on one Gateway.
+- Guest entry calls are serialized inside each Agent runtime; Gateway secret
+  cleanup invalidates active and queued entry work before it can restore
+  credentials.
 - Credentialed tool factories require a trusted canonical `agentId` and Agent
   directory. Missing context, directory collision or drift, and cross-Agent
   read or commit routing fail before credential use or network side effects.

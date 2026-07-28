@@ -269,3 +269,100 @@ test("ambiguous HTTP 503 with unavailable status becomes unknown and never retri
   assert.equal(posts, 1);
   assert.equal(statusReads, 1);
 });
+
+test("different Agent-local Guest entry names remain strictly serialized", async () => {
+  const names = ["Queue Alpha", "Queue Beta", "Queue Gamma"];
+  const indexByName = new Map(names.map((name, index) => [name, index + 1]));
+  const started = [];
+  let activeEntries = 0;
+  let maxActiveEntries = 0;
+  const sdk = createSdk(async (url, init = {}) => {
+    assert.equal(url, ENDPOINTS.guestEnter);
+    const payload = JSON.parse(init.body);
+    const index = indexByName.get(payload.agent_name);
+    assert.ok(index);
+    started.push(payload.agent_name);
+    activeEntries += 1;
+    maxActiveEntries = Math.max(maxActiveEntries, activeEntries);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    activeEntries -= 1;
+    return {
+      ...guestEnter(),
+      guest_id: `nrog-${String(index).repeat(32)}`,
+      guest_pass: `nrguest_${String(index).repeat(64)}`,
+      agent_id: index,
+      agent_slug: `queue-agent-${index}`,
+      agent_name: payload.agent_name,
+    };
+  });
+
+  const results = await Promise.all(names.map((agentName) =>
+    sdk.enter({ agentName })));
+
+  assert.equal(maxActiveEntries, 1);
+  assert.deepEqual(started, names);
+  assert.deepEqual(
+    results.map((result) => result.agent_name),
+    names,
+  );
+});
+
+test("matching Agent-local Guest entry names share one in-flight request", async () => {
+  let entryRequests = 0;
+  const sdk = createSdk(async (url) => {
+    assert.equal(url, ENDPOINTS.guestEnter);
+    entryRequests += 1;
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    return guestEnter();
+  });
+
+  const results = await Promise.all(Array.from(
+    { length: 3 },
+    () => sdk.enter({ agentName: "OpenClaw Guest Agent" }),
+  ));
+
+  assert.equal(entryRequests, 1);
+  assert.equal(results.length, 3);
+  assert.ok(results.every((result) =>
+    result.agent_slug === "openclaw-guest-test"));
+});
+
+test("secret cleanup cancels active and queued Agent-local Guest entries", async () => {
+  let releaseEntry;
+  let signalEntryStarted;
+  let entryRequests = 0;
+  const entryStarted = new Promise((resolve) => {
+    signalEntryStarted = resolve;
+  });
+  const entryReleased = new Promise((resolve) => {
+    releaseEntry = resolve;
+  });
+  const sdk = createSdk(async (url) => {
+    assert.equal(url, ENDPOINTS.guestEnter);
+    entryRequests += 1;
+    signalEntryStarted();
+    await entryReleased;
+    return guestEnter();
+  });
+
+  const active = sdk.enter({ agentName: "Cleanup Alpha" });
+  await entryStarted;
+  const queued = sdk.enter({ agentName: "Cleanup Beta" });
+  const activeRejected = assert.rejects(
+    active,
+    (error) => error?.code === "GUEST_ENTRY_CANCELLED",
+  );
+  const queuedRejected = assert.rejects(
+    queued,
+    (error) => error?.code === "GUEST_ENTRY_CANCELLED",
+  );
+  sdk.clearSecrets();
+  releaseEntry();
+
+  await Promise.all([activeRejected, queuedRejected]);
+  assert.equal(entryRequests, 1);
+  assert.equal(
+    sdk.safeRuntimeState().guest_pass_held_in_memory,
+    false,
+  );
+});

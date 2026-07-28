@@ -405,7 +405,7 @@ test("receipt validation rejects retry, exactly-once overclaim, and binding mism
     }
 });
 
-test("contract CI remains read-only and the Beta.1 publication workflow remains pinned", async () => {
+test("contract CI remains read-only and Beta.1 is pinned to validation-only", async () => {
     const ci = await readFile(new URL("../.github/workflows/plugin-ci.yml", import.meta.url), "utf8");
     assert.match(ci, /permissions:\s*\n\s+contents:\s+read/);
     assert.doesNotMatch(ci, /contents:\s+write/);
@@ -416,8 +416,15 @@ test("contract CI remains read-only and the Beta.1 publication workflow remains 
     );
     assert.equal(
         createHash("sha256").update(publishWorkflow).digest("hex"),
-        "111b196aa36929eb2d8f49aaf70011455bbbf010dc44df5eb7073f95cafde248",
+        "676e3b91c53322854de6c1b6b44a588d4bde767e4b51a246bc0ea16d5d39b2fe",
     );
+    const publishWorkflowText = publishWorkflow.toString("utf8");
+    assert.match(
+        publishWorkflowText,
+        /name:\s*NodeRooms Beta1 immutable validation \(publish disabled\)/,
+    );
+    assert.doesNotMatch(publishWorkflowText, /^\s{2}publish:\s*$/m);
+    assert.doesNotMatch(publishWorkflowText, /dry_run:\s*false/);
 
     const manifest = await readJson("openclaw.plugin.json");
     assert.deepEqual(
