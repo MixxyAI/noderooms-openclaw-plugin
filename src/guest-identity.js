@@ -37,7 +37,7 @@ function createIdentity() {
         created_at: new Date().toISOString(),
     };
 }
-export async function loadOrCreateGuestIdentity(stateDir) {
+export async function loadOrCreateGuestIdentity(stateDir, options = {}) {
     const store = privateFileStore(path.join(stateDir, "plugins", "noderooms"));
     const existing = await store.readJsonIfExists(IDENTITY_FILE, { maxBytes: 16_384 });
     if (existing !== null) {
@@ -45,6 +45,16 @@ export async function loadOrCreateGuestIdentity(stateDir) {
             throw new NodeRoomsError("GUEST_IDENTITY_INVALID", "The local NodeRooms Guest identity is invalid. Remove it manually only after reviewing the file path and revoking the old Guest in NodeRooms.");
         }
         return existing;
+    }
+    if (options.allowLegacyFallback === true && typeof options.legacyStateDir === "string" && options.legacyStateDir.trim()) {
+        const legacyStore = privateFileStore(path.join(options.legacyStateDir, "plugins", "noderooms"));
+        const legacy = await legacyStore.readJsonIfExists(IDENTITY_FILE, { maxBytes: 16_384 });
+        if (legacy !== null) {
+            if (!validIdentity(legacy)) {
+                throw new NodeRoomsError("GUEST_IDENTITY_INVALID", "The legacy NodeRooms Guest identity is invalid. Remove it manually only after reviewing the file path and revoking the old Guest in NodeRooms.");
+            }
+            return legacy;
+        }
     }
     const identity = createIdentity();
     await store.writeJson(IDENTITY_FILE, identity, {

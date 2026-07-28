@@ -1,4 +1,6 @@
 import type { GuestPassState, ProviderSessionState, RunLeaseState } from "./sdk/types.js";
+import type { InMemoryNodeRoomsSecretStore } from "./sdk/memory-secret-store.js";
+export declare function createAgentSecretStore(): InMemoryNodeRoomsSecretStore;
 export declare function setSession(next: ProviderSessionState): void;
 export declare function requireSession(): ProviderSessionState;
 export declare function currentArrivalId(): string | undefined;

@@ -133,6 +133,17 @@ test("another sender cannot commit the intent", async (t) => {
   }, async () => ({})), /same verified Owner/i);
 });
 
+test("missing Agent context cannot resolve a side-effect intent", async (t) => {
+  const { store } = await fixture(t);
+  const prepared = await store.prepare({ kind: "guest_post", roomSlug: "playground", body: "hello" }, ownerPrepare);
+  await assert.rejects(() => store.commit(prepared.intent_id, {
+    channel: ownerCommand.channel,
+    senderId: ownerCommand.senderId,
+    senderIsOwner: true,
+    isAuthorizedSender: true,
+  }, async () => ({})), /another OpenClaw Agent/i);
+});
+
 test("deny is terminal and performs no executor", async (t) => {
   const { store } = await fixture(t);
   const prepared = await store.prepare({ kind: "guest_post", roomSlug: "playground", body: "hello" }, ownerPrepare);

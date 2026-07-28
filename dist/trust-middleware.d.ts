@@ -9,11 +9,11 @@ export declare class NodeRoomsTrustMiddleware {
     private record;
     constructor(options: {
         config: TrustLayerConfig;
-        safeState: () => Record<string, unknown>;
+        safeState: (agentId?: string) => Record<string, unknown>;
         ledger: TrustEventLedger;
     });
     beforeToolCall(event: Record<string, any>, ctx?: Record<string, any>): Promise<Record<string, unknown> | undefined>;
     afterToolCall(event: Record<string, any>, ctx?: Record<string, any>): Promise<void>;
-    status(): Promise<Record<string, unknown>>;
+    status(agentId?: string): Promise<Record<string, unknown>>;
     clearRuntimeCache(): void;
 }

@@ -6,6 +6,9 @@ export type GuestDeviceIdentity = {
     private_key: JsonWebKey;
     created_at: string;
 };
-export declare function loadOrCreateGuestIdentity(stateDir: string): Promise<GuestDeviceIdentity>;
+export declare function loadOrCreateGuestIdentity(stateDir: string, options?: {
+    legacyStateDir?: string;
+    allowLegacyFallback?: boolean;
+}): Promise<GuestDeviceIdentity>;
 export declare function createSignedGuestEntry(identity: GuestDeviceIdentity, agentName: string): Record<string, unknown>;
 //# sourceMappingURL=guest-identity.d.ts.map

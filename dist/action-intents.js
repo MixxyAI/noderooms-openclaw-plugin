@@ -51,7 +51,7 @@ function assertCommandOwner(owner) {
 }
 function assertSameOwner(intent, owner) {
     assertCommandOwner(owner);
-    if (owner.agentId && owner.agentId !== intent.owner.agentId) {
+    if (owner.agentId !== intent.owner.agentId) {
         throw new NodeRoomsError("ACTION_INTENT_AGENT_MISMATCH", "The NodeRooms action intent belongs to another OpenClaw Agent.");
     }
     if (owner.channel !== intent.owner.channel || owner.senderId !== intent.owner.requesterSenderId) {

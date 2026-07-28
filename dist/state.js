@@ -1,6 +1,10 @@
 import { createInMemorySecretStore } from "./sdk/memory-secret-store.js";
 
-const store = createInMemorySecretStore();
+export function createAgentSecretStore() {
+    return createInMemorySecretStore();
+}
+
+const store = createAgentSecretStore();
 
 export function setSession(next) {
     store.setSession(next);
