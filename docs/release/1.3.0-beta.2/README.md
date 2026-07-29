@@ -2,34 +2,28 @@
 
 ## Current decision
 
-`HOLD` — the candidate may be built and dry-run validated, but it must not be
-published while any blocking entry in `release-gate.json` is not `PASS`.
+`PASS` — every prepublication blocking entry in `release-gate.json` is now
+`PASS` for the exact artifact below. `publication_allowed=true` authorizes only
+the repository's manual, confirmation-gated `beta` workflow after PR #15 is
+merged. It does not publish by itself, authorize PR #14, promote a stable tag,
+or automate an Owner decision.
 
-The implementation-side isolation gates pass locally. Publication remains
-blocked by:
+The exact CI runs, independent black-box result, cache-bypassed public-origin
+checks, safety boundary, and remaining post-publication checks are recorded in
+`release-closure.json`.
 
-1. the pinned ClawHub reusable workflow completing a remote dry-run against
-   the hash-gated artifact;
-2. an independent external two-Agent and nine-Agent pre-test;
-3. truthful public NodeRooms UX that labels the OpenClaw Guest as
-   `UNVERIFIED` and does not imply a verified human Owner;
-4. exact public Beta.2 installation and `/noderooms commit <intent_id>`
-   instructions;
-5. public activity copy that does not claim unverified Guest activity can only
-   come from verified Agent flows.
-
-## Local proof recorded on 2026-07-28
+## Release proof recorded on 2026-07-29
 
 - supported runtime: Node.js 24.18.0;
 - exact candidate SHA-256:
   `909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2`;
-- full test suite: 265 test events, 264 passes, 0 failures,
-  1 intentional skip;
+- GitHub plugin CI: 265 tests, 265 passes, 0 failures, 0 skips;
+- pinned remote ClawHub reusable-workflow dry-run: PASS with
+  `version=1.3.0-beta.2`, `tags=beta`, and no registry modification;
 - production dependency audit: 0 vulnerabilities;
 - ClawHub 0.23.1 runtime inspector: PASS, 0 breakages, 0 warnings;
-- exact candidate archive installed through OpenClaw `npm-pack:` semantics
-  into a fresh isolated state, loaded all 14 tools with no diagnostics, and
-  produced a byte-identical installed `dist/index.js`;
+- exact candidate archive installed into two fresh isolated OpenClaw hosts,
+  loaded all 14 tools with no diagnostics, and ran only installed TGZ code;
 - deterministic two-Agent isolation: PASS;
 - concurrent nine-Agent isolation: PASS;
 - official OpenClaw loader two-Agent execution: PASS;
@@ -37,6 +31,10 @@ blocked by:
   cancellation: PASS;
 - legacy default-Agent identity move-only migration: PASS;
 - restart secret destruction and cross-Agent rejection: PASS;
+- cache-bypassed unverified Guest profile plus verified Owner control profile:
+  PASS;
+- exact public Beta.2 install and explicit Owner commit documentation: PASS;
+- truthful public Guest activity copy: PASS;
 - immutable Beta1 source: unchanged.
 
 ## Upstream host dependency advisory
@@ -77,9 +75,9 @@ tokens, or private Ed25519 key material.
 
 ## Public copy required before release
 
-Until publication, the integration page must say that Beta2 is unavailable
-and must not show an unversioned install command as a working release path.
-After every gate passes, the install command must pin:
+The prepublication origin check confirmed that the integration page says
+Beta2 is unavailable and does not show an unversioned install command as a
+working release path. The release command is pinned to:
 
 ```text
 openclaw.cmd plugins install clawhub:@mixxyai/noderooms-openclaw@1.3.0-beta.2
@@ -93,3 +91,5 @@ Immediately after a gated publication, a post-publication check must install
 the exact `1.3.0-beta.2` version through ClawHub into a fresh OpenClaw state,
 verify the registry artifact hash, load all 14 tools, and verify that the
 ClawHub listing renders the candidate README and truthful Owner commit flow.
+The NodeRooms public manifest and pages must then change only their release
+availability state from prepublish hold to published.

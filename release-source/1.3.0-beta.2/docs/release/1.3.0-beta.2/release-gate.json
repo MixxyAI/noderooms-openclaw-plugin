@@ -7,9 +7,9 @@
     "package_file": "mixxyai-noderooms-openclaw-1.3.0-beta.2.tgz",
     "package_sha256": "909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2"
   },
-  "evaluated_on": "2026-07-28",
-  "status": "HOLD",
-  "publication_allowed": false,
+  "evaluated_on": "2026-07-29",
+  "status": "PASS",
+  "publication_allowed": true,
   "policy": "Every blocking gate must be PASS before publication_allowed may become true.",
   "immutable_predecessor": {
     "source_path": "release-source/1.3.0-beta.1",
@@ -104,8 +104,8 @@
     {
       "id": "clean_local_clawpack_archive_install",
       "blocking": true,
-      "status": "PENDING",
-      "evidence": "The final 909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2 archive must complete a fresh isolated OpenClaw install and 14-tool runtime inspection before release closure."
+      "status": "PASS",
+      "evidence": "release-closure.json: the exact 909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2 archive completed two fresh installs under OpenClaw 2026.7.1-2, loaded 14 tools through the official loader, and produced zero diagnostics."
     },
     {
       "id": "production_dependency_audit",
@@ -128,8 +128,8 @@
     {
       "id": "clawhub_remote_dry_run_validation",
       "blocking": true,
-      "status": "PENDING",
-      "evidence": "The pinned openclaw/clawhub reusable workflow must complete with dry_run: true against the exact hash-gated artifact on the repair branch."
+      "status": "PASS",
+      "evidence": "GitHub Actions run 30409798329 completed successfully against PR #15 merge SHA e75078547becee725400fa5268bd974e9b624659 with dry_run=true, version=1.3.0-beta.2, tags=beta, the exact hash-gated artifact, and 0 inspector breakages or warnings."
     },
     {
       "id": "exact_clean_clawhub_install_post_publish",
@@ -140,14 +140,14 @@
     {
       "id": "independent_external_pretest",
       "blocking": true,
-      "status": "PENDING",
-      "evidence": "A tester independent from the implementation must record the exact package SHA-256 and acceptance results."
+      "status": "PASS",
+      "evidence": "release-closure.json: external black-box run external-1785283705731-140 used only two clean installs of the exact TGZ plus the official OpenClaw loader; 2-Agent and concurrent 9-Agent isolation, restart, reinstall, rotation, cross-Agent read and commit rejection passed with 0 production network calls and 0 public writes."
     },
     {
       "id": "public_profile_truthfully_shows_unverified_guest",
       "blocking": true,
-      "status": "FAIL",
-      "evidence": "Live verification on 2026-07-28: https://noderooms.com/noderooms-agent/?agent=openclaw-guest-7191525e0ddc704e still displays Verified Human Owner and OWNER verified for the unverified Guest."
+      "status": "PASS",
+      "evidence": "Cache-bypassed origin verification on 2026-07-29: the OpenClaw Guest profile renders UNVERIFIED OPENCLAW GUEST twice and NO VERIFIED OWNER, without a Verified Human Owner heading or OWNER verified badge; the verified agent-zsolt control profile retains its Verified Human Owner heading."
     },
     {
       "id": "candidate_readme_exact_version_and_owner_commit_flow",
@@ -158,14 +158,14 @@
     {
       "id": "public_exact_version_and_owner_commit_flow_documented",
       "blocking": true,
-      "status": "FAIL",
-      "evidence": "Live verification on 2026-07-28: the NodeRooms integration page still advertises an unversioned install and does not document the required /noderooms commit <intent_id> Owner flow."
+      "status": "PASS",
+      "evidence": "Cache-bypassed origin verification on 2026-07-29: the Integrations and Developers pages plus both machine manifests pin openclaw.cmd plugins install clawhub:@mixxyai/noderooms-openclaw@1.3.0-beta.2 and the exact /noderooms commit <intent_id> verified-Owner flow."
     },
     {
       "id": "public_activity_copy_truthful_for_unverified_guest",
       "blocking": true,
-      "status": "FAIL",
-      "evidence": "Live verification on 2026-07-28: https://noderooms.com/noderooms-post/?post_id=207 says only verified Agent flows create activity while displaying activity from UNVERIFIED OPENCLAW GUEST."
+      "status": "PASS",
+      "evidence": "Cache-bypassed origin verification on 2026-07-29: post #207, the global feed, and the room feed explicitly distinguish verified Agent activity from Owner-committed UNVERIFIED OPENCLAW GUEST intents."
     },
     {
       "id": "clawhub_listing_truth_check_post_publish",

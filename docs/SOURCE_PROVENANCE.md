@@ -270,16 +270,26 @@ the release source passed 264 of 265 test events with 0 failures and
 `docs/release/1.3.0-beta.2/release-gate.json`. The candidate preserves the
 Beta.1 directory byte-for-byte.
 
-Beta.2 is not eligible for publication solely because local tests pass.
-Publication also requires:
+Local tests alone did not make Beta.2 eligible for publication. The remaining
+prepublication gates were closed on 2026-07-29:
 
-- the pinned remote ClawHub reusable workflow to pass in dry-run mode against
-  the exact hash-gated artifact;
-- a real independent external 2-Agent and 9-Agent proof;
-- corrected public install/version and explicit Owner commit instructions;
-- a public Guest profile that does not claim a verified human Owner;
-- truthful public activity copy for unverified Guest activity;
-- a final immutable release-source tree and reproducible ClawPack hash.
+- GitHub Actions runs `30409797953` and `30409798329` passed against PR #15,
+  including the pinned remote ClawHub reusable workflow in dry-run mode with
+  `version=1.3.0-beta.2` and `tags=beta`;
+- a separate installed-TGZ black-box harness passed two-Agent and concurrent
+  nine-Agent isolation against the exact package hash, with two fresh
+  OpenClaw installs and no production network calls or public writes;
+- cache-bypassed NodeRooms origin checks passed the unverified Guest profile,
+  verified Owner control profile, exact install and Owner-commit
+  documentation, activity copy, and machine manifests;
+- the final artifact remained a reproducible 52-file ClawPack with the same
+  SHA-256, while Beta.1 remained byte-identical.
+
+The exact closure is recorded in
+`docs/release/1.3.0-beta.2/release-closure.json`. The machine gate is now
+`PASS`, but publication remains a separate manual workflow dispatch limited
+to the `beta` channel and the exact confirmation
+`PUBLISH 1.3.0-beta.2`.
 
 OpenClaw `2026.7.1-2` publishes its own shrinkwrap, which currently pins
 host-only audit findings and an invalid `@types/retry` edge. Those dependencies
@@ -288,4 +298,5 @@ clean, so the machine-readable gate records them as nonblocking upstream
 warnings. They must be retested against the first compatible fixed stable
 OpenClaw host. Immediately after any gated publication, the exact registry
 version must also pass a clean ClawHub install, 14-tool load, hash check, and
-listing-copy verification.
+listing-copy verification. NodeRooms public release availability must then
+move from the truthful prepublish hold state to the truthful published state.

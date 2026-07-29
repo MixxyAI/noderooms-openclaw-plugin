@@ -36,6 +36,13 @@ const beta2ReleaseGate = JSON.parse(await readFile(
     ),
     "utf8",
 ));
+const beta2ReleaseClosure = JSON.parse(await readFile(
+    new URL(
+        "../docs/release/1.3.0-beta.2/release-closure.json",
+        import.meta.url,
+    ),
+    "utf8",
+));
 
 test("package and manifest versions match the Beta.2 release candidate", () => {
     assert.equal(pkg.version, "1.3.0-beta.2");
@@ -60,33 +67,37 @@ test("immutable Beta.1 workflow remains pinned and validation-only", () => {
     assert.doesNotMatch(beta1PublishWorkflow, /dry_run:\s*false/);
 });
 
-test("Beta.2 publication workflow fails closed while external release gates are open", () => {
+test("Beta.2 permits only an explicitly confirmed beta publication after release closure", () => {
     assert.equal(beta2ReleaseGate.schema_version, "noderooms-release-gate-v1");
     assert.equal(beta2ReleaseGate.candidate.version, pkg.version);
-    assert.match(beta2ReleaseGate.candidate.package_sha256, /^[a-f0-9]{64}$/);
-    assert.equal(beta2ReleaseGate.status, "HOLD");
-    assert.equal(beta2ReleaseGate.publication_allowed, false);
+    assert.equal(
+        beta2ReleaseGate.candidate.package_sha256,
+        "909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2",
+    );
+    assert.equal(beta2ReleaseGate.status, "PASS");
+    assert.equal(beta2ReleaseGate.publication_allowed, true);
 
-    const blockers = new Map(
+    const blockers = beta2ReleaseGate.gates
+        .filter((gate) => gate.blocking && gate.status !== "PASS");
+    assert.deepEqual(blockers, []);
+
+    const blockingGates = new Map(
         beta2ReleaseGate.gates
-            .filter((gate) => gate.blocking && gate.status !== "PASS")
+            .filter((gate) => gate.blocking)
             .map((gate) => [gate.id, gate.status]),
     );
-    assert.equal(
-        blockers.get("clawhub_remote_dry_run_validation"),
-        "PENDING",
-    );
-    assert.equal(blockers.get("independent_external_pretest"), "PENDING");
-    assert.equal(
-        blockers.get("public_profile_truthfully_shows_unverified_guest"),
-        "FAIL",
-    );
-    assert.equal(
-        beta2ReleaseGate.gates.find(
-            (gate) => gate.id === "agent_local_guest_entry_serialization",
-        )?.status,
-        "PASS",
-    );
+    for (const id of [
+        "clean_local_clawpack_archive_install",
+        "clawhub_remote_dry_run_validation",
+        "independent_external_pretest",
+        "public_profile_truthfully_shows_unverified_guest",
+        "candidate_readme_exact_version_and_owner_commit_flow",
+        "public_exact_version_and_owner_commit_flow_documented",
+        "public_activity_copy_truthful_for_unverified_guest",
+        "agent_local_guest_entry_serialization",
+    ]) {
+        assert.equal(blockingGates.get(id), "PASS");
+    }
     for (const id of [
         "openclaw_host_dependency_audit",
         "locked_dependency_tree_integrity",
@@ -106,6 +117,69 @@ test("Beta.2 publication workflow fails closed while external release gates are 
         assert.equal(postPublish?.status, "POST_PUBLISH_PENDING");
     }
 
+    assert.equal(
+        beta2ReleaseClosure.schema_version,
+        "noderooms-release-closure-v1",
+    );
+    assert.equal(
+        beta2ReleaseClosure.candidate.package_sha256,
+        beta2ReleaseGate.candidate.package_sha256,
+    );
+    assert.equal(
+        beta2ReleaseClosure.github_actions.plugin_ci.conclusion,
+        "success",
+    );
+    assert.equal(
+        beta2ReleaseClosure.github_actions.beta2_validation_and_dry_run
+            .conclusion,
+        "success",
+    );
+    assert.equal(
+        beta2ReleaseClosure.github_actions.beta2_validation_and_dry_run
+            .dry_run,
+        true,
+    );
+    assert.deepEqual(
+        beta2ReleaseClosure.github_actions.beta2_validation_and_dry_run.tags,
+        ["beta"],
+    );
+    assert.equal(
+        beta2ReleaseClosure.independent_external_pretest.two_agent_verdict,
+        "PASS",
+    );
+    assert.equal(
+        beta2ReleaseClosure.independent_external_pretest.nine_agent_verdict,
+        "PASS",
+    );
+    assert.equal(
+        beta2ReleaseClosure.independent_external_pretest
+            .noderooms_production_network_calls,
+        0,
+    );
+    assert.equal(
+        beta2ReleaseClosure.independent_external_pretest
+            .production_public_writes,
+        0,
+    );
+    assert.equal(
+        beta2ReleaseClosure.public_origin_prepublish
+            .normal_login_registration_changed,
+        false,
+    );
+    assert.equal(
+        beta2ReleaseClosure.public_origin_prepublish
+            .separate_external_agent_entry,
+        true,
+    );
+    assert.equal(beta2ReleaseClosure.publication_scope.channel, "beta");
+    assert.equal(
+        beta2ReleaseClosure.publication_scope.stable_channel_allowed,
+        false,
+    );
+    assert.equal(beta2ReleaseClosure.decision.status, "PASS");
+    assert.equal(beta2ReleaseClosure.decision.publication_allowed, true);
+    assert.equal(beta2ReleaseClosure.decision.publication_completed, false);
+
     assert.match(
         beta2PublishWorkflow,
         new RegExp(
@@ -119,6 +193,10 @@ test("Beta.2 publication workflow fails closed while external release gates are 
     );
     assert.match(beta2PublishWorkflow, /g\.status!=="PASS"/);
     assert.match(beta2PublishWorkflow, /g\.publication_allowed!==true/);
+    assert.match(beta2PublishWorkflow, /dry_run:\s*true/);
+    assert.match(beta2PublishWorkflow, /dry_run:\s*false/);
+    assert.match(beta2PublishWorkflow, /version:\s*1\.3\.0-beta\.2/);
+    assert.match(beta2PublishWorkflow, /tags:\s*beta/);
 });
 
 test("public tool contract adds only the optional shadow binding tool", () => {
