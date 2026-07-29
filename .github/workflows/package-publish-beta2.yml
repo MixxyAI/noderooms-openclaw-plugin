@@ -65,7 +65,30 @@ jobs:
           test -f "$RELEASE_SOURCE_PATH/package.json"
           test -f "$RELEASE_SOURCE_PATH/openclaw.plugin.json"
           test -f "$RELEASE_GATE_PATH"
-          cmp "$RELEASE_GATE_PATH" "$RELEASE_SOURCE_PATH/$RELEASE_GATE_PATH"
+          test -f "$RELEASE_SOURCE_PATH/$RELEASE_GATE_PATH"
+          node --input-type=commonjs - "$RELEASE_GATE_PATH" "$RELEASE_SOURCE_PATH/$RELEASE_GATE_PATH" <<'NODE'
+          const fs = require("node:fs");
+          const gatePaths = process.argv.slice(2);
+          for (const gatePath of gatePaths) {
+            const gate = JSON.parse(fs.readFileSync(gatePath, "utf8"));
+            const blocked = gate.gates.filter(
+              (entry) => entry.blocking && entry.status !== "PASS",
+            );
+            if (
+              gate.schema_version !== "noderooms-release-gate-v1" ||
+              gate.candidate?.package !== "@mixxyai/noderooms-openclaw" ||
+              gate.candidate?.version !== process.env.RELEASE_VERSION ||
+              gate.candidate?.source_path !== process.env.RELEASE_SOURCE_PATH ||
+              gate.candidate?.package_file !== process.env.RELEASE_PACKAGE_FILE ||
+              gate.candidate?.package_sha256 !== process.env.RELEASE_PACKAGE_SHA256 ||
+              gate.status !== "PASS" ||
+              gate.publication_allowed !== true ||
+              blocked.length !== 0
+            ) {
+              throw new Error(`invalid Beta2 release gate: ${gatePath}`);
+            }
+          }
+          NODE
           node --input-type=commonjs -e 'const fs=require("node:fs");const p=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));const m=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));if(p.name!=="@mixxyai/noderooms-openclaw"||p.version!==process.env.RELEASE_VERSION||m.version!==p.version)process.exit(1);' "$RELEASE_SOURCE_PATH/package.json" "$RELEASE_SOURCE_PATH/openclaw.plugin.json"
 
       - name: Verify immutable Beta1 predecessor

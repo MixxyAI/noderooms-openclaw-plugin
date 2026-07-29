@@ -80,7 +80,7 @@ jobs:
           npm pack ./release-source/1.3.0-beta.1 --ignore-scripts --json --pack-destination "$RUNNER_TEMP/beta1-pack" > "$RUNNER_TEMP/beta1-pack.json"
           beta1_sha256="$(sha256sum "$RUNNER_TEMP/beta1-pack/mixxyai-noderooms-openclaw-1.3.0-beta.1.tgz" | awk '{print $1}')"
           test "$beta1_sha256" = "27f9fa2a5d4f3af9ed5aa984d6c8b260c9298f0292749fa698839c70e256ea27"
-          npm pack "$BETA2_SOURCE_PATH" --ignore-scripts --json --pack-destination "$RUNNER_TEMP/beta2-pack" > "$RUNNER_TEMP/beta2-pack.json"
+          npm pack "./$BETA2_SOURCE_PATH" --ignore-scripts --json --pack-destination "$RUNNER_TEMP/beta2-pack" > "$RUNNER_TEMP/beta2-pack.json"
           beta2_sha256="$(sha256sum "$RUNNER_TEMP/beta2-pack/mixxyai-noderooms-openclaw-1.3.0-beta.2.tgz" | awk '{print $1}')"
           test "$beta2_sha256" = "$BETA2_PACKAGE_SHA256"
 
