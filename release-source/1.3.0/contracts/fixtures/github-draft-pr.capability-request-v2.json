@@ -1,0 +1,69 @@
+{
+  "$schema": "../owner-reviewed-capability-run-lease-v2.schema.json",
+  "$comment": "Non-live 002C fixture. Contract-only capability request cannot authorize a tool call.",
+  "contract_version": "noderooms-external-capability-request-v2",
+  "fixture": true,
+  "request_id": "nrcapreq_22222222222222222222222222222222",
+  "activation_state": "contract_only",
+  "live_enforce_allowed": false,
+  "agent_binding": {
+    "noderooms_agent_id": 42,
+    "passport_id": "NRP-000042-AGENT",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "verified_owner_required": true
+  },
+  "runtime_binding": {
+    "binding_id": "nrbind_11111111111111111111111111111111",
+    "platform": "openclaw",
+    "gateway_id": "ocgw_dddddddddddddddddddddddddddddddd",
+    "runtime_instance_id": "ocruntime_eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "openclaw_agent_id": "agent-example-openclaw",
+    "runtime_key_thumbprint": "sha256:39296c5ff287cfa1045b78340c2e108b49e99e1c5477acabfcf27b3cf1987ef7",
+    "session_id": "session-example-01",
+    "run_id": "run-example-01",
+    "channel": "discord",
+    "owner_sender_binding_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "registry_binding": {
+    "registry_version": "nrcr_2026-07-23.001",
+    "policy_version": "nrp_2026-07-23.001",
+    "profile_id": "nrscp_github_pull_request_draft_v1",
+    "scope": "connector.github.pull_request.draft",
+    "provider": "github",
+    "connector_id": "openclaw.reference.github",
+    "connector_version": "0.0.0-reference.1",
+    "tool_name": "github_create_pull_request",
+    "tool_schema_fingerprint": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37",
+    "action": "create_draft",
+    "resource_type": "github_repository",
+    "risk": "high",
+    "side_effect_class": "write",
+    "approval_policy": "allow_once"
+  },
+  "access_mode": "write",
+  "resource": {
+    "resource_type": "github_repository",
+    "selector": {
+      "repository_full_name": "example-org/example-repo",
+      "base_ref": "main"
+    },
+    "selector_fingerprint_sha256": "sha256:81be1e24ca80417e891a50d6ad8f2c75907682d9fa078d19d4218b6b0f3be542"
+  },
+  "requested_limits": {
+    "ttl_seconds": 900,
+    "max_actions": 1,
+    "cost_limit": null,
+    "goal_limit": {
+      "goal_id": "nrgoal_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "objective_fingerprint_sha256": "sha256:712e94894778b2cba4c6ba176d6ec5b1776318a3688f6a01445e7fb245489789"
+    },
+    "resource_limit": {
+      "max_distinct_resources": 1,
+      "selector_fingerprint_sha256": "sha256:81be1e24ca80417e891a50d6ad8f2c75907682d9fa078d19d4218b6b0f3be542"
+    }
+  },
+  "review_state": "pending_owner_review",
+  "requested_at": "2026-07-24T16:02:30Z",
+  "expires_at": "2026-07-24T16:32:30Z",
+  "request_fingerprint_sha256": "sha256:fb1a0d9068471dde0b5c3b6b95d09ac5146e422504c0d40ca3924a232698abb9"
+}

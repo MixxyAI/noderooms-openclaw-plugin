@@ -1,0 +1,337 @@
+name: NodeRooms 1.3.0 stable validation and gated publish
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/package-publish-stable.yml"
+      - ".github/workflows/plugin-ci.yml"
+      - "docs/release/1.3.0/**"
+      - "docs/release/1.3.0-beta.2/**"
+      - "release-source/1.3.0/**"
+      - "tests/release-contract.test.mjs"
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Attempt stable publication only after every 1.3.0 gate is PASS
+        required: true
+        default: false
+        type: boolean
+      release_confirmation:
+        description: Type PUBLISH 1.3.0 STABLE only after independent approval
+        required: false
+        default: ""
+        type: string
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  RELEASE_VERSION: 1.3.0
+  RELEASE_SOURCE_PATH: release-source/1.3.0
+  RELEASE_GATE_PATH: docs/release/1.3.0/release-gate.json
+  RELEASE_PACKAGE_FILE: mixxyai-noderooms-openclaw-1.3.0.tgz
+  RELEASE_PACKAGE_SHA256: 3846f8f8a1c5d051064efc629da3e4cf768c0b10f3386436506aa3db8cdc5913
+  RELEASE_ARTIFACT_NAME: noderooms-clawpack-v1.3.0
+  BETA2_SOURCE_PATH: release-source/1.3.0-beta.2
+  BETA2_PACKAGE_SHA256: 909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2
+
+concurrency:
+  group: noderooms-clawhub-1.3.0-stable
+  cancel-in-progress: false
+
+permissions:
+  actions: read
+  contents: read
+  id-token: write
+
+jobs:
+  build-clawpack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the exact workflow commit
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Set up supported Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 24.18.0
+
+      - name: Verify stable candidate identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$GITHUB_SHA"
+          test -f "$RELEASE_SOURCE_PATH/package.json"
+          test -f "$RELEASE_SOURCE_PATH/openclaw.plugin.json"
+          test -f "$RELEASE_GATE_PATH"
+          cmp "$RELEASE_GATE_PATH" "$RELEASE_SOURCE_PATH/$RELEASE_GATE_PATH"
+          node --input-type=commonjs -e 'const fs=require("node:fs");const p=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));const m=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));if(p.name!=="@mixxyai/noderooms-openclaw"||p.version!==process.env.RELEASE_VERSION||m.version!==p.version)process.exit(1);' "$RELEASE_SOURCE_PATH/package.json" "$RELEASE_SOURCE_PATH/openclaw.plugin.json"
+
+      - name: Verify immutable Beta predecessors
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/beta1-pack" "$RUNNER_TEMP/beta2-pack"
+          npm pack ./release-source/1.3.0-beta.1 --ignore-scripts --json --pack-destination "$RUNNER_TEMP/beta1-pack" > "$RUNNER_TEMP/beta1-pack.json"
+          beta1_sha256="$(sha256sum "$RUNNER_TEMP/beta1-pack/mixxyai-noderooms-openclaw-1.3.0-beta.1.tgz" | awk '{print $1}')"
+          test "$beta1_sha256" = "27f9fa2a5d4f3af9ed5aa984d6c8b260c9298f0292749fa698839c70e256ea27"
+          npm pack "$BETA2_SOURCE_PATH" --ignore-scripts --json --pack-destination "$RUNNER_TEMP/beta2-pack" > "$RUNNER_TEMP/beta2-pack.json"
+          beta2_sha256="$(sha256sum "$RUNNER_TEMP/beta2-pack/mixxyai-noderooms-openclaw-1.3.0-beta.2.tgz" | awk '{print $1}')"
+          test "$beta2_sha256" = "$BETA2_PACKAGE_SHA256"
+
+      - name: Verify restricted Beta2 to stable source delta
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=commonjs - <<'NODE'
+          const fs = require("node:fs");
+          const path = require("node:path");
+
+          const betaRoot = process.env.BETA2_SOURCE_PATH;
+          const stableRoot = process.env.RELEASE_SOURCE_PATH;
+          const allowed = new Set([
+            ".github/workflows/package-publish-stable.yml",
+            ".github/workflows/plugin-ci.yml",
+            "CHANGELOG.md",
+            "README.md",
+            "SECURITY.md",
+            "dist/contracts.d.ts",
+            "dist/contracts.js",
+            "docs/SOURCE_PROVENANCE.md",
+            "docs/release/1.3.0-beta.2/release-closure.json",
+            "docs/release/1.3.0-beta.2/release-gate.json",
+            "docs/release/1.3.0/README.md",
+            "docs/release/1.3.0/release-closure.json",
+            "docs/release/1.3.0/release-gate.json",
+            "openclaw.plugin.json",
+            "package-lock.json",
+            "package.json",
+            "scripts/isolated-shadow-runtime-e2e.mjs",
+            "src/contracts.d.ts",
+            "src/contracts.js",
+            "tests/isolated-shadow-runtime-e2e.test.mjs",
+            "tests/release-contract.test.mjs",
+          ]);
+          const requiredChanged = new Set([
+            "dist/contracts.d.ts",
+            "dist/contracts.js",
+            "openclaw.plugin.json",
+            "package-lock.json",
+            "package.json",
+            "scripts/isolated-shadow-runtime-e2e.mjs",
+            "src/contracts.d.ts",
+            "src/contracts.js",
+            "tests/isolated-shadow-runtime-e2e.test.mjs",
+          ]);
+
+          function files(root) {
+            const result = new Map();
+            function walk(current, relative = "") {
+              for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+                if (entry.name === "node_modules" || entry.name.endsWith(".tgz")) continue;
+                const rel = relative ? `${relative}/${entry.name}` : entry.name;
+                const absolute = path.join(current, entry.name);
+                if (entry.isDirectory()) walk(absolute, rel);
+                else if (entry.isFile()) result.set(rel, fs.readFileSync(absolute));
+                else throw new Error(`unsupported source entry: ${rel}`);
+              }
+            }
+            walk(root);
+            return result;
+          }
+
+          const beta = files(betaRoot);
+          const stable = files(stableRoot);
+          const changed = [];
+          for (const rel of new Set([...beta.keys(), ...stable.keys()])) {
+            const left = beta.get(rel);
+            const right = stable.get(rel);
+            if (left && right && left.equals(right)) continue;
+            changed.push(rel);
+            if (!allowed.has(rel)) {
+              throw new Error(`unapproved Beta2-to-stable source delta: ${rel}`);
+            }
+          }
+          for (const rel of requiredChanged) {
+            if (!changed.includes(rel)) {
+              throw new Error(`required stable identity delta missing: ${rel}`);
+            }
+          }
+          const p = JSON.parse(stable.get("package.json").toString("utf8"));
+          const m = JSON.parse(stable.get("openclaw.plugin.json").toString("utf8"));
+          if (p.version !== "1.3.0" || m.version !== "1.3.0") {
+            throw new Error("stable package/manifest identity mismatch");
+          }
+          console.log(`STABLE_SOURCE_DELTA=PASS changed=${changed.length}`);
+          NODE
+
+      - name: Install exact locked dependencies
+        working-directory: ${{ env.RELEASE_SOURCE_PATH }}
+        run: npm ci --ignore-scripts --no-fund --no-audit
+
+      - name: Audit production dependencies
+        working-directory: ${{ env.RELEASE_SOURCE_PATH }}
+        run: npm audit --omit=dev --audit-level=moderate
+
+      - name: Verify PHP test runtime
+        run: php -v
+
+      - name: Build and run the complete suite
+        working-directory: ${{ env.RELEASE_SOURCE_PATH }}
+        run: |
+          npm run build
+          npm test
+          diff -qr src dist
+
+      - name: Validate the OpenClaw runtime package contract
+        working-directory: ${{ env.RELEASE_SOURCE_PATH }}
+        run: npx --yes clawhub@0.23.1 package validate . --out "$RUNNER_TEMP/noderooms-plugin-inspector-v1.3.0" --runtime --allow-execute --json
+
+      - name: Build and hash-gate the exact stable package
+        working-directory: ${{ env.RELEASE_SOURCE_PATH }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f ./*.tgz
+          npm pack --ignore-scripts --json > "$RUNNER_TEMP/npm-pack-output.json"
+          test -f "$RELEASE_PACKAGE_FILE"
+          actual_sha256="$(sha256sum "$RELEASE_PACKAGE_FILE" | awk '{print $1}')"
+          test "$actual_sha256" = "$RELEASE_PACKAGE_SHA256"
+          tar -tzf "$RELEASE_PACKAGE_FILE" > "$RUNNER_TEMP/stable-clawpack-files.txt"
+          test "$(wc -l < "$RUNNER_TEMP/stable-clawpack-files.txt")" -eq 52
+          grep -Fqx "package/dist/index.js" "$RUNNER_TEMP/stable-clawpack-files.txt"
+          grep -Fqx "package/openclaw.plugin.json" "$RUNNER_TEMP/stable-clawpack-files.txt"
+          if grep -Eq '^package/(src|tests|node_modules|release-source)/' "$RUNNER_TEMP/stable-clawpack-files.txt"; then
+            exit 1
+          fi
+          tar -xOf "$RELEASE_PACKAGE_FILE" package/package.json > "$RUNNER_TEMP/stable-package.json"
+          node --input-type=commonjs -e 'const fs=require("node:fs");const p=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));if(p.name!=="@mixxyai/noderooms-openclaw"||p.version!==process.env.RELEASE_VERSION||p.openclaw?.extensions?.[0]!=="./dist/index.js")process.exit(1);' "$RUNNER_TEMP/stable-package.json"
+
+      - name: Verify packaged runtime delta from Beta2
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir "$RUNNER_TEMP/beta2-unpack" "$RUNNER_TEMP/stable-unpack"
+          tar -xzf "$RUNNER_TEMP/beta2-pack/mixxyai-noderooms-openclaw-1.3.0-beta.2.tgz" -C "$RUNNER_TEMP/beta2-unpack"
+          tar -xzf "$RELEASE_SOURCE_PATH/$RELEASE_PACKAGE_FILE" -C "$RUNNER_TEMP/stable-unpack"
+          node --input-type=commonjs - "$RUNNER_TEMP/beta2-unpack/package" "$RUNNER_TEMP/stable-unpack/package" <<'NODE'
+          const fs = require("node:fs");
+          const path = require("node:path");
+          const betaRoot = process.argv[2];
+          const stableRoot = process.argv[3];
+          const allowed = new Set([
+            "CHANGELOG.md",
+            "README.md",
+            "SECURITY.md",
+            "dist/contracts.d.ts",
+            "dist/contracts.js",
+            "openclaw.plugin.json",
+            "package.json",
+          ]);
+          function files(root) {
+            const out = new Map();
+            function walk(current, relative = "") {
+              for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+                const rel = relative ? `${relative}/${entry.name}` : entry.name;
+                const absolute = path.join(current, entry.name);
+                if (entry.isDirectory()) walk(absolute, rel);
+                else out.set(rel, fs.readFileSync(absolute));
+              }
+            }
+            walk(root);
+            return out;
+          }
+          const beta = files(betaRoot);
+          const stable = files(stableRoot);
+          if (beta.size !== 52 || stable.size !== 52) {
+            throw new Error(`unexpected package file count beta=${beta.size} stable=${stable.size}`);
+          }
+          for (const rel of new Set([...beta.keys(), ...stable.keys()])) {
+            const left = beta.get(rel);
+            const right = stable.get(rel);
+            if (left && right && left.equals(right)) continue;
+            if (!allowed.has(rel)) throw new Error(`unapproved packaged runtime delta: ${rel}`);
+          }
+          console.log("STABLE_PACKAGED_RUNTIME_DELTA=PASS");
+          NODE
+
+      - name: Upload verified stable candidate
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: ${{ env.RELEASE_ARTIFACT_NAME }}
+          path: ${{ env.RELEASE_SOURCE_PATH }}/${{ env.RELEASE_PACKAGE_FILE }}
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+
+  validate:
+    needs: build-clawpack
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    uses: openclaw/clawhub/.github/workflows/package-publish.yml@a230d962db64019462c2c8ee400755eb92169908
+    with:
+      dry_run: true
+      version: 1.3.0
+      tags: latest
+      source_path: release-source/1.3.0
+      package_artifact_name: noderooms-clawpack-v1.3.0
+      package_artifact_path: mixxyai-noderooms-openclaw-1.3.0.tgz
+      inspector_artifact_name: noderooms-plugin-inspector-v1.3.0-dry-run
+      publish_json_artifact_name: noderooms-clawhub-v1.3.0-dry-run-json
+
+  publication-gate:
+    if: github.event_name == 'workflow_dispatch' && inputs.publish
+    needs:
+      - build-clawpack
+      - validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Check out the exact workflow commit
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Set up supported Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: 24.18.0
+
+      - name: Enforce independent stable release evidence
+        env:
+          RELEASE_CONFIRMATION: ${{ inputs.release_confirmation }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF_NAME" = "main"
+          test "$RELEASE_CONFIRMATION" = "PUBLISH 1.3.0 STABLE"
+          node --input-type=commonjs -e 'const fs=require("node:fs");const g=JSON.parse(fs.readFileSync(process.env.RELEASE_GATE_PATH,"utf8"));const blocked=g.gates.filter(x=>x.blocking&&x.status!=="PASS");if(g.schema_version!=="noderooms-stable-release-gate-v1"||g.candidate.version!==process.env.RELEASE_VERSION||g.candidate.package_sha256!==process.env.RELEASE_PACKAGE_SHA256||g.promotion?.predecessor_version!=="1.3.0-beta.2"||g.promotion?.predecessor_package_sha256!==process.env.BETA2_PACKAGE_SHA256||g.status!=="PASS"||g.publication_allowed!==true||blocked.length)process.exit(1);'
+
+  publish:
+    if: github.event_name == 'workflow_dispatch' && inputs.publish
+    needs:
+      - build-clawpack
+      - validate
+      - publication-gate
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    uses: openclaw/clawhub/.github/workflows/package-publish.yml@a230d962db64019462c2c8ee400755eb92169908
+    with:
+      dry_run: false
+      version: 1.3.0
+      tags: latest
+      source_path: release-source/1.3.0
+      package_artifact_name: noderooms-clawpack-v1.3.0
+      package_artifact_path: mixxyai-noderooms-openclaw-1.3.0.tgz
+      inspector_artifact_name: noderooms-plugin-inspector-v1.3.0-publish
+      publish_json_artifact_name: noderooms-clawhub-v1.3.0-publish-json

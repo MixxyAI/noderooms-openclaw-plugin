@@ -1,0 +1,645 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://noderooms.com/contracts/github-draft-pr-e2e-v1.schema.json",
+  "title": "NodeRooms Owner-approved GitHub Draft PR E2E plan v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "proof_mode",
+    "live_plugin_armed",
+    "proof_id",
+    "agent_binding",
+    "owner_binding",
+    "runtime_binding",
+    "connector_binding",
+    "transport_binding",
+    "phase4b_prerequisite",
+    "receipt_trust_anchor",
+    "target",
+    "payload_binding",
+    "owner_approval",
+    "approval_id",
+    "lease",
+    "intent",
+    "boundaries",
+    "created_at",
+    "expires_at",
+    "plan_fingerprint_sha256"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "noderooms-github-draft-pr-e2e-v1"
+    },
+    "proof_mode": {
+      "const": "isolated_owner_approved_once"
+    },
+    "live_plugin_armed": {
+      "const": false
+    },
+    "proof_id": {
+      "pattern": "^nrp4c_[a-f0-9]{32}$"
+    },
+    "agent_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "noderooms_agent_id",
+        "passport_id",
+        "agent_slug"
+      ],
+      "properties": {
+        "noderooms_agent_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "passport_id": {
+          "pattern": "^NRP-[0-9]{6}-AGENT$"
+        },
+        "agent_slug": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 80
+        }
+      }
+    },
+    "owner_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binding_kind",
+        "active_binding_id",
+        "provider",
+        "provider_login",
+        "connection_id",
+        "github_installation_id",
+        "verified_human_owner"
+      ],
+      "properties": {
+        "binding_kind": {
+          "const": "noderooms_provider_binding"
+        },
+        "active_binding_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "provider": {
+          "const": "github"
+        },
+        "provider_login": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 39
+        },
+        "connection_id": {
+          "pattern": "^nrgh_inst_[a-f0-9]{16}$"
+        },
+        "github_installation_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "verified_human_owner": {
+          "const": true
+        }
+      }
+    },
+    "runtime_binding": {
+      "$ref": "#/$defs/runtime_binding"
+    },
+    "connector_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider",
+        "owner_kind",
+        "owner_id",
+        "owner_resolution",
+        "tool_name",
+        "tool_schema_fingerprint",
+        "effective_catalog_fingerprint_sha256"
+      ],
+      "properties": {
+        "provider": {
+          "const": "github"
+        },
+        "owner_kind": {
+          "const": "mcp"
+        },
+        "owner_id": {
+          "const": "github"
+        },
+        "owner_resolution": {
+          "const": "exact"
+        },
+        "tool_name": {
+          "const": "github_create_pull_request"
+        },
+        "tool_schema_fingerprint": {
+          "const": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37"
+        },
+        "effective_catalog_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        }
+      }
+    },
+    "transport_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform",
+        "transport",
+        "server_name",
+        "exact_tool_id",
+        "raw_tool_name",
+        "raw_input_schema_fingerprint",
+        "adapter_contract",
+        "reviewers_allowed",
+        "maintainer_can_modify"
+      ],
+      "properties": {
+        "platform": {
+          "const": "openclaw"
+        },
+        "transport": {
+          "const": "mcp_stdio"
+        },
+        "server_name": {
+          "const": "github-noderooms-draft-pr"
+        },
+        "exact_tool_id": {
+          "const": "github-noderooms-draft-pr__create_pull_request"
+        },
+        "raw_tool_name": {
+          "const": "create_pull_request"
+        },
+        "raw_input_schema_fingerprint": {
+          "const": "sha256:e249ccd5a1f2364cbfc0a5d9e11bebdc298626351cc7e43fd59b851c3d520238"
+        },
+        "adapter_contract": {
+          "const": "noderooms-github-mcp-create-pull-request-adapter-v1"
+        },
+        "reviewers_allowed": {
+          "const": false
+        },
+        "maintainer_can_modify": {
+          "const": false
+        }
+      }
+    },
+    "phase4b_prerequisite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "bundle_id",
+        "bundle_fingerprint_sha256",
+        "checkpoint_fingerprint_sha256",
+        "registry_version",
+        "policy_version",
+        "registry_fingerprint_sha256",
+        "inventory_snapshot_fingerprint_sha256",
+        "inventory_binding_fingerprint_sha256",
+        "profile_id",
+        "scope",
+        "tool_name",
+        "owner_kind",
+        "owner_id",
+        "tool_schema_fingerprint",
+        "owner_exact",
+        "schema_matches",
+        "policy_matches",
+        "phase4c_contract_prerequisite_ready",
+        "phase4c_external_write_authority_granted"
+      ],
+      "properties": {
+        "bundle_id": {
+          "pattern": "^nrpolicy_[a-f0-9]{32}$"
+        },
+        "bundle_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "checkpoint_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "registry_version": {
+          "type": "string"
+        },
+        "policy_version": {
+          "type": "string"
+        },
+        "registry_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "inventory_snapshot_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "inventory_binding_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "profile_id": {
+          "const": "nrscp_github_pull_request_draft_v1"
+        },
+        "scope": {
+          "const": "connector.github.pull_request.draft"
+        },
+        "tool_name": {
+          "const": "github_create_pull_request"
+        },
+        "owner_kind": {
+          "const": "mcp"
+        },
+        "owner_id": {
+          "const": "github"
+        },
+        "tool_schema_fingerprint": {
+          "const": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37"
+        },
+        "owner_exact": {
+          "const": true
+        },
+        "schema_matches": {
+          "const": true
+        },
+        "policy_matches": {
+          "const": true
+        },
+        "phase4c_contract_prerequisite_ready": {
+          "const": true
+        },
+        "phase4c_external_write_authority_granted": {
+          "const": false
+        }
+      }
+    },
+    "receipt_trust_anchor": {
+      "$ref": "#/$defs/receipt_trust_anchor"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository_full_name",
+        "base_ref",
+        "base_sha",
+        "head_ref",
+        "head_sha",
+        "changed_paths"
+      ],
+      "properties": {
+        "repository_full_name": {
+          "$ref": "#/$defs/repository"
+        },
+        "base_ref": {
+          "const": "main"
+        },
+        "base_sha": {
+          "$ref": "#/$defs/sha"
+        },
+        "head_ref": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "not": {
+            "const": "main"
+          }
+        },
+        "head_sha": {
+          "$ref": "#/$defs/sha"
+        },
+        "changed_paths": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        }
+      }
+    },
+    "payload_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "payload_projection",
+        "payload_fingerprint_sha256",
+        "transport_payload_fingerprint_sha256",
+        "raw_title_persisted",
+        "raw_body_persisted"
+      ],
+      "properties": {
+        "payload_projection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "repository_full_name",
+            "head_ref",
+            "base_ref",
+            "draft",
+            "title_sha256",
+            "body_sha256"
+          ],
+          "properties": {
+            "repository_full_name": {
+              "$ref": "#/$defs/repository"
+            },
+            "head_ref": {
+              "type": "string"
+            },
+            "base_ref": {
+              "const": "main"
+            },
+            "draft": {
+              "const": true
+            },
+            "title_sha256": {
+              "$ref": "#/$defs/hash"
+            },
+            "body_sha256": {
+              "$ref": "#/$defs/hash"
+            }
+          }
+        },
+        "payload_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "transport_payload_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "raw_title_persisted": {
+          "const": false
+        },
+        "raw_body_persisted": {
+          "const": false
+        }
+      }
+    },
+    "owner_approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "decision",
+        "decision_automated",
+        "evidence_source",
+        "evidence_fingerprint_sha256",
+        "approved_at",
+        "expires_at"
+      ],
+      "properties": {
+        "kind": {
+          "const": "verified_human_owner"
+        },
+        "decision": {
+          "const": "approved_once"
+        },
+        "decision_automated": {
+          "const": false
+        },
+        "evidence_source": {
+          "const": "interactive_user_message"
+        },
+        "evidence_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "approved_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "approval_id": {
+      "pattern": "^nrcapdec_[a-f0-9]{32}$"
+    },
+    "lease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lease_id",
+        "scope",
+        "profile_id",
+        "approval_policy",
+        "max_actions",
+        "automatic_write_retry_allowed",
+        "shared_lease_allowed",
+        "shared_run_secret_allowed"
+      ],
+      "properties": {
+        "lease_id": {
+          "pattern": "^nrlv2_[a-f0-9]{32}$"
+        },
+        "scope": {
+          "const": "connector.github.pull_request.draft"
+        },
+        "profile_id": {
+          "const": "nrscp_github_pull_request_draft_v1"
+        },
+        "approval_policy": {
+          "const": "allow_once"
+        },
+        "max_actions": {
+          "const": 1
+        },
+        "automatic_write_retry_allowed": {
+          "const": false
+        },
+        "shared_lease_allowed": {
+          "const": false
+        },
+        "shared_run_secret_allowed": {
+          "const": false
+        }
+      }
+    },
+    "intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "intent_id",
+        "reservation_id",
+        "max_provider_attempts",
+        "reconcile_mode",
+        "exactly_once_effect_claimed"
+      ],
+      "properties": {
+        "intent_id": {
+          "pattern": "^nreai_[a-f0-9]{32}$"
+        },
+        "reservation_id": {
+          "pattern": "^nrdispatch_[a-f0-9]{32}$"
+        },
+        "max_provider_attempts": {
+          "const": 1
+        },
+        "reconcile_mode": {
+          "const": "read_only"
+        },
+        "exactly_once_effect_claimed": {
+          "const": false
+        }
+      }
+    },
+    "boundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "direct_main_push_allowed",
+        "non_draft_pull_request_allowed",
+        "workflow_edit_allowed",
+        "secret_access_allowed",
+        "credential_persistence_allowed",
+        "automatic_write_retry_allowed",
+        "read_only_reconcile_required_for_unknown",
+        "merge_allowed",
+        "publish_allowed",
+        "production_change_allowed"
+      ],
+      "properties": {
+        "direct_main_push_allowed": {
+          "const": false
+        },
+        "non_draft_pull_request_allowed": {
+          "const": false
+        },
+        "workflow_edit_allowed": {
+          "const": false
+        },
+        "secret_access_allowed": {
+          "const": false
+        },
+        "credential_persistence_allowed": {
+          "const": false
+        },
+        "automatic_write_retry_allowed": {
+          "const": false
+        },
+        "read_only_reconcile_required_for_unknown": {
+          "const": true
+        },
+        "merge_allowed": {
+          "const": false
+        },
+        "publish_allowed": {
+          "const": false
+        },
+        "production_change_allowed": {
+          "const": false
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "plan_fingerprint_sha256": {
+      "$ref": "#/$defs/hash"
+    }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "sha": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{40}$"
+    },
+    "repository": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$",
+      "maxLength": 200
+    },
+    "public_key_jwk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kty",
+        "crv",
+        "x"
+      ],
+      "properties": {
+        "kty": {
+          "const": "OKP"
+        },
+        "crv": {
+          "const": "Ed25519"
+        },
+        "x": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        }
+      }
+    },
+    "receipt_trust_anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issuer",
+        "algorithm",
+        "key_id",
+        "public_key_jwk",
+        "key_thumbprint_sha256"
+      ],
+      "properties": {
+        "issuer": {
+          "const": "noderooms-isolated-proof"
+        },
+        "algorithm": {
+          "const": "Ed25519"
+        },
+        "key_id": {
+          "pattern": "^nrp4ckey_[a-f0-9]{24}$"
+        },
+        "public_key_jwk": {
+          "$ref": "#/$defs/public_key_jwk"
+        },
+        "key_thumbprint_sha256": {
+          "$ref": "#/$defs/hash"
+        }
+      }
+    },
+    "runtime_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform",
+        "openclaw_version",
+        "openclaw_agent_id",
+        "session_key_fingerprint_sha256",
+        "gateway_instance_fingerprint_sha256",
+        "runtime_catalog_fingerprint_sha256"
+      ],
+      "properties": {
+        "platform": {
+          "const": "openclaw"
+        },
+        "openclaw_version": {
+          "type": "string"
+        },
+        "openclaw_agent_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "session_key_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "gateway_instance_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "runtime_catalog_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        }
+      }
+    }
+  }
+}

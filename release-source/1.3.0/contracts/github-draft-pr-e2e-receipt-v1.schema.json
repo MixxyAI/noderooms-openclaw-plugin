@@ -1,0 +1,312 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://noderooms.com/contracts/github-draft-pr-e2e-receipt-v1.schema.json",
+  "title": "NodeRooms GitHub Draft PR E2E receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "receipt_id",
+    "proof_id",
+    "plan_fingerprint_sha256",
+    "intent_id",
+    "reservation_id",
+    "lease_id",
+    "approval_id",
+    "tool_call_id",
+    "outcome",
+    "dispatch",
+    "approval_consumption",
+    "reconciliation",
+    "safety",
+    "recorded_at",
+    "receipt_fingerprint_sha256",
+    "attestation"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "noderooms-github-draft-pr-e2e-receipt-v1"
+    },
+    "receipt_id": {
+      "pattern": "^nrear_[a-f0-9]{32}$"
+    },
+    "proof_id": {
+      "pattern": "^nrp4c_[a-f0-9]{32}$"
+    },
+    "plan_fingerprint_sha256": {
+      "$ref": "#/$defs/hash"
+    },
+    "intent_id": {
+      "pattern": "^nreai_[a-f0-9]{32}$"
+    },
+    "reservation_id": {
+      "pattern": "^nrdispatch_[a-f0-9]{32}$"
+    },
+    "lease_id": {
+      "pattern": "^nrlv2_[a-f0-9]{32}$"
+    },
+    "approval_id": {
+      "pattern": "^nrcapdec_[a-f0-9]{32}$"
+    },
+    "tool_call_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "certainty",
+        "provider_object",
+        "reason_code",
+        "outcome_fingerprint_sha256"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "committed",
+            "unknown",
+            "no_effect"
+          ]
+        },
+        "certainty": {
+          "enum": [
+            "known",
+            "unknown"
+          ]
+        },
+        "provider_object": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "reason_code": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "outcome_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        }
+      }
+    },
+    "dispatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider_attempt_count",
+        "max_provider_attempts",
+        "at_most_once_dispatch_enforced",
+        "automatic_write_retry_attempted",
+        "exactly_once_effect_claimed",
+        "provider_tool_id",
+        "provider_raw_tool_name",
+        "raw_input_schema_fingerprint",
+        "transport_adapter"
+      ],
+      "properties": {
+        "provider_attempt_count": {
+          "const": 1
+        },
+        "max_provider_attempts": {
+          "const": 1
+        },
+        "at_most_once_dispatch_enforced": {
+          "const": true
+        },
+        "automatic_write_retry_attempted": {
+          "const": false
+        },
+        "exactly_once_effect_claimed": {
+          "const": false
+        },
+        "provider_tool_id": {
+          "const": "github-noderooms-draft-pr__create_pull_request"
+        },
+        "provider_raw_tool_name": {
+          "const": "create_pull_request"
+        },
+        "raw_input_schema_fingerprint": {
+          "const": "sha256:e249ccd5a1f2364cbfc0a5d9e11bebdc298626351cc7e43fd59b851c3d520238"
+        },
+        "transport_adapter": {
+          "const": "noderooms-github-mcp-create-pull-request-adapter-v1"
+        }
+      }
+    },
+    "approval_consumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy",
+        "consumed",
+        "lease_actions_before",
+        "lease_actions_after"
+      ],
+      "properties": {
+        "policy": {
+          "const": "allow_once"
+        },
+        "consumed": {
+          "const": true
+        },
+        "lease_actions_before": {
+          "const": 0
+        },
+        "lease_actions_after": {
+          "const": 1
+        }
+      }
+    },
+    "reconciliation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "attempted",
+        "provider_write_attempted",
+        "observation_fingerprint_sha256"
+      ],
+      "properties": {
+        "mode": {
+          "const": "read_only"
+        },
+        "attempted": {
+          "type": "boolean"
+        },
+        "provider_write_attempted": {
+          "const": false
+        },
+        "observation_fingerprint_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/hash"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_title_included",
+        "raw_body_included",
+        "raw_provider_response_included",
+        "provider_credentials_included",
+        "direct_main_push_attempted",
+        "workflow_edit_attempted",
+        "merge_attempted",
+        "publish_attempted",
+        "production_modified"
+      ],
+      "properties": {
+        "raw_title_included": {
+          "const": false
+        },
+        "raw_body_included": {
+          "const": false
+        },
+        "raw_provider_response_included": {
+          "const": false
+        },
+        "provider_credentials_included": {
+          "const": false
+        },
+        "direct_main_push_attempted": {
+          "const": false
+        },
+        "workflow_edit_attempted": {
+          "const": false
+        },
+        "merge_attempted": {
+          "const": false
+        },
+        "publish_attempted": {
+          "const": false
+        },
+        "production_modified": {
+          "const": false
+        }
+      }
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "receipt_fingerprint_sha256": {
+      "$ref": "#/$defs/hash"
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issuer",
+        "algorithm",
+        "key_id",
+        "public_key_jwk",
+        "key_thumbprint_sha256",
+        "signed_receipt_fingerprint_sha256",
+        "signed_at",
+        "signature_base64url"
+      ],
+      "properties": {
+        "issuer": {
+          "const": "noderooms-isolated-proof"
+        },
+        "algorithm": {
+          "const": "Ed25519"
+        },
+        "key_id": {
+          "pattern": "^nrp4ckey_[a-f0-9]{24}$"
+        },
+        "public_key_jwk": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kty",
+            "crv",
+            "x"
+          ],
+          "properties": {
+            "kty": {
+              "const": "OKP"
+            },
+            "crv": {
+              "const": "Ed25519"
+            },
+            "x": {
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            }
+          }
+        },
+        "key_thumbprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "signed_receipt_fingerprint_sha256": {
+          "$ref": "#/$defs/hash"
+        },
+        "signed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "signature_base64url": {
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "$schema": "../canonical-external-action-intent-receipt-v2.schema.json",
+  "$comment": "Non-live 002D fixture. Provider values are illustrative and live reputation remains unchanged.",
+  "contract_version": "noderooms-external-action-receipt-v2",
+  "fixture": true,
+  "activation_state": "contract_only",
+  "live_enforce_allowed": false,
+  "receipt_kind": "dispatch_outcome",
+  "receipt_id": "nrear_33333333333333333333333333333333",
+  "receipt_sequence": 1,
+  "previous_receipt_binding": null,
+  "intent_binding": {
+    "intent_id": "nreai_22222222222222222222222222222222",
+    "intent_fingerprint_sha256": "sha256:7804e9c708b723f05eacf043f2a4988781577b3d5a8b41536b69fe2db9329faf",
+    "dispatch_reservation_id": "nrdispatch_44444444444444444444444444444444",
+    "dispatch_reservation_fingerprint_sha256": "sha256:388499d11bb17be2e754982818a638084152684e10f0a52a216cf57c2f1ef959"
+  },
+  "lease_binding": {
+    "lease_id": "nrlv2_11111111111111111111111111111111",
+    "lease_authority_fingerprint_sha256": "sha256:ba8da9896ecf7c79d429508bc579c9f8a35c99072e14a1bc5823f6120c83b4f9"
+  },
+  "registry_version": "nrcr_2026-07-23.001",
+  "policy_version": "nrp_2026-07-23.001",
+  "profile_id": "nrscp_github_pull_request_draft_v1",
+  "scope": "connector.github.pull_request.draft",
+  "agent_binding": {
+    "noderooms_agent_id": 42,
+    "passport_id": "NRP-000042-AGENT",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "verified_owner_required": true
+  },
+  "runtime_binding": {
+    "binding_id": "nrbind_11111111111111111111111111111111",
+    "platform": "openclaw",
+    "gateway_id": "ocgw_dddddddddddddddddddddddddddddddd",
+    "runtime_instance_id": "ocruntime_eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "openclaw_agent_id": "agent-example-openclaw",
+    "runtime_key_thumbprint": "sha256:39296c5ff287cfa1045b78340c2e108b49e99e1c5477acabfcf27b3cf1987ef7",
+    "session_id": "session-example-01",
+    "run_id": "run-example-01",
+    "channel": "discord",
+    "owner_sender_binding_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "connector_binding": {
+    "provider": "github",
+    "connector_id": "openclaw.reference.github",
+    "connector_version": "0.0.0-reference.1",
+    "tool_name": "github_create_pull_request",
+    "tool_schema_fingerprint": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37"
+  },
+  "access_mode": "write",
+  "risk": "high",
+  "side_effect_class": "write",
+  "action": "create_draft",
+  "resource": {
+    "resource_type": "github_repository",
+    "selector": {
+      "repository_full_name": "example-org/example-repo",
+      "base_ref": "main"
+    },
+    "selector_fingerprint_sha256": "sha256:81be1e24ca80417e891a50d6ad8f2c75907682d9fa078d19d4218b6b0f3be542"
+  },
+  "payload_fingerprint_sha256": "sha256:e5987a9f6b5d77d52497f0a77275f6833cc434b5ea874e918d60b4599f7aa375",
+  "outcome": {
+    "status": "committed",
+    "observed_via": "dispatch_response",
+    "provider_object": {
+      "type": "pull_request",
+      "id": "123",
+      "url": "https://github.com/example-org/example-repo/pull/123",
+      "state": "draft"
+    },
+    "reason_code": null
+  },
+  "outcome_fingerprint_sha256": "sha256:70ad262ef9256f5a1bdd1465facbb2b19cce87afbd50756287673c666fcf04f9",
+  "dispatch": {
+    "state": "committed",
+    "attempt_count": 1,
+    "max_attempts": 1,
+    "at_most_once_dispatch_enforced": true,
+    "provider_idempotency": {
+      "supported": false,
+      "key_binding_fingerprint_sha256": null,
+      "forwarded": false
+    },
+    "exactly_once_effect_claimed": false,
+    "automatic_write_retry_attempted": false
+  },
+  "reconciliation": {
+    "mode": "read_only",
+    "attempted": false,
+    "provider_write_attempted": false,
+    "observation_fingerprint_sha256": null,
+    "resolved_from_unknown": false
+  },
+  "approval_consumption": {
+    "policy": "allow_once",
+    "decision_id": "nrcapdec_33333333333333333333333333333333",
+    "decision_fingerprint_sha256": "sha256:67d3a3f3e3203ead1853ed42f9b0647f8030fb0f8d54a755401f02c60ac27fe4",
+    "consumed": true,
+    "lease_actions_before": 0,
+    "lease_actions_after": 1
+  },
+  "audit_projection": {
+    "event_type": "external_action_receipt",
+    "outcome_status": "committed",
+    "attribution_fingerprint_sha256": "sha256:f785092466161d095b2783f28cd56c5405f63630b820bdb91233e30bd706ac6d",
+    "evidence_fingerprint_sha256": "sha256:70ad262ef9256f5a1bdd1465facbb2b19cce87afbd50756287673c666fcf04f9",
+    "raw_content_included": false
+  },
+  "reputation_projection": {
+    "state": "contract_only",
+    "eligible_for_reputation": false,
+    "score_delta_applied": false,
+    "score_delta": 0,
+    "reason_code": "LIVE_REPUTATION_UPDATE_PROHIBITED"
+  },
+  "recorded_at": "2026-07-24T16:05:00Z",
+  "receipt_fingerprint_sha256": "sha256:0cb6f5dc2d435aab481d87c55809ce887776a9bb42d9eaa53ced2dd3266ed93d",
+  "attestation": {
+    "issuer": "noderooms",
+    "algorithm": "Ed25519",
+    "key_id": "nrreceiptkey_fixture_20260724",
+    "public_key_jwk": {
+      "kty": "OKP",
+      "crv": "Ed25519",
+      "x": "8VtbtkC1EU8E9LEJuojBYQ1Sj3C9ahmTgy9OGBN0uUM"
+    },
+    "key_thumbprint_sha256": "sha256:90448a635a64d1ff63ef76dd6378c742253db76fd059b5783032aef3503c2458",
+    "signed_receipt_fingerprint_sha256": "sha256:0cb6f5dc2d435aab481d87c55809ce887776a9bb42d9eaa53ced2dd3266ed93d",
+    "signed_at": "2026-07-24T16:05:00Z",
+    "signature_base64url": "HCJdmU9OHb_q0C7Pb09XU_3RYqZGWTmsxriAKteWglgKhq_4Tp32VBwrLH9ri78xJbrW7nWMOXlLs0gKx4KuDw"
+  }
+}

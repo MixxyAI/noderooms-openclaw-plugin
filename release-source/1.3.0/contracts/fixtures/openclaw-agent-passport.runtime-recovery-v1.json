@@ -1,0 +1,47 @@
+{
+  "$comment": "Non-live 002B recovery fixture. No credential or lease is transferred.",
+  "contract_version": "noderooms-runtime-binding-recovery-v1",
+  "fixture": true,
+  "recovery_id": "nrrecovery_22222222222222222222222222222222",
+  "reason": "runtime_reinstalled",
+  "agent_binding": {
+    "noderooms_agent_id": 42,
+    "passport_id": "NRP-000042-AGENT",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "verified_owner_required": true
+  },
+  "previous_binding": {
+    "binding_id": "nrbind_99999999999999999999999999999999",
+    "gateway_id": "ocgw_dddddddddddddddddddddddddddddddd",
+    "runtime_instance_id": "ocruntime_99999999999999999999999999999999",
+    "openclaw_agent_id": "agent-example-openclaw",
+    "runtime_key_thumbprint": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "status": "revoked",
+    "changed_at": "2026-07-24T16:02:00Z"
+  },
+  "replacement_binding": {
+    "binding_id": "nrbind_11111111111111111111111111111111",
+    "gateway_id": "ocgw_dddddddddddddddddddddddddddddddd",
+    "runtime_instance_id": "ocruntime_eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "openclaw_agent_id": "agent-example-openclaw",
+    "runtime_key_thumbprint": "sha256:39296c5ff287cfa1045b78340c2e108b49e99e1c5477acabfcf27b3cf1987ef7",
+    "status": "paired",
+    "changed_at": "2026-07-24T16:03:00Z"
+  },
+  "owner_revalidation": {
+    "required": true,
+    "decision": "approved",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "approved_at": "2026-07-24T16:02:30Z"
+  },
+  "passport_continuity": {
+    "noderooms_agent_id_preserved": true,
+    "passport_id_preserved": true
+  },
+  "lease_transition": {
+    "previous_lease_reused": false,
+    "previous_run_secret_reused": false,
+    "new_lease_required": true
+  },
+  "completed_at": "2026-07-24T16:03:01Z"
+}

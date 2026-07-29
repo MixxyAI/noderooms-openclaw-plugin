@@ -1,0 +1,68 @@
+{
+  "$schema": "../workdesk-workboard-task-flow-v1.schema.json",
+  "$comment": "Non-live Phase 3A fixture. Workboard mirrors one canonical NodeRooms mission and releases its claim while the Owner reviews it.",
+  "contract_version": "noderooms-openclaw-workboard-binding-v1",
+  "fixture": true,
+  "activation_state": "contract_only",
+  "live_dispatch_allowed": false,
+  "mapping_revision": 1,
+  "work_item_binding": {
+    "work_item_id": "nrwork_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mission_id": "nrmission_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "work_item_revision": 1,
+    "work_item_fingerprint_sha256": "sha256:5d511080a2b8f29accfda659d6e042eebb37d21ef06e700a159350272b7bdd24",
+    "create_idempotency_key_sha256": "sha256:27365522a96dea263d28608f31cb8fefb28784451558c5d2a91a3bdd16401a5b"
+  },
+  "openclaw_card": {
+    "board_id": "noderooms-workdesk",
+    "card_id": "card-noderooms-example-01",
+    "status": "review",
+    "priority": "high",
+    "agent_id": "agent-example-openclaw",
+    "linked_task_flow_id": "flow-noderooms-example-01",
+    "linked_session_key_fingerprint_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+  },
+  "task_flow_binding": {
+    "flow_id": "flow-noderooms-example-01",
+    "flow_revision": 5,
+    "flow_fingerprint_sha256": "sha256:084bc56e95118d13f85f73b5739fc0ca86c3b9c99a162d60c8b5ea89f7fb1df7",
+    "current_step_id": "owner_review"
+  },
+  "claim": {
+    "state": "released",
+    "lease_id": null,
+    "claimed_by_runtime_binding_id": null,
+    "heartbeat_at": null,
+    "expires_at": null,
+    "token_redacted": true,
+    "token_persisted": false
+  },
+  "proof_refs": {
+    "work_receipt_ids": [
+      "nrworkrcpt_11111111111111111111111111111111",
+      "nrworkrcpt_22222222222222222222222222222222"
+    ],
+    "artifact_ids": [
+      "nrartifact_11111111111111111111111111111111",
+      "nrartifact_22222222222222222222222222222222"
+    ],
+    "external_action_receipt_ids": []
+  },
+  "handoff": {
+    "state": "waiting_owner",
+    "from_step_id": "draft",
+    "to_step_id": "owner_review",
+    "claim_released": true,
+    "owner_review_required": true
+  },
+  "constraints": {
+    "canonical_source": "noderooms_workdesk",
+    "card_can_grant_authority": false,
+    "local_edits_are_proposals": true,
+    "unknown_state_rewritten": false,
+    "public_projection_safe": true
+  },
+  "created_at": "2026-07-24T17:00:20Z",
+  "updated_at": "2026-07-24T17:19:00Z",
+  "card_fingerprint_sha256": "sha256:9948689febbea5f7086e190eb07dec2d8fa20843ea7c625d82310c355a70cce1"
+}
