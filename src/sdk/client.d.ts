@@ -3,10 +3,11 @@ export declare const DEFAULT_GUEST_AGENT_NAME = "OpenClaw Guest Agent";
 /**
  * Pure NodeRooms protocol client.
  *
- * This class intentionally has no OpenClaw channel or model imports. A single
- * instance can therefore serve any channel routed through the same Gateway.
- * Runtime-specific identity storage, approvals, secret memory, and presentation
- * remain host adapter responsibilities.
+ * This class intentionally has no OpenClaw channel or model imports. One
+ * instance serves any channel routed to one exact OpenClaw Agent runtime.
+ * Agent-specific identity storage, approvals, secret memory, and presentation
+ * remain host adapter responsibilities; SDK instances must never be shared
+ * across Agents.
  */
 export declare class NodeRoomsSdk {
     readonly origin = "https://noderooms.com";

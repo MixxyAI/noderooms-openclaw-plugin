@@ -1,0 +1,132 @@
+{
+  "$schema": "../canonical-connector-policy-bundle-v1.schema.json",
+  "$comment": "Signed contract-only Phase 4B policy fixture. It grants no live sync, connector execution, or external-write authority.",
+  "contract_version": "noderooms-canonical-connector-policy-bundle-v1",
+  "fixture": true,
+  "activation_state": "contract_only",
+  "live_policy_sync_allowed": false,
+  "live_enforce_allowed": false,
+  "bundle_id": "nrpolicy_d79e47a0fc8b4cd8a7d3014348f2afbf",
+  "sequence": 1,
+  "canonical_source": {
+    "origin": "https://noderooms.com",
+    "path": "/.well-known/noderooms/connector-policy-v1.json",
+    "transport": "contract_fixture",
+    "redirects_allowed": false
+  },
+  "issued_at": "2026-07-25T13:00:00.000Z",
+  "not_before": "2026-07-25T13:00:00.000Z",
+  "expires_at": "2026-07-25T14:00:00.000Z",
+  "previous_bundle_fingerprint_sha256": null,
+  "registry": {
+    "$schema": "../connector-scope-registry-v1.schema.json",
+    "contract_version": "noderooms-connector-scope-registry-v1",
+    "registry_version": "nrcr_2026-07-23.001",
+    "policy_version": "nrp_2026-07-23.001",
+    "activation_state": "contract_only",
+    "live_enforce_allowed": false,
+    "source_provenance": {
+      "repository": "MixxyAI/noderooms-openclaw-plugin",
+      "commit": "e9ba2c9ba48fc2200d2f3af603f5e0036a2c76f7",
+      "tree": "b44d4cb79f4e7c13b80bcbe5910945895ac3be65"
+    },
+    "profiles": [
+      {
+        "profile_id": "nrscp_github_pull_request_draft_v1",
+        "scope": "connector.github.pull_request.draft",
+        "status": "reference_only",
+        "provider": "github",
+        "connector_id": "openclaw.reference.github",
+        "connector_version": "0.0.0-reference.1",
+        "tool_name": "github_create_pull_request",
+        "tool_schema_fingerprint": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37",
+        "tool_input_schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "repository_full_name",
+            "head_ref",
+            "base_ref",
+            "title",
+            "body",
+            "draft"
+          ],
+          "properties": {
+            "repository_full_name": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$",
+              "maxLength": 200
+            },
+            "head_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "base_ref": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 255
+            },
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "body": {
+              "type": "string",
+              "maxLength": 65536
+            },
+            "draft": {
+              "const": true
+            }
+          }
+        },
+        "action": "create_draft",
+        "resource_type": "github_repository",
+        "resource_selector": {
+          "strategy": "exact",
+          "required_claims": [
+            "repository_full_name",
+            "base_ref"
+          ],
+          "wildcards_allowed": false
+        },
+        "risk": "high",
+        "side_effect_class": "write",
+        "replay_semantics": "at_most_once_dispatch",
+        "approval_policy": "allow_once",
+        "receipt_profile": "external_action_receipt_v2",
+        "description": "Contract-only reference profile for creating one GitHub Draft pull request in one exact repository and base branch."
+      }
+    ]
+  },
+  "registry_fingerprint_sha256": "sha256:e64f1f2855a6324e282dd14ac57c1067c0c84e67d1653468c0679a9699f31b03",
+  "runtime_tool_bindings": [
+    {
+      "profile_id": "nrscp_github_pull_request_draft_v1",
+      "tool_name": "github_create_pull_request",
+      "owner": {
+        "kind": "mcp",
+        "owner_id": "github",
+        "resolution": "exact"
+      }
+    }
+  ],
+  "safety": {
+    "grants_tool_authority": false,
+    "grants_connector_execution_authority": false,
+    "performs_network_request": false,
+    "invokes_connector": false,
+    "performs_external_write": false,
+    "automates_owner_decision": false,
+    "persists_provider_credentials": false
+  },
+  "bundle_fingerprint_sha256": "sha256:0ea7211f60be87c01082c07f4c39822c89b8d114c12f20f7ed7ca57cfcd261de",
+  "attestation": {
+    "key_id": "nrpk_phase4b_contract_fixture_001",
+    "algorithm": "Ed25519",
+    "key_thumbprint_sha256": "sha256:22b3c714c714d3c8493f38e1d08860312be49f78b9c5a6be4a9d434a141166b0",
+    "signed_at": "2026-07-25T13:00:01.000Z",
+    "signature_base64url": "G1OWqhS8o4QcFrcz3zSkp5ojWlqZRjrBmNGn06BCPzE1J2R0MtT-OhkwKKbuvwYRjHGJ4bdt0_LFOdpByusvCg"
+  }
+}

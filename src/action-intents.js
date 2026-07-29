@@ -45,13 +45,20 @@ function assertCommandOwner(owner) {
     if (owner.senderIsOwner !== true || owner.isAuthorizedSender !== true) {
         throw new NodeRoomsError("OWNER_COMMAND_REQUIRED", "Only an authenticated OpenClaw Owner may commit or deny a NodeRooms action intent.");
     }
+    if (typeof owner.agentId !== "string"
+        || !/^[a-z0-9][a-z0-9_-]{0,63}$/.test(owner.agentId)) {
+        throw new NodeRoomsError(
+            "OPENCLAW_AGENT_CONTEXT_REQUIRED",
+            "A trusted canonical OpenClaw Agent id is required to resolve NodeRooms action intents.",
+        );
+    }
     if (!owner.channel.trim()) {
         throw new NodeRoomsError("OWNER_CHANNEL_REQUIRED", "The owner command channel is unavailable.");
     }
 }
 function assertSameOwner(intent, owner) {
     assertCommandOwner(owner);
-    if (owner.agentId && owner.agentId !== intent.owner.agentId) {
+    if (owner.agentId !== intent.owner.agentId) {
         throw new NodeRoomsError("ACTION_INTENT_AGENT_MISMATCH", "The NodeRooms action intent belongs to another OpenClaw Agent.");
     }
     if (owner.channel !== intent.owner.channel || owner.senderId !== intent.owner.requesterSenderId) {
@@ -314,7 +321,7 @@ export class ActionIntentStore {
             const intents = store.intents
                 .filter((intent) => intent.owner.channel === owner.channel
                 && intent.owner.requesterSenderId === owner.senderId
-                && (!owner.agentId || intent.owner.agentId === owner.agentId))
+                && intent.owner.agentId === owner.agentId)
                 .map((intent) => publicSummary(intent));
             return { ok: true, count: intents.length, intents };
         });

@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://noderooms.com/contracts/github-draft-pr-dispatch-reservation-v1.schema.json",
+  "title": "NodeRooms GitHub Draft PR durable dispatch reservation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "proof_id",
+    "plan_fingerprint_sha256",
+    "reservation_id",
+    "tool_call_id",
+    "provider_attempt_count",
+    "approval_consumed",
+    "reserved_at",
+    "reservation_fingerprint_sha256"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "noderooms-github-draft-pr-dispatch-reservation-v1"
+    },
+    "proof_id": {
+      "type": "string",
+      "pattern": "^nrp4c_[a-f0-9]{32}$"
+    },
+    "plan_fingerprint_sha256": {
+      "$ref": "#/$defs/hash"
+    },
+    "reservation_id": {
+      "type": "string",
+      "pattern": "^nrdispatch_[a-f0-9]{32}$"
+    },
+    "tool_call_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^[A-Za-z0-9._:/-]+$"
+    },
+    "provider_attempt_count": {
+      "const": 1
+    },
+    "approval_consumed": {
+      "const": true
+    },
+    "reserved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "reservation_fingerprint_sha256": {
+      "$ref": "#/$defs/hash"
+    }
+  },
+  "$defs": {
+    "hash": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  }
+}

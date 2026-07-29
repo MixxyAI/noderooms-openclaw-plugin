@@ -1,0 +1,605 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:agent-passport-runtime-binding:v1",
+  "title": "NodeRooms Agent Passport to OpenClaw runtime binding contracts v1",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/pairingChallenge"
+    },
+    {
+      "$ref": "#/$defs/pairingAssertion"
+    },
+    {
+      "$ref": "#/$defs/runtimeBinding"
+    },
+    {
+      "$ref": "#/$defs/runtimeRecovery"
+    }
+  ],
+  "$defs": {
+    "sha256Fingerprint": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "bindingRequestId": {
+      "type": "string",
+      "pattern": "^nrbreq_[a-f0-9]{32}$"
+    },
+    "challengeId": {
+      "type": "string",
+      "pattern": "^nrbch_[a-f0-9]{32}$"
+    },
+    "assertionId": {
+      "type": "string",
+      "pattern": "^nrbassert_[a-f0-9]{32}$"
+    },
+    "bindingId": {
+      "type": "string",
+      "pattern": "^nrbind_[a-f0-9]{32}$"
+    },
+    "agentBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "noderooms_agent_id",
+        "passport_id",
+        "owner_binding_id",
+        "verified_owner_required"
+      ],
+      "properties": {
+        "noderooms_agent_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "passport_id": {
+          "type": "string",
+          "pattern": "^NRP-[0-9]{6}-AGENT$"
+        },
+        "owner_binding_id": {
+          "type": "string",
+          "pattern": "^NRPB-[A-F0-9]{24}$"
+        },
+        "verified_owner_required": {
+          "const": true
+        }
+      }
+    },
+    "runtimeIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform",
+        "gateway_id",
+        "runtime_instance_id",
+        "openclaw_agent_id"
+      ],
+      "properties": {
+        "platform": {
+          "const": "openclaw"
+        },
+        "gateway_id": {
+          "type": "string",
+          "pattern": "^ocgw_[a-f0-9]{32}$"
+        },
+        "runtime_instance_id": {
+          "type": "string",
+          "pattern": "^ocruntime_[a-f0-9]{32}$"
+        },
+        "openclaw_agent_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,160}$"
+        }
+      }
+    },
+    "runtimePublicKeyJwk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kty",
+        "crv",
+        "x"
+      ],
+      "properties": {
+        "kty": {
+          "const": "OKP"
+        },
+        "crv": {
+          "const": "Ed25519"
+        },
+        "x": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        }
+      }
+    },
+    "pairingChallenge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "binding_request_id",
+        "challenge_id",
+        "agent_binding",
+        "runtime_binding",
+        "runtime_public_key_jwk",
+        "runtime_key_thumbprint",
+        "nonce",
+        "one_time",
+        "state",
+        "issued_at",
+        "expires_at",
+        "consumed_at",
+        "challenge_fingerprint_sha256"
+      ],
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "noderooms-runtime-pairing-challenge-v1"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "binding_request_id": {
+          "$ref": "#/$defs/bindingRequestId"
+        },
+        "challenge_id": {
+          "$ref": "#/$defs/challengeId"
+        },
+        "agent_binding": {
+          "$ref": "#/$defs/agentBinding"
+        },
+        "runtime_binding": {
+          "$ref": "#/$defs/runtimeIdentity"
+        },
+        "runtime_public_key_jwk": {
+          "$ref": "#/$defs/runtimePublicKeyJwk"
+        },
+        "runtime_key_thumbprint": {
+          "$ref": "#/$defs/sha256Fingerprint"
+        },
+        "nonce": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "one_time": {
+          "const": true
+        },
+        "state": {
+          "enum": [
+            "issued",
+            "consumed",
+            "expired",
+            "revoked"
+          ]
+        },
+        "issued_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "consumed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "challenge_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256Fingerprint"
+        }
+      }
+    },
+    "pairingAssertion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "assertion_id",
+        "binding_request_id",
+        "challenge_id",
+        "challenge_fingerprint_sha256",
+        "runtime_binding",
+        "runtime_key_thumbprint",
+        "signature_algorithm",
+        "signature_base64url",
+        "state",
+        "asserted_at"
+      ],
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "noderooms-runtime-pairing-assertion-v1"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "assertion_id": {
+          "$ref": "#/$defs/assertionId"
+        },
+        "binding_request_id": {
+          "$ref": "#/$defs/bindingRequestId"
+        },
+        "challenge_id": {
+          "$ref": "#/$defs/challengeId"
+        },
+        "challenge_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256Fingerprint"
+        },
+        "runtime_binding": {
+          "$ref": "#/$defs/runtimeIdentity"
+        },
+        "runtime_key_thumbprint": {
+          "$ref": "#/$defs/sha256Fingerprint"
+        },
+        "signature_algorithm": {
+          "const": "Ed25519"
+        },
+        "signature_base64url": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        },
+        "state": {
+          "const": "submitted"
+        },
+        "asserted_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "runtimeBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "binding_id",
+        "binding_version",
+        "activation_state",
+        "live_enforce_allowed",
+        "agent_binding",
+        "runtime_binding",
+        "runtime_key",
+        "proof",
+        "lifecycle",
+        "constraints"
+      ],
+      "properties": {
+        "$schema": {
+          "type": "string"
+        },
+        "$comment": {
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "noderooms-agent-passport-runtime-binding-v1"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "binding_id": {
+          "$ref": "#/$defs/bindingId"
+        },
+        "binding_version": {
+          "const": 1
+        },
+        "activation_state": {
+          "enum": [
+            "contract_only",
+            "active",
+            "revoked",
+            "expired"
+          ]
+        },
+        "live_enforce_allowed": {
+          "const": false
+        },
+        "agent_binding": {
+          "$ref": "#/$defs/agentBinding"
+        },
+        "runtime_binding": {
+          "$ref": "#/$defs/runtimeIdentity"
+        },
+        "runtime_key": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "algorithm",
+            "thumbprint_sha256",
+            "public_key_jwk"
+          ],
+          "properties": {
+            "algorithm": {
+              "const": "Ed25519"
+            },
+            "thumbprint_sha256": {
+              "$ref": "#/$defs/sha256Fingerprint"
+            },
+            "public_key_jwk": {
+              "$ref": "#/$defs/runtimePublicKeyJwk"
+            }
+          }
+        },
+        "proof": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "binding_request_id",
+            "challenge_id",
+            "assertion_id",
+            "challenge_fingerprint_sha256",
+            "assertion_verified_at"
+          ],
+          "properties": {
+            "binding_request_id": {
+              "$ref": "#/$defs/bindingRequestId"
+            },
+            "challenge_id": {
+              "$ref": "#/$defs/challengeId"
+            },
+            "assertion_id": {
+              "$ref": "#/$defs/assertionId"
+            },
+            "challenge_fingerprint_sha256": {
+              "$ref": "#/$defs/sha256Fingerprint"
+            },
+            "assertion_verified_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "lifecycle": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "issued_at",
+            "expires_at",
+            "revoked_at",
+            "revocation_reason",
+            "supersedes_binding_id"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "paired",
+                "revoked",
+                "expired"
+              ]
+            },
+            "issued_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "expires_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "revoked_at": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "revocation_reason": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "supersedes_binding_id": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/bindingId"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "one_time_pairing_required",
+            "multi_agent_gateway_allowed",
+            "shared_run_secret_allowed",
+            "shared_lease_allowed",
+            "cross_agent_binding_allowed",
+            "owner_revalidation_on_recovery"
+          ],
+          "properties": {
+            "one_time_pairing_required": {
+              "const": true
+            },
+            "multi_agent_gateway_allowed": {
+              "const": true
+            },
+            "shared_run_secret_allowed": {
+              "const": false
+            },
+            "shared_lease_allowed": {
+              "const": false
+            },
+            "cross_agent_binding_allowed": {
+              "const": false
+            },
+            "owner_revalidation_on_recovery": {
+              "const": true
+            }
+          }
+        }
+      }
+    },
+    "recoveryBindingProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binding_id",
+        "gateway_id",
+        "runtime_instance_id",
+        "openclaw_agent_id",
+        "runtime_key_thumbprint",
+        "status",
+        "changed_at"
+      ],
+      "properties": {
+        "binding_id": {
+          "$ref": "#/$defs/bindingId"
+        },
+        "gateway_id": {
+          "type": "string",
+          "pattern": "^ocgw_[a-f0-9]{32}$"
+        },
+        "runtime_instance_id": {
+          "type": "string",
+          "pattern": "^ocruntime_[a-f0-9]{32}$"
+        },
+        "openclaw_agent_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,160}$"
+        },
+        "runtime_key_thumbprint": {
+          "$ref": "#/$defs/sha256Fingerprint"
+        },
+        "status": {
+          "enum": [
+            "paired",
+            "revoked"
+          ]
+        },
+        "changed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "runtimeRecovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "recovery_id",
+        "reason",
+        "agent_binding",
+        "previous_binding",
+        "replacement_binding",
+        "owner_revalidation",
+        "passport_continuity",
+        "lease_transition",
+        "completed_at"
+      ],
+      "properties": {
+        "$comment": {
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "noderooms-runtime-binding-recovery-v1"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "recovery_id": {
+          "type": "string",
+          "pattern": "^nrrecovery_[a-f0-9]{32}$"
+        },
+        "reason": {
+          "enum": [
+            "runtime_reinstalled",
+            "runtime_key_rotated",
+            "gateway_replaced"
+          ]
+        },
+        "agent_binding": {
+          "$ref": "#/$defs/agentBinding"
+        },
+        "previous_binding": {
+          "$ref": "#/$defs/recoveryBindingProjection"
+        },
+        "replacement_binding": {
+          "$ref": "#/$defs/recoveryBindingProjection"
+        },
+        "owner_revalidation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "required",
+            "decision",
+            "owner_binding_id",
+            "approved_at"
+          ],
+          "properties": {
+            "required": {
+              "const": true
+            },
+            "decision": {
+              "const": "approved"
+            },
+            "owner_binding_id": {
+              "type": "string",
+              "pattern": "^NRPB-[A-F0-9]{24}$"
+            },
+            "approved_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "passport_continuity": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "noderooms_agent_id_preserved",
+            "passport_id_preserved"
+          ],
+          "properties": {
+            "noderooms_agent_id_preserved": {
+              "const": true
+            },
+            "passport_id_preserved": {
+              "const": true
+            }
+          }
+        },
+        "lease_transition": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "previous_lease_reused",
+            "previous_run_secret_reused",
+            "new_lease_required"
+          ],
+          "properties": {
+            "previous_lease_reused": {
+              "const": false
+            },
+            "previous_run_secret_reused": {
+              "const": false
+            },
+            "new_lease_required": {
+              "const": true
+            }
+          }
+        },
+        "completed_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

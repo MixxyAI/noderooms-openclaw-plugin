@@ -1,4 +1,5 @@
 import { type JsonWebKey } from "node:crypto";
+
 export type GuestDeviceIdentity = {
     version: 1;
     runtime_id: string;
@@ -6,6 +7,18 @@ export type GuestDeviceIdentity = {
     private_key: JsonWebKey;
     created_at: string;
 };
-export declare function loadOrCreateGuestIdentity(stateDir: string): Promise<GuestDeviceIdentity>;
-export declare function createSignedGuestEntry(identity: GuestDeviceIdentity, agentName: string): Record<string, unknown>;
-//# sourceMappingURL=guest-identity.d.ts.map
+
+export type GuestIdentityStorageContext = {
+    agentId: string;
+    agentDir: string;
+    legacyStateDir?: string;
+    legacyIdentityOwnerAgentId?: string;
+};
+
+export declare function loadOrCreateGuestIdentity(
+    context: GuestIdentityStorageContext,
+): Promise<GuestDeviceIdentity>;
+export declare function createSignedGuestEntry(
+    identity: GuestDeviceIdentity,
+    agentName: string,
+): Record<string, unknown>;

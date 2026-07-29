@@ -1,0 +1,149 @@
+{
+  "$schema": "../workdesk-workboard-task-flow-v1.schema.json",
+  "$comment": "Non-live Phase 3A fixture. Managed Task Flow is reconciled after one simulated Gateway restart and waits for its Verified Human Owner.",
+  "contract_version": "noderooms-openclaw-task-flow-binding-v1",
+  "fixture": true,
+  "activation_state": "contract_only",
+  "live_dispatch_allowed": false,
+  "flow_id": "flow-noderooms-example-01",
+  "sync_mode": "managed",
+  "controller_id": "noderooms/workdesk-v1",
+  "work_item_binding": {
+    "work_item_id": "nrwork_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "mission_id": "nrmission_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "work_item_revision": 1,
+    "work_item_fingerprint_sha256": "sha256:5d511080a2b8f29accfda659d6e042eebb37d21ef06e700a159350272b7bdd24"
+  },
+  "runtime_binding": {
+    "binding_id": "nrbind_11111111111111111111111111111111",
+    "openclaw_agent_id": "agent-example-openclaw",
+    "session_key_fingerprint_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "requester_origin_fingerprint_sha256": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+  },
+  "status": "waiting",
+  "revision": 5,
+  "current_step_id": "owner_review",
+  "nodes": [
+    {
+      "step_id": "research",
+      "kind": "task",
+      "status": "completed",
+      "depends_on": [],
+      "task_binding": {
+        "task_id": "task-research-example-01",
+        "run_id": "run-research-example-01",
+        "status": "succeeded"
+      },
+      "lease_binding": {
+        "lease_id": "nrlv2_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "lease_authority_fingerprint_sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "contract_version": "noderooms-run-lease-v2"
+      },
+      "receipt_binding": {
+        "receipt_id": "nrworkrcpt_11111111111111111111111111111111",
+        "receipt_fingerprint_sha256": "sha256:df985615a679868515b04543d491b6ab08032c1b147bd1323ae4fc50489eaa35"
+      },
+      "artifact_refs": [
+        "nrartifact_11111111111111111111111111111111"
+      ],
+      "external_action_receipt_binding": null,
+      "started_at": "2026-07-24T17:01:00Z",
+      "completed_at": "2026-07-24T17:08:00Z"
+    },
+    {
+      "step_id": "draft",
+      "kind": "task",
+      "status": "completed",
+      "depends_on": [
+        "research"
+      ],
+      "task_binding": {
+        "task_id": "task-draft-example-01",
+        "run_id": "run-draft-example-01",
+        "status": "succeeded"
+      },
+      "lease_binding": {
+        "lease_id": "nrlv2_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "lease_authority_fingerprint_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "contract_version": "noderooms-run-lease-v2"
+      },
+      "receipt_binding": {
+        "receipt_id": "nrworkrcpt_22222222222222222222222222222222",
+        "receipt_fingerprint_sha256": "sha256:10ed87159ebb2ad2d8e756fdeadbf4f0ef4baf263209e8c8e2243f2ac9110bb5"
+      },
+      "artifact_refs": [
+        "nrartifact_22222222222222222222222222222222"
+      ],
+      "external_action_receipt_binding": null,
+      "started_at": "2026-07-24T17:09:00Z",
+      "completed_at": "2026-07-24T17:16:00Z"
+    },
+    {
+      "step_id": "owner_review",
+      "kind": "owner_gate",
+      "status": "waiting",
+      "depends_on": [
+        "draft"
+      ],
+      "task_binding": null,
+      "lease_binding": null,
+      "receipt_binding": null,
+      "artifact_refs": [],
+      "external_action_receipt_binding": null,
+      "started_at": null,
+      "completed_at": null
+    },
+    {
+      "step_id": "create_draft_pr",
+      "kind": "task",
+      "status": "queued",
+      "depends_on": [
+        "owner_review"
+      ],
+      "task_binding": null,
+      "lease_binding": null,
+      "receipt_binding": null,
+      "artifact_refs": [],
+      "external_action_receipt_binding": null,
+      "started_at": null,
+      "completed_at": null
+    }
+  ],
+  "wait": {
+    "kind": "owner_review",
+    "step_id": "owner_review",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "decision_id": null,
+    "expires_at": "2026-07-25T15:00:00Z"
+  },
+  "checkpoint": {
+    "store": "openclaw_sqlite_flow_runs",
+    "last_persisted_revision": 5,
+    "restart_count": 1,
+    "recovery_state": "reconciled",
+    "reconciliation_mode": "read_only",
+    "stale_write_strategy": "reject_revision_conflict_reread",
+    "resume_without_reconcile_allowed": false,
+    "last_reconciled_at": "2026-07-24T17:19:00Z"
+  },
+  "cancellation": {
+    "state": "not_requested",
+    "requested": false,
+    "requested_at": null,
+    "no_new_tasks_when_requested": true,
+    "cancel_is_sticky": true
+  },
+  "constraints": {
+    "expected_revision_required": true,
+    "per_task_step_lease_required": true,
+    "per_task_step_receipt_required": true,
+    "subagent_privilege_inheritance_allowed": false,
+    "one_active_task_max": 1,
+    "automatic_write_retry_allowed": false,
+    "pause_cancel_revoke_stop_before_next_step": true,
+    "claim_token_persisted": false
+  },
+  "created_at": "2026-07-24T17:00:30Z",
+  "updated_at": "2026-07-24T17:19:00Z",
+  "flow_fingerprint_sha256": "sha256:084bc56e95118d13f85f73b5739fc0ca86c3b9c99a162d60c8b5ea89f7fb1df7"
+}

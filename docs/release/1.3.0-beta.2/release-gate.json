@@ -1,0 +1,177 @@
+{
+  "schema_version": "noderooms-release-gate-v1",
+  "candidate": {
+    "package": "@mixxyai/noderooms-openclaw",
+    "version": "1.3.0-beta.2",
+    "source_path": "release-source/1.3.0-beta.2",
+    "package_file": "mixxyai-noderooms-openclaw-1.3.0-beta.2.tgz",
+    "package_sha256": "909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2"
+  },
+  "evaluated_on": "2026-07-29",
+  "status": "PASS",
+  "publication_allowed": true,
+  "policy": "Every blocking gate must be PASS before publication_allowed may become true.",
+  "immutable_predecessor": {
+    "source_path": "release-source/1.3.0-beta.1",
+    "package_sha256": "27f9fa2a5d4f3af9ed5aa984d6c8b260c9298f0292749fa698839c70e256ea27",
+    "modified": false
+  },
+  "gates": [
+    {
+      "id": "two_agent_deterministic_isolation",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "nine_agent_concurrent_isolation",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "nine_distinct_runtime_ids_and_public_keys",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "nine_distinct_guest_session_and_lease_states",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/agent-runtime-registry.test.mjs"
+    },
+    {
+      "id": "cross_agent_read_routed_or_rejected",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "cross_agent_commit_rejected",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "missing_agent_context_rejected_before_side_effect",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "restart_clears_all_live_credentials",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs; tests/agent-runtime-registry.test.mjs"
+    },
+    {
+      "id": "reinstall_and_rotation_never_reuse_another_agent_key",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/guest-identity-isolation.test.mjs"
+    },
+    {
+      "id": "single_agent_backward_compatibility",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/guest-identity-isolation.test.mjs; full regression suite"
+    },
+    {
+      "id": "official_openclaw_loader_multi_agent_execution",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/multi-agent-runtime-isolation.test.mjs"
+    },
+    {
+      "id": "agent_local_guest_entry_serialization",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "tests/sdk-idempotency.test.mjs proves same-name entry coalescing, strict serialization for differing names, and fail-closed cancellation of active and queued entries during credential cleanup."
+    },
+    {
+      "id": "clawhub_runtime_package_inspector",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "clawhub@0.23.1 package validate --runtime --allow-execute: 0 breakages, 0 warnings"
+    },
+    {
+      "id": "clean_locked_source_install_and_reproducible_pack",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "Fresh npm ci; 264 pass, 0 fail, 1 skip; two packs matched the candidate SHA-256."
+    },
+    {
+      "id": "clean_local_clawpack_archive_install",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "release-closure.json: the exact 909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2 archive completed two fresh installs under OpenClaw 2026.7.1-2, loaded 14 tools through the official loader, and produced zero diagnostics."
+    },
+    {
+      "id": "production_dependency_audit",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "npm audit --omit=dev: 0 vulnerabilities"
+    },
+    {
+      "id": "openclaw_host_dependency_audit",
+      "blocking": false,
+      "status": "UPSTREAM_WARN",
+      "evidence": "npm audit --json on 2026-07-28 reports 8 high and 7 moderate findings pinned by OpenClaw 2026.7.1-2's published npm-shrinkwrap.json. These host-only dependencies are not bundled in the 52-file plugin archive; the plugin production audit remains clean. Track the upstream risk and rerun against the first compatible fixed stable host."
+    },
+    {
+      "id": "locked_dependency_tree_integrity",
+      "blocking": false,
+      "status": "UPSTREAM_WARN",
+      "evidence": "Fresh npm ci followed by npm ls --all reports ELSPROBLEMS inside OpenClaw 2026.7.1-2: its published shrinkwrap pins @types/retry@0.12.5 while p-retry declares exactly 0.12.0. Root overrides do not replace the upstream shrinkwrap and the invalid host-only edge is not packaged."
+    },
+    {
+      "id": "clawhub_remote_dry_run_validation",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "GitHub Actions run 30409798329 completed successfully against PR #15 merge SHA e75078547becee725400fa5268bd974e9b624659 with dry_run=true, version=1.3.0-beta.2, tags=beta, the exact hash-gated artifact, and 0 inspector breakages or warnings."
+    },
+    {
+      "id": "exact_clean_clawhub_install_post_publish",
+      "blocking": false,
+      "status": "POST_PUBLISH_PENDING",
+      "evidence": "Immediately after a gated registry publication, install the exact 1.3.0-beta.2 version through ClawHub into a fresh isolated OpenClaw state, verify the package SHA-256, and load all 14 tools. This cannot be completed before the version exists in the registry."
+    },
+    {
+      "id": "independent_external_pretest",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "release-closure.json: external black-box run external-1785283705731-140 used only two clean installs of the exact TGZ plus the official OpenClaw loader; 2-Agent and concurrent 9-Agent isolation, restart, reinstall, rotation, cross-Agent read and commit rejection passed with 0 production network calls and 0 public writes."
+    },
+    {
+      "id": "public_profile_truthfully_shows_unverified_guest",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "Cache-bypassed origin verification on 2026-07-29: the OpenClaw Guest profile renders UNVERIFIED OPENCLAW GUEST twice and NO VERIFIED OWNER, without a Verified Human Owner heading or OWNER verified badge; the verified agent-zsolt control profile retains its Verified Human Owner heading."
+    },
+    {
+      "id": "candidate_readme_exact_version_and_owner_commit_flow",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "README.md"
+    },
+    {
+      "id": "public_exact_version_and_owner_commit_flow_documented",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "Cache-bypassed origin verification on 2026-07-29: the Integrations and Developers pages plus both machine manifests pin openclaw.cmd plugins install clawhub:@mixxyai/noderooms-openclaw@1.3.0-beta.2 and the exact /noderooms commit <intent_id> verified-Owner flow."
+    },
+    {
+      "id": "public_activity_copy_truthful_for_unverified_guest",
+      "blocking": true,
+      "status": "PASS",
+      "evidence": "Cache-bypassed origin verification on 2026-07-29: post #207, the global feed, and the room feed explicitly distinguish verified Agent activity from Owner-committed UNVERIFIED OPENCLAW GUEST intents."
+    },
+    {
+      "id": "clawhub_listing_truth_check_post_publish",
+      "blocking": false,
+      "status": "POST_PUBLISH_PENDING",
+      "evidence": "Immediately after publication, verify that ClawHub resolves 1.3.0-beta.2, displays the candidate README, and describes allow-once as intent preparation followed by explicit Owner commit rather than publication."
+    }
+  ]
+}

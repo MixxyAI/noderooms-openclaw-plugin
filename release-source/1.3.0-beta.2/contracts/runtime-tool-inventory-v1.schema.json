@@ -1,0 +1,464 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:runtime-tool-inventory:v1",
+  "title": "NodeRooms runtime tool inventory v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "activation_state",
+    "live_enforce_allowed",
+    "captured_at",
+    "refresh_reason",
+    "inventory_generation",
+    "source",
+    "registry_binding",
+    "metrics",
+    "tools",
+    "safety",
+    "snapshot_fingerprint_sha256"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "noderooms-runtime-tool-inventory-v1"
+    },
+    "activation_state": {
+      "const": "inventory_only"
+    },
+    "live_enforce_allowed": {
+      "const": false
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "refresh_reason": {
+      "enum": [
+        "gateway_start",
+        "owner_inspection",
+        "plugin_or_mcp_change",
+        "unknown_tool_observed",
+        "contract_test"
+      ]
+    },
+    "inventory_generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "registry_binding": {
+      "$ref": "#/$defs/registry_binding"
+    },
+    "metrics": {
+      "$ref": "#/$defs/metrics"
+    },
+    "tools": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2048,
+      "items": {
+        "$ref": "#/$defs/tool"
+      }
+    },
+    "safety": {
+      "$ref": "#/$defs/safety"
+    },
+    "snapshot_fingerprint_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform",
+        "catalog_kind",
+        "agent_id"
+      ],
+      "properties": {
+        "platform": {
+          "const": "openclaw"
+        },
+        "catalog_kind": {
+          "enum": [
+            "tools_catalog",
+            "tools_effective",
+            "contract_fixture"
+          ]
+        },
+        "agent_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:@/-]{1,160}$"
+        },
+        "session_key_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "registry_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "registry_version",
+        "policy_version",
+        "activation_state",
+        "live_enforce_allowed"
+      ],
+      "properties": {
+        "contract_version": {
+          "const": "noderooms-connector-scope-registry-v1"
+        },
+        "registry_version": {
+          "type": "string",
+          "pattern": "^nrcr_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "policy_version": {
+          "type": "string",
+          "pattern": "^nrp_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "activation_state": {
+          "enum": [
+            "contract_only",
+            "active",
+            "retired"
+          ]
+        },
+        "live_enforce_allowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_tool_count",
+        "inventory_tool_count",
+        "inventory_completeness_percent",
+        "covered_tool_count",
+        "unclassified_tool_count",
+        "drifted_tool_count",
+        "side_effecting_unclassified_tool_count",
+        "classification_coverage_percent",
+        "enforce_profile_ready"
+      ],
+      "properties": {
+        "source_tool_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "inventory_tool_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "inventory_completeness_percent": {
+          "const": 100
+        },
+        "covered_tool_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unclassified_tool_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "drifted_tool_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "side_effecting_unclassified_tool_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "classification_coverage_percent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "enforce_profile_ready": {
+          "const": false
+        }
+      }
+    },
+    "owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "owner_id",
+        "resolution"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "core",
+            "plugin",
+            "channel",
+            "mcp"
+          ]
+        },
+        "owner_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:@/-]{1,160}$"
+        },
+        "resolution": {
+          "enum": [
+            "exact",
+            "unresolved"
+          ]
+        }
+      }
+    },
+    "policy_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "registry_version",
+        "policy_version",
+        "profile_id",
+        "scope",
+        "profile_status",
+        "provider",
+        "connector_id",
+        "connector_version",
+        "action",
+        "resource_type",
+        "approval_policy"
+      ],
+      "properties": {
+        "registry_version": {
+          "type": "string"
+        },
+        "policy_version": {
+          "type": "string"
+        },
+        "profile_id": {
+          "type": "string",
+          "pattern": "^nrscp_[a-z0-9][a-z0-9_]{2,95}$"
+        },
+        "scope": {
+          "type": "string",
+          "pattern": "^connector\\.[a-z][a-z0-9_]{1,31}\\.[a-z][a-z0-9_]{1,47}\\.[a-z][a-z0-9_]{1,47}$"
+        },
+        "profile_status": {
+          "enum": [
+            "reference_only",
+            "active",
+            "deprecated",
+            "blocked"
+          ]
+        },
+        "provider": {
+          "type": "string"
+        },
+        "connector_id": {
+          "type": "string"
+        },
+        "connector_version": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "resource_type": {
+          "type": "string"
+        },
+        "approval_policy": {
+          "enum": [
+            "none",
+            "allow_once"
+          ]
+        }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tool_name",
+        "owner",
+        "actual_input_schema_fingerprint_sha256",
+        "expected_input_schema_fingerprint_sha256",
+        "output_receipt_profile",
+        "declared_replay_safe",
+        "replay_semantics",
+        "side_effect_class",
+        "risk",
+        "host_optional",
+        "host_tags",
+        "coverage_status",
+        "policy_binding",
+        "potential_side_effect",
+        "enforce_eligible",
+        "authority_status"
+      ],
+      "properties": {
+        "tool_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+        },
+        "owner": {
+          "$ref": "#/$defs/owner"
+        },
+        "actual_input_schema_fingerprint_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "expected_input_schema_fingerprint_sha256": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "output_receipt_profile": {
+          "enum": [
+            "read_observation_v1",
+            "external_action_receipt_v2",
+            "unknown"
+          ]
+        },
+        "declared_replay_safe": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "replay_semantics": {
+          "enum": [
+            "replay_safe_read",
+            "at_most_once_dispatch",
+            "provider_idempotent",
+            "unknown"
+          ]
+        },
+        "side_effect_class": {
+          "enum": [
+            "read",
+            "write",
+            "destructive",
+            "admin",
+            "unknown"
+          ]
+        },
+        "risk": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical",
+            "unknown"
+          ]
+        },
+        "host_optional": {
+          "type": "boolean"
+        },
+        "host_tags": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "coverage_status": {
+          "enum": [
+            "covered_contract_only",
+            "covered_active",
+            "internal_bypass",
+            "unclassified",
+            "owner_unresolved",
+            "schema_unavailable",
+            "schema_drift",
+            "policy_drift"
+          ]
+        },
+        "policy_binding": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/policy_binding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "potential_side_effect": {
+          "type": "boolean"
+        },
+        "enforce_eligible": {
+          "const": false
+        },
+        "authority_status": {
+          "const": "inventory_only_no_authority"
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grants_authority",
+        "executes_tools",
+        "invokes_connectors",
+        "performs_network_request",
+        "performs_external_write",
+        "persists_raw_schema",
+        "persists_raw_parameters",
+        "persists_raw_results",
+        "persists_provider_credentials",
+        "owner_decision_automatable"
+      ],
+      "properties": {
+        "grants_authority": {
+          "const": false
+        },
+        "executes_tools": {
+          "const": false
+        },
+        "invokes_connectors": {
+          "const": false
+        },
+        "performs_network_request": {
+          "const": false
+        },
+        "performs_external_write": {
+          "const": false
+        },
+        "persists_raw_schema": {
+          "const": false
+        },
+        "persists_raw_parameters": {
+          "const": false
+        },
+        "persists_raw_results": {
+          "const": false
+        },
+        "persists_provider_credentials": {
+          "const": false
+        },
+        "owner_decision_automatable": {
+          "const": false
+        }
+      }
+    }
+  }
+}

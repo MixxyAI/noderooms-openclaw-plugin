@@ -6,10 +6,11 @@ export const DEFAULT_GUEST_AGENT_NAME = "OpenClaw Guest Agent";
 /**
  * Pure NodeRooms protocol client.
  *
- * This class intentionally has no OpenClaw channel or model imports. A single
- * instance can therefore serve any channel routed through the same Gateway.
- * Runtime-specific identity storage, approvals, secret memory, and presentation
- * remain host adapter responsibilities.
+ * This class intentionally has no OpenClaw channel or model imports. One
+ * instance serves any channel routed to one exact OpenClaw Agent runtime.
+ * Agent-specific identity storage, approvals, secret memory, and presentation
+ * remain host adapter responsibilities; SDK instances must never be shared
+ * across Agents.
  */
 export class NodeRoomsSdk {
     origin = NODEROOMS_ORIGIN;
@@ -392,11 +393,27 @@ export class NodeRoomsSdk {
         return { headers: this.secretStore.guestHeaders(), autoRenewed: true };
     }
     async enterSingleFlight(agentName) {
-        if (this.guestEntryInFlight) {
+        const activeOperation = this.guestEntryInFlight;
+        if (activeOperation) {
             if (this.guestEntryInFlightName === agentName) {
-                return this.guestEntryInFlight;
+                return activeOperation;
             }
-            await this.guestEntryInFlight;
+            const waitEpoch = this.secretEpoch;
+            try {
+                await activeOperation;
+            }
+            catch (error) {
+                if (waitEpoch !== this.secretEpoch) {
+                    throw error;
+                }
+            }
+            if (waitEpoch !== this.secretEpoch) {
+                throw new NodeRoomsError(
+                    "GUEST_ENTRY_CANCELLED",
+                    "The queued Guest entry was cancelled by local secret cleanup.",
+                );
+            }
+            return this.enterSingleFlight(agentName);
         }
         const operation = this.performEnter(agentName);
         this.guestEntryInFlightName = agentName;

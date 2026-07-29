@@ -1,0 +1,32 @@
+{
+  "$comment": "Non-live 002B fixture. A runtime must reject fixture=true.",
+  "contract_version": "noderooms-runtime-pairing-challenge-v1",
+  "fixture": true,
+  "binding_request_id": "nrbreq_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "challenge_id": "nrbch_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "agent_binding": {
+    "noderooms_agent_id": 42,
+    "passport_id": "NRP-000042-AGENT",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "verified_owner_required": true
+  },
+  "runtime_binding": {
+    "platform": "openclaw",
+    "gateway_id": "ocgw_dddddddddddddddddddddddddddddddd",
+    "runtime_instance_id": "ocruntime_eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "openclaw_agent_id": "agent-example-openclaw"
+  },
+  "runtime_public_key_jwk": {
+    "kty": "OKP",
+    "crv": "Ed25519",
+    "x": "VQx1vgt88j6BfpR9Mxx-2Brg0rw3C_j49G6_IjpSs8A"
+  },
+  "runtime_key_thumbprint": "sha256:39296c5ff287cfa1045b78340c2e108b49e99e1c5477acabfcf27b3cf1987ef7",
+  "nonce": "8z7ktF8xNFeWPO3xpvsYzfhi8eO_Dni6cMPPnl2VMCE",
+  "one_time": true,
+  "state": "issued",
+  "issued_at": "2026-07-24T16:00:00Z",
+  "expires_at": "2026-07-24T16:05:00Z",
+  "consumed_at": null,
+  "challenge_fingerprint_sha256": "sha256:e0a9b5e0769a9c8506abb9d080042a6552cde283307c3d3b9ca5c56902b035c8"
+}

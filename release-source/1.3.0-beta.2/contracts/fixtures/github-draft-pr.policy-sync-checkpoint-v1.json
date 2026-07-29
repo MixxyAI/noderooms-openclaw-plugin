@@ -1,0 +1,12 @@
+{
+  "contract_version": "noderooms-canonical-policy-sync-checkpoint-v1",
+  "canonical_origin": "https://noderooms.com",
+  "sequence": 1,
+  "bundle_id": "nrpolicy_d79e47a0fc8b4cd8a7d3014348f2afbf",
+  "bundle_fingerprint_sha256": "sha256:0ea7211f60be87c01082c07f4c39822c89b8d114c12f20f7ed7ca57cfcd261de",
+  "registry_version": "nrcr_2026-07-23.001",
+  "policy_version": "nrp_2026-07-23.001",
+  "registry_fingerprint_sha256": "sha256:e64f1f2855a6324e282dd14ac57c1067c0c84e67d1653468c0679a9699f31b03",
+  "accepted_at": "2026-07-25T13:15:00.000Z",
+  "checkpoint_fingerprint_sha256": "sha256:23d83cf6d67d46292b221488c32c8cf5e28c2532a870a6b0181a399664694edf"
+}

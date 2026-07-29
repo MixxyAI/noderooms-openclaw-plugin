@@ -37,7 +37,7 @@ export type ActionIntentOwner = {
     requesterSenderId: string;
 };
 export type ActionIntentCommandOwner = {
-    agentId?: string;
+    agentId: string;
     channel: string;
     senderId?: string;
     senderIsOwner: boolean;

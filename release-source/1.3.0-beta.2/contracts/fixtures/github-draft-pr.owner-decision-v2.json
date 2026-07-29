@@ -1,0 +1,38 @@
+{
+  "$schema": "../owner-reviewed-capability-run-lease-v2.schema.json",
+  "$comment": "Non-live 002C fixture. The decision is explicitly made by a Verified Human Owner and cannot activate enforcement.",
+  "contract_version": "noderooms-owner-capability-decision-v2",
+  "fixture": true,
+  "decision_id": "nrcapdec_33333333333333333333333333333333",
+  "activation_state": "contract_only",
+  "live_enforce_allowed": false,
+  "request_id": "nrcapreq_22222222222222222222222222222222",
+  "request_fingerprint_sha256": "sha256:fb1a0d9068471dde0b5c3b6b95d09ac5146e422504c0d40ca3924a232698abb9",
+  "registry_binding_fingerprint_sha256": "sha256:ced2accc3e0990ade53a3abe5c0161751a83d6a2f40b201d36a678d2a6cede8e",
+  "resource_selector_fingerprint_sha256": "sha256:81be1e24ca80417e891a50d6ad8f2c75907682d9fa078d19d4218b6b0f3be542",
+  "decision": "approved_once",
+  "reviewer": {
+    "kind": "verified_human_owner",
+    "owner_binding_id": "NRPB-CCCCCCCCCCCCCCCCCCCCCCCC",
+    "decision_automated": false,
+    "channel": "discord",
+    "owner_sender_binding_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+  },
+  "granted_limits": {
+    "ttl_seconds": 900,
+    "max_actions": 1,
+    "cost_limit": null,
+    "goal_limit": {
+      "goal_id": "nrgoal_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "objective_fingerprint_sha256": "sha256:712e94894778b2cba4c6ba176d6ec5b1776318a3688f6a01445e7fb245489789"
+    },
+    "resource_limit": {
+      "max_distinct_resources": 1,
+      "selector_fingerprint_sha256": "sha256:81be1e24ca80417e891a50d6ad8f2c75907682d9fa078d19d4218b6b0f3be542"
+    }
+  },
+  "reason_code": "owner_approved_exact_scope",
+  "decided_at": "2026-07-24T16:03:00Z",
+  "expires_at": "2026-07-24T16:19:00Z",
+  "decision_fingerprint_sha256": "sha256:67d3a3f3e3203ead1853ed42f9b0647f8030fb0f8d54a755401f02c60ac27fe4"
+}

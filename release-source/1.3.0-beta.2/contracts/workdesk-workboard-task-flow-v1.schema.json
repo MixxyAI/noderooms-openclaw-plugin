@@ -1,0 +1,1647 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:workdesk-workboard-task-flow:v1",
+  "title": "NodeRooms Workdesk to OpenClaw Workboard and Task Flow contract v1",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/workItem"
+    },
+    {
+      "$ref": "#/$defs/workStepReceipt"
+    },
+    {
+      "$ref": "#/$defs/taskFlowBinding"
+    },
+    {
+      "$ref": "#/$defs/workboardBinding"
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "workItemId": {
+      "type": "string",
+      "pattern": "^nrwork_[a-f0-9]{32}$"
+    },
+    "missionId": {
+      "type": "string",
+      "pattern": "^nrmission_[a-f0-9]{32}$"
+    },
+    "workReceiptId": {
+      "type": "string",
+      "pattern": "^nrworkrcpt_[a-f0-9]{32}$"
+    },
+    "artifactId": {
+      "type": "string",
+      "pattern": "^nrartifact_[a-f0-9]{32}$"
+    },
+    "leaseId": {
+      "type": "string",
+      "pattern": "^nrlv2_[a-f0-9]{32}$"
+    },
+    "externalReceiptId": {
+      "type": "string",
+      "pattern": "^nrear_[a-f0-9]{32}$"
+    },
+    "stepId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{1,63}$"
+    },
+    "contextId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:/-]{1,200}$"
+    },
+    "agentBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "noderooms_agent_id",
+        "passport_id",
+        "owner_binding_id",
+        "verified_owner_required"
+      ],
+      "properties": {
+        "noderooms_agent_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "passport_id": {
+          "type": "string",
+          "pattern": "^NRP-[0-9]{6}-AGENT$"
+        },
+        "owner_binding_id": {
+          "type": "string",
+          "pattern": "^NRPB-[A-F0-9]{24}$"
+        },
+        "verified_owner_required": {
+          "const": true
+        }
+      }
+    },
+    "runtimeBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "binding_id",
+        "openclaw_agent_id",
+        "session_key_fingerprint_sha256",
+        "requester_origin_fingerprint_sha256"
+      ],
+      "properties": {
+        "binding_id": {
+          "type": "string",
+          "pattern": "^nrbind_[a-f0-9]{32}$"
+        },
+        "openclaw_agent_id": {
+          "$ref": "#/$defs/contextId"
+        },
+        "session_key_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "requester_origin_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "workItemBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "work_item_id",
+        "mission_id",
+        "work_item_revision",
+        "work_item_fingerprint_sha256"
+      ],
+      "properties": {
+        "work_item_id": {
+          "$ref": "#/$defs/workItemId"
+        },
+        "mission_id": {
+          "$ref": "#/$defs/missionId"
+        },
+        "work_item_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "work_item_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "leaseBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lease_id",
+        "lease_authority_fingerprint_sha256",
+        "contract_version"
+      ],
+      "properties": {
+        "lease_id": {
+          "$ref": "#/$defs/leaseId"
+        },
+        "lease_authority_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "contract_version": {
+          "const": "noderooms-run-lease-v2"
+        }
+      }
+    },
+    "externalReceiptBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "receipt_id",
+        "receipt_fingerprint_sha256"
+      ],
+      "properties": {
+        "receipt_id": {
+          "$ref": "#/$defs/externalReceiptId"
+        },
+        "receipt_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact_id",
+        "kind",
+        "content_sha256",
+        "visibility",
+        "raw_content_included"
+      ],
+      "properties": {
+        "artifact_id": {
+          "$ref": "#/$defs/artifactId"
+        },
+        "kind": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "content_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "visibility": {
+          "enum": [
+            "owner_only",
+            "private_working",
+            "public_safe_projection"
+          ]
+        },
+        "raw_content_included": {
+          "const": false
+        }
+      }
+    },
+    "workItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "activation_state",
+        "live_dispatch_allowed",
+        "work_item_id",
+        "mission_id",
+        "revision",
+        "objective",
+        "agent_binding",
+        "runtime_binding",
+        "owner_policy",
+        "work_schedule",
+        "deadline_at",
+        "budget",
+        "connector_allowlist",
+        "steps",
+        "workflow",
+        "receipt_policy",
+        "constraints",
+        "created_at",
+        "updated_at",
+        "work_item_fingerprint_sha256"
+      ],
+      "properties": {
+        "$schema": {
+          "type": "string"
+        },
+        "$comment": {
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "noderooms-work-item-v1"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "activation_state": {
+          "const": "contract_only"
+        },
+        "live_dispatch_allowed": {
+          "const": false
+        },
+        "work_item_id": {
+          "$ref": "#/$defs/workItemId"
+        },
+        "mission_id": {
+          "$ref": "#/$defs/missionId"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "objective": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "title",
+            "summary_sha256",
+            "completion_criteria_sha256"
+          ],
+          "properties": {
+            "title": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "summary_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "completion_criteria_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "agent_binding": {
+          "$ref": "#/$defs/agentBinding"
+        },
+        "runtime_binding": {
+          "$ref": "#/$defs/runtimeBinding"
+        },
+        "owner_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "owner_binding_id",
+            "verified_human_owner_required",
+            "automatic_owner_decision_allowed",
+            "owner_review_step_id"
+          ],
+          "properties": {
+            "owner_binding_id": {
+              "type": "string",
+              "pattern": "^NRPB-[A-F0-9]{24}$"
+            },
+            "verified_human_owner_required": {
+              "const": true
+            },
+            "automatic_owner_decision_allowed": {
+              "const": false
+            },
+            "owner_review_step_id": {
+              "$ref": "#/$defs/stepId"
+            }
+          }
+        },
+        "work_schedule": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "timezone",
+            "working_days",
+            "local_start",
+            "local_end",
+            "availability",
+            "after_hours_start_allowed"
+          ],
+          "properties": {
+            "timezone": {
+              "type": "string",
+              "pattern": "^[A-Za-z_]+(?:/[A-Za-z0-9_+-]+)+$"
+            },
+            "working_days": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 7,
+              "uniqueItems": true,
+              "items": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 7
+              }
+            },
+            "local_start": {
+              "type": "string",
+              "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$"
+            },
+            "local_end": {
+              "type": "string",
+              "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$"
+            },
+            "availability": {
+              "enum": [
+                "available",
+                "busy",
+                "off_hours",
+                "paused"
+              ]
+            },
+            "after_hours_start_allowed": {
+              "const": false
+            }
+          }
+        },
+        "deadline_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "currency",
+            "max_minor_units",
+            "automatic_spend_allowed"
+          ],
+          "properties": {
+            "currency": {
+              "type": "string",
+              "pattern": "^[A-Z]{3}$"
+            },
+            "max_minor_units": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 1000000000
+            },
+            "automatic_spend_allowed": {
+              "const": false
+            }
+          }
+        },
+        "connector_allowlist": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "profile_id",
+              "scope",
+              "tool_name",
+              "resource",
+              "max_actions",
+              "owner_review_required"
+            ],
+            "properties": {
+              "profile_id": {
+                "type": "string",
+                "pattern": "^nrscp_[a-z0-9][a-z0-9_]{2,95}$"
+              },
+              "scope": {
+                "type": "string",
+                "pattern": "^connector\\.[a-z][a-z0-9_]{1,31}\\.[a-z][a-z0-9_]{1,47}\\.[a-z][a-z0-9_]{1,47}$"
+              },
+              "tool_name": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+              },
+              "resource": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "resource_type",
+                  "selector",
+                  "selector_fingerprint_sha256"
+                ],
+                "properties": {
+                  "resource_type": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9_]{1,63}$"
+                  },
+                  "selector": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "propertyNames": {
+                      "pattern": "^[a-z][a-z0-9_]{1,63}$"
+                    }
+                  },
+                  "selector_fingerprint_sha256": {
+                    "$ref": "#/$defs/sha256"
+                  }
+                }
+              },
+              "max_actions": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 10
+              },
+              "owner_review_required": {
+                "const": true
+              }
+            }
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 32,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "step_id",
+              "kind",
+              "depends_on",
+              "execution_class",
+              "connector_profile_id",
+              "owner_gate_required",
+              "lease_required",
+              "receipt_required"
+            ],
+            "properties": {
+              "step_id": {
+                "$ref": "#/$defs/stepId"
+              },
+              "kind": {
+                "enum": [
+                  "task",
+                  "owner_gate"
+                ]
+              },
+              "depends_on": {
+                "type": "array",
+                "uniqueItems": true,
+                "maxItems": 32,
+                "items": {
+                  "$ref": "#/$defs/stepId"
+                }
+              },
+              "execution_class": {
+                "enum": [
+                  "read",
+                  "local",
+                  "write",
+                  "none"
+                ]
+              },
+              "connector_profile_id": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^nrscp_[a-z0-9][a-z0-9_]{2,95}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "owner_gate_required": {
+                "type": "boolean"
+              },
+              "lease_required": {
+                "type": "boolean"
+              },
+              "receipt_required": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "workflow": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "controller_id",
+            "status",
+            "current_step_id",
+            "ordered_step_ids"
+          ],
+          "properties": {
+            "controller_id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9._/-]{2,127}$"
+            },
+            "status": {
+              "enum": [
+                "accepted",
+                "running",
+                "waiting_owner_review",
+                "blocked",
+                "completed",
+                "cancelled"
+              ]
+            },
+            "current_step_id": {
+              "$ref": "#/$defs/stepId"
+            },
+            "ordered_step_ids": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 32,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/stepId"
+              }
+            }
+          }
+        },
+        "receipt_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "per_task_step_receipt_required",
+            "external_write_receipt_required",
+            "public_safe_projection_required",
+            "raw_work_content_persisted"
+          ],
+          "properties": {
+            "per_task_step_receipt_required": {
+              "const": true
+            },
+            "external_write_receipt_required": {
+              "const": true
+            },
+            "public_safe_projection_required": {
+              "const": true
+            },
+            "raw_work_content_persisted": {
+              "const": false
+            }
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "noderooms_workdesk_is_canonical",
+            "workboard_can_grant_authority",
+            "per_task_step_lease_required",
+            "subagent_privilege_inheritance_allowed",
+            "shared_lease_allowed",
+            "wildcard_scope_allowed",
+            "public_write_allowed",
+            "automatic_external_write_retry_allowed",
+            "owner_decision_automated"
+          ],
+          "properties": {
+            "noderooms_workdesk_is_canonical": {
+              "const": true
+            },
+            "workboard_can_grant_authority": {
+              "const": false
+            },
+            "per_task_step_lease_required": {
+              "const": true
+            },
+            "subagent_privilege_inheritance_allowed": {
+              "const": false
+            },
+            "shared_lease_allowed": {
+              "const": false
+            },
+            "wildcard_scope_allowed": {
+              "const": false
+            },
+            "public_write_allowed": {
+              "const": false
+            },
+            "automatic_external_write_retry_allowed": {
+              "const": false
+            },
+            "owner_decision_automated": {
+              "const": false
+            }
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "work_item_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "workStepReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "activation_state",
+        "live_dispatch_allowed",
+        "receipt_id",
+        "work_item_binding",
+        "step_binding",
+        "agent_binding",
+        "runtime_binding",
+        "outcome",
+        "artifacts",
+        "external_action_receipt_binding",
+        "public_projection",
+        "constraints",
+        "recorded_at",
+        "receipt_fingerprint_sha256"
+      ],
+      "properties": {
+        "$schema": {
+          "type": "string"
+        },
+        "$comment": {
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "noderooms-work-step-receipt-v1"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "activation_state": {
+          "const": "contract_only"
+        },
+        "live_dispatch_allowed": {
+          "const": false
+        },
+        "receipt_id": {
+          "$ref": "#/$defs/workReceiptId"
+        },
+        "work_item_binding": {
+          "$ref": "#/$defs/workItemBinding"
+        },
+        "step_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "step_id",
+            "execution_class",
+            "attempt",
+            "lease"
+          ],
+          "properties": {
+            "step_id": {
+              "$ref": "#/$defs/stepId"
+            },
+            "execution_class": {
+              "enum": [
+                "read",
+                "local",
+                "write"
+              ]
+            },
+            "attempt": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10
+            },
+            "lease": {
+              "$ref": "#/$defs/leaseBinding"
+            }
+          }
+        },
+        "agent_binding": {
+          "$ref": "#/$defs/agentBinding"
+        },
+        "runtime_binding": {
+          "$ref": "#/$defs/runtimeBinding"
+        },
+        "outcome": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "reason_code",
+            "started_at",
+            "completed_at"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "completed",
+                "blocked",
+                "cancelled"
+              ]
+            },
+            "reason_code": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Z][A-Z0-9_]{2,95}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "started_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "completed_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        },
+        "artifacts": {
+          "type": "array",
+          "maxItems": 32,
+          "items": {
+            "$ref": "#/$defs/artifact"
+          }
+        },
+        "external_action_receipt_binding": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/externalReceiptBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "public_projection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "contract_version",
+            "work_item_id",
+            "mission_id",
+            "step_id",
+            "noderooms_agent_id",
+            "outcome_status",
+            "completed_at",
+            "artifact_count",
+            "external_write_performed",
+            "raw_content_included",
+            "provider_credentials_included",
+            "safe_for_public",
+            "projection_fingerprint_sha256"
+          ],
+          "properties": {
+            "contract_version": {
+              "const": "noderooms-public-work-receipt-v1"
+            },
+            "work_item_id": {
+              "$ref": "#/$defs/workItemId"
+            },
+            "mission_id": {
+              "$ref": "#/$defs/missionId"
+            },
+            "step_id": {
+              "$ref": "#/$defs/stepId"
+            },
+            "noderooms_agent_id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "outcome_status": {
+              "enum": [
+                "completed",
+                "blocked",
+                "cancelled"
+              ]
+            },
+            "completed_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "artifact_count": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 32
+            },
+            "external_write_performed": {
+              "type": "boolean"
+            },
+            "raw_content_included": {
+              "const": false
+            },
+            "provider_credentials_included": {
+              "const": false
+            },
+            "safe_for_public": {
+              "const": true
+            },
+            "projection_fingerprint_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "raw_prompt_included",
+            "raw_result_included",
+            "provider_credentials_included",
+            "noderooms_public_write_performed",
+            "reputation_mutation_allowed"
+          ],
+          "properties": {
+            "raw_prompt_included": {
+              "const": false
+            },
+            "raw_result_included": {
+              "const": false
+            },
+            "provider_credentials_included": {
+              "const": false
+            },
+            "noderooms_public_write_performed": {
+              "const": false
+            },
+            "reputation_mutation_allowed": {
+              "const": false
+            }
+          }
+        },
+        "recorded_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "receipt_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "flowNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step_id",
+        "kind",
+        "status",
+        "depends_on",
+        "task_binding",
+        "lease_binding",
+        "receipt_binding",
+        "artifact_refs",
+        "external_action_receipt_binding",
+        "started_at",
+        "completed_at"
+      ],
+      "properties": {
+        "step_id": {
+          "$ref": "#/$defs/stepId"
+        },
+        "kind": {
+          "enum": [
+            "task",
+            "owner_gate"
+          ]
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "completed",
+            "blocked",
+            "cancelled",
+            "waiting",
+            "approved",
+            "rejected"
+          ]
+        },
+        "depends_on": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/stepId"
+          }
+        },
+        "task_binding": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "task_id",
+                "run_id",
+                "status"
+              ],
+              "properties": {
+                "task_id": {
+                  "$ref": "#/$defs/contextId"
+                },
+                "run_id": {
+                  "$ref": "#/$defs/contextId"
+                },
+                "status": {
+                  "enum": [
+                    "queued",
+                    "running",
+                    "succeeded",
+                    "failed",
+                    "cancelled",
+                    "lost"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lease_binding": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/leaseBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "receipt_binding": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "receipt_id",
+                "receipt_fingerprint_sha256"
+              ],
+              "properties": {
+                "receipt_id": {
+                  "$ref": "#/$defs/workReceiptId"
+                },
+                "receipt_fingerprint_sha256": {
+                  "$ref": "#/$defs/sha256"
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "artifact_refs": {
+          "type": "array",
+          "maxItems": 32,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/artifactId"
+          }
+        },
+        "external_action_receipt_binding": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/externalReceiptBinding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "started_at": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "completed_at": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "taskFlowBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "activation_state",
+        "live_dispatch_allowed",
+        "flow_id",
+        "sync_mode",
+        "controller_id",
+        "work_item_binding",
+        "runtime_binding",
+        "status",
+        "revision",
+        "current_step_id",
+        "nodes",
+        "wait",
+        "checkpoint",
+        "cancellation",
+        "constraints",
+        "created_at",
+        "updated_at",
+        "flow_fingerprint_sha256"
+      ],
+      "properties": {
+        "$schema": {
+          "type": "string"
+        },
+        "$comment": {
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "noderooms-openclaw-task-flow-binding-v1"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "activation_state": {
+          "const": "contract_only"
+        },
+        "live_dispatch_allowed": {
+          "const": false
+        },
+        "flow_id": {
+          "$ref": "#/$defs/contextId"
+        },
+        "sync_mode": {
+          "const": "managed"
+        },
+        "controller_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._/-]{2,127}$"
+        },
+        "work_item_binding": {
+          "$ref": "#/$defs/workItemBinding"
+        },
+        "runtime_binding": {
+          "$ref": "#/$defs/runtimeBinding"
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "waiting",
+            "blocked",
+            "succeeded",
+            "failed",
+            "cancelled",
+            "lost"
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "current_step_id": {
+          "$ref": "#/$defs/stepId"
+        },
+        "nodes": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 32,
+          "items": {
+            "$ref": "#/$defs/flowNode"
+          }
+        },
+        "wait": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "step_id",
+                "owner_binding_id",
+                "decision_id",
+                "expires_at"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "owner_review"
+                },
+                "step_id": {
+                  "$ref": "#/$defs/stepId"
+                },
+                "owner_binding_id": {
+                  "type": "string",
+                  "pattern": "^NRPB-[A-F0-9]{24}$"
+                },
+                "decision_id": {
+                  "type": "null"
+                },
+                "expires_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "checkpoint": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "store",
+            "last_persisted_revision",
+            "restart_count",
+            "recovery_state",
+            "reconciliation_mode",
+            "stale_write_strategy",
+            "resume_without_reconcile_allowed",
+            "last_reconciled_at"
+          ],
+          "properties": {
+            "store": {
+              "const": "openclaw_sqlite_flow_runs"
+            },
+            "last_persisted_revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "restart_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "recovery_state": {
+              "const": "reconciled"
+            },
+            "reconciliation_mode": {
+              "const": "read_only"
+            },
+            "stale_write_strategy": {
+              "const": "reject_revision_conflict_reread"
+            },
+            "resume_without_reconcile_allowed": {
+              "const": false
+            },
+            "last_reconciled_at": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        "cancellation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "requested",
+            "requested_at",
+            "no_new_tasks_when_requested",
+            "cancel_is_sticky"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "not_requested",
+                "requested",
+                "settled"
+              ]
+            },
+            "requested": {
+              "type": "boolean"
+            },
+            "requested_at": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "no_new_tasks_when_requested": {
+              "const": true
+            },
+            "cancel_is_sticky": {
+              "const": true
+            }
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "expected_revision_required",
+            "per_task_step_lease_required",
+            "per_task_step_receipt_required",
+            "subagent_privilege_inheritance_allowed",
+            "one_active_task_max",
+            "automatic_write_retry_allowed",
+            "pause_cancel_revoke_stop_before_next_step",
+            "claim_token_persisted"
+          ],
+          "properties": {
+            "expected_revision_required": {
+              "const": true
+            },
+            "per_task_step_lease_required": {
+              "const": true
+            },
+            "per_task_step_receipt_required": {
+              "const": true
+            },
+            "subagent_privilege_inheritance_allowed": {
+              "const": false
+            },
+            "one_active_task_max": {
+              "const": 1
+            },
+            "automatic_write_retry_allowed": {
+              "const": false
+            },
+            "pause_cancel_revoke_stop_before_next_step": {
+              "const": true
+            },
+            "claim_token_persisted": {
+              "const": false
+            }
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "flow_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "workboardBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version",
+        "fixture",
+        "activation_state",
+        "live_dispatch_allowed",
+        "mapping_revision",
+        "work_item_binding",
+        "openclaw_card",
+        "task_flow_binding",
+        "claim",
+        "proof_refs",
+        "handoff",
+        "constraints",
+        "created_at",
+        "updated_at",
+        "card_fingerprint_sha256"
+      ],
+      "properties": {
+        "$schema": {
+          "type": "string"
+        },
+        "$comment": {
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "noderooms-openclaw-workboard-binding-v1"
+        },
+        "fixture": {
+          "type": "boolean"
+        },
+        "activation_state": {
+          "const": "contract_only"
+        },
+        "live_dispatch_allowed": {
+          "const": false
+        },
+        "mapping_revision": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "work_item_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "work_item_id",
+            "mission_id",
+            "work_item_revision",
+            "work_item_fingerprint_sha256",
+            "create_idempotency_key_sha256"
+          ],
+          "properties": {
+            "work_item_id": {
+              "$ref": "#/$defs/workItemId"
+            },
+            "mission_id": {
+              "$ref": "#/$defs/missionId"
+            },
+            "work_item_revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "work_item_fingerprint_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "create_idempotency_key_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "openclaw_card": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "board_id",
+            "card_id",
+            "status",
+            "priority",
+            "agent_id",
+            "linked_task_flow_id",
+            "linked_session_key_fingerprint_sha256"
+          ],
+          "properties": {
+            "board_id": {
+              "$ref": "#/$defs/contextId"
+            },
+            "card_id": {
+              "$ref": "#/$defs/contextId"
+            },
+            "status": {
+              "enum": [
+                "triage",
+                "backlog",
+                "todo",
+                "scheduled",
+                "ready",
+                "running",
+                "review",
+                "blocked",
+                "done"
+              ]
+            },
+            "priority": {
+              "enum": [
+                "low",
+                "normal",
+                "high",
+                "urgent"
+              ]
+            },
+            "agent_id": {
+              "$ref": "#/$defs/contextId"
+            },
+            "linked_task_flow_id": {
+              "$ref": "#/$defs/contextId"
+            },
+            "linked_session_key_fingerprint_sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "task_flow_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "flow_id",
+            "flow_revision",
+            "flow_fingerprint_sha256",
+            "current_step_id"
+          ],
+          "properties": {
+            "flow_id": {
+              "$ref": "#/$defs/contextId"
+            },
+            "flow_revision": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "flow_fingerprint_sha256": {
+              "$ref": "#/$defs/sha256"
+            },
+            "current_step_id": {
+              "$ref": "#/$defs/stepId"
+            }
+          }
+        },
+        "claim": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "lease_id",
+            "claimed_by_runtime_binding_id",
+            "heartbeat_at",
+            "expires_at",
+            "token_redacted",
+            "token_persisted"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "unclaimed",
+                "active",
+                "released"
+              ]
+            },
+            "lease_id": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/leaseId"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "claimed_by_runtime_binding_id": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "pattern": "^nrbind_[a-f0-9]{32}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "heartbeat_at": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "expires_at": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "token_redacted": {
+              "const": true
+            },
+            "token_persisted": {
+              "const": false
+            }
+          }
+        },
+        "proof_refs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "work_receipt_ids",
+            "artifact_ids",
+            "external_action_receipt_ids"
+          ],
+          "properties": {
+            "work_receipt_ids": {
+              "type": "array",
+              "maxItems": 32,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/workReceiptId"
+              }
+            },
+            "artifact_ids": {
+              "type": "array",
+              "maxItems": 1024,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/artifactId"
+              }
+            },
+            "external_action_receipt_ids": {
+              "type": "array",
+              "maxItems": 32,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/externalReceiptId"
+              }
+            }
+          }
+        },
+        "handoff": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "from_step_id",
+            "to_step_id",
+            "claim_released",
+            "owner_review_required"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "none",
+                "waiting_owner",
+                "released",
+                "completed"
+              ]
+            },
+            "from_step_id": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/stepId"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "to_step_id": {
+              "oneOf": [
+                {
+                  "$ref": "#/$defs/stepId"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "claim_released": {
+              "type": "boolean"
+            },
+            "owner_review_required": {
+              "type": "boolean"
+            }
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "canonical_source",
+            "card_can_grant_authority",
+            "local_edits_are_proposals",
+            "unknown_state_rewritten",
+            "public_projection_safe"
+          ],
+          "properties": {
+            "canonical_source": {
+              "const": "noderooms_workdesk"
+            },
+            "card_can_grant_authority": {
+              "const": false
+            },
+            "local_edits_are_proposals": {
+              "const": true
+            },
+            "unknown_state_rewritten": {
+              "const": false
+            },
+            "public_projection_safe": {
+              "const": true
+            }
+          }
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "card_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

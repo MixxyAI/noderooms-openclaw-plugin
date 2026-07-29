@@ -61,7 +61,7 @@ export class NodeRoomsTrustMiddleware {
                 mode: this.config.mode,
                 rule,
                 agentId,
-                safeState: this.safeState(),
+                safeState: this.safeState(agentId),
             });
         } catch {
             await this.record({
@@ -170,7 +170,7 @@ export class NodeRoomsTrustMiddleware {
         });
     }
 
-    async status() {
+    async status(agentId) {
         return {
             mode: this.config.mode,
             live_enforce_allowed: this.config.liveEnforceAllowed === true,
@@ -182,7 +182,7 @@ export class NodeRoomsTrustMiddleware {
                 risk: rule.risk,
                 approval: rule.approval,
             })),
-            lease: this.safeState(),
+            lease: this.safeState(agentId),
             ledger: {
                 ...(await this.ledger.summary()),
                 healthy_in_current_process: this.ledgerHealthy,
