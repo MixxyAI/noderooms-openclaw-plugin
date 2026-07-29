@@ -226,7 +226,7 @@ test("Beta.2 publication and post-publication evidence are closed without changi
     assert.match(beta2PublishWorkflow, /tags:\s*beta/);
 });
 
-test("stable promotion remains HOLD until fresh PR CI and latest dry-run evidence pass", () => {
+test("stable promotion records fresh PR CI and latest dry-run evidence before publication", () => {
     assert.equal(
         stableReleaseGate.schema_version,
         "noderooms-stable-release-gate-v1",
@@ -242,20 +242,26 @@ test("stable promotion remains HOLD until fresh PR CI and latest dry-run evidenc
     );
     assert.equal(stableReleaseGate.promotion.runtime_logic_changed, false);
     assert.equal(stableReleaseGate.promotion.target_channel, "latest");
-    assert.equal(stableReleaseGate.status, "HOLD");
-    assert.equal(stableReleaseGate.publication_allowed, false);
+    assert.equal(stableReleaseGate.status, "PASS");
+    assert.equal(stableReleaseGate.publication_allowed, true);
 
     const blockers = stableReleaseGate.gates
         .filter((gate) => gate.blocking && gate.status !== "PASS")
         .map((gate) => [gate.id, gate.status]);
-    assert.deepEqual(blockers, [
-        ["stable_candidate_plugin_ci", "PENDING"],
-        ["clawhub_remote_latest_dry_run_validation", "PENDING"],
-    ]);
+    assert.deepEqual(blockers, []);
 
     assert.equal(
         stableReleaseClosure.schema_version,
         "noderooms-stable-release-closure-v1",
+    );
+    assert.equal(stableReleaseClosure.candidate.pull_request, 16);
+    assert.equal(
+        stableReleaseClosure.candidate.validated_head_sha,
+        "c6ad23c411082b4db85b313d923d678332a60538",
+    );
+    assert.equal(
+        stableReleaseClosure.candidate.tested_merge_sha,
+        "ee5767be359d3841280d50971ae34cc54d5cd0c9",
     );
     assert.equal(
         stableReleaseClosure.candidate.package_sha256,
@@ -270,11 +276,61 @@ test("stable promotion remains HOLD until fresh PR CI and latest dry-run evidenc
     assert.equal(stableReleaseClosure.runtime_delta.tool_count_after, 14);
     assert.equal(
         stableReleaseClosure.trusted_pr_validation.plugin_ci.status,
-        "PENDING",
+        "PASS",
+    );
+    assert.equal(
+        stableReleaseClosure.trusted_pr_validation.plugin_ci.run_id,
+        30497506980,
+    );
+    assert.equal(
+        stableReleaseClosure.trusted_pr_validation.plugin_ci.tests,
+        266,
+    );
+    assert.equal(
+        stableReleaseClosure.trusted_pr_validation.plugin_ci.failures,
+        0,
     );
     assert.equal(
         stableReleaseClosure.trusted_pr_validation.stable_latest_dry_run.status,
-        "PENDING",
+        "PASS",
+    );
+    assert.equal(
+        stableReleaseClosure.trusted_pr_validation.stable_latest_dry_run.run_id,
+        30497507384,
+    );
+    assert.equal(
+        stableReleaseClosure.trusted_pr_validation.stable_latest_dry_run
+            .dry_run,
+        true,
+    );
+    assert.deepEqual(
+        stableReleaseClosure.trusted_pr_validation.stable_latest_dry_run.tags,
+        ["latest"],
+    );
+    assert.equal(
+        stableReleaseClosure.trusted_pr_validation.stable_latest_dry_run
+            .package_sha256_verified,
+        true,
+    );
+    assert.equal(
+        stableReleaseClosure.trusted_pr_validation.stable_latest_dry_run
+            .plugin_inspector_breakages,
+        0,
+    );
+    assert.equal(
+        stableReleaseClosure.trusted_pr_validation.stable_latest_dry_run
+            .plugin_inspector_warnings,
+        0,
+    );
+    assert.equal(
+        stableReleaseClosure.trusted_pr_validation.stable_latest_dry_run
+            .publication_gate_job,
+        "SKIPPED",
+    );
+    assert.equal(
+        stableReleaseClosure.trusted_pr_validation.stable_latest_dry_run
+            .publish_job,
+        "SKIPPED",
     );
     assert.equal(stableReleaseClosure.publication_scope.channel, "latest");
     assert.equal(
@@ -289,9 +345,29 @@ test("stable promotion remains HOLD until fresh PR CI and latest dry-run evidenc
         stableReleaseClosure.publication_scope.noderooms_production_change_in_scope,
         false,
     );
-    assert.equal(stableReleaseClosure.decision.status, "HOLD");
-    assert.equal(stableReleaseClosure.decision.blocking_gates_open, 2);
-    assert.equal(stableReleaseClosure.decision.publication_allowed, false);
+    assert.equal(
+        stableReleaseClosure.publication_scope.final_owner_approval_required,
+        true,
+    );
+    assert.equal(
+        stableReleaseClosure.publication_scope.merge_attempted,
+        false,
+    );
+    assert.equal(
+        stableReleaseClosure.publication_scope.stable_publication_attempted,
+        false,
+    );
+    assert.equal(
+        stableReleaseClosure.publication_scope.latest_channel_modified,
+        false,
+    );
+    assert.equal(
+        stableReleaseClosure.publication_scope.noderooms_production_modified,
+        false,
+    );
+    assert.equal(stableReleaseClosure.decision.status, "PASS");
+    assert.equal(stableReleaseClosure.decision.blocking_gates_open, 0);
+    assert.equal(stableReleaseClosure.decision.publication_allowed, true);
     assert.equal(stableReleaseClosure.decision.publication_completed, false);
 
     assert.match(

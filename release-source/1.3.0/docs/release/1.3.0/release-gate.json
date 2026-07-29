@@ -16,9 +16,9 @@
     "runtime_logic_changed": false,
     "target_channel": "latest"
   },
-  "evaluated_on": "2026-07-29",
-  "status": "HOLD",
-  "publication_allowed": false,
+  "evaluated_on": "2026-07-30",
+  "status": "PASS",
+  "publication_allowed": true,
   "policy": "Every blocking stable gate must be PASS before publication_allowed may become true.",
   "immutable_predecessors": [
     {
@@ -80,14 +80,14 @@
     {
       "id": "stable_candidate_plugin_ci",
       "blocking": true,
-      "status": "PENDING",
-      "evidence": "Await the new stable draft PR plugin-ci conclusion. Do not infer PASS from local tests."
+      "status": "PASS",
+      "evidence": "GitHub Actions run 30497506980 completed successfully for PR #16 head c6ad23c411082b4db85b313d923d678332a60538 and tested merge ee5767be359d3841280d50971ae34cc54d5cd0c9: 266 tests, 266 pass, 0 fail, 0 skip; ClawHub runtime validation reported 0 breakages and 0 warnings."
     },
     {
       "id": "clawhub_remote_latest_dry_run_validation",
       "blocking": true,
-      "status": "PENDING",
-      "evidence": "Await the new stable draft PR pinned reusable workflow with dry_run=true, version=1.3.0, tags=latest, and the exact hash-gated artifact."
+      "status": "PASS",
+      "evidence": "GitHub Actions run 30497507384 completed successfully for the same PR head and tested merge. The pinned ClawHub workflow used dry_run=true, version=1.3.0, tags=latest, and the exact 52-file artifact SHA-256 3846f8f8a1c5d051064efc629da3e4cf768c0b10f3386436506aa3db8cdc5913; Inspector reported 0 breakages and 0 warnings, while publication-gate and publish jobs were skipped."
     },
     {
       "id": "exact_clean_latest_install_post_publish",
