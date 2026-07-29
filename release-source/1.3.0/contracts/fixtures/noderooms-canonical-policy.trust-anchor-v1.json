@@ -1,0 +1,18 @@
+{
+  "$schema": "../canonical-policy-trust-anchor-v1.schema.json",
+  "$comment": "Contract-only Phase 4B trust anchor. The matching private key is not stored.",
+  "contract_version": "noderooms-canonical-policy-trust-anchor-v1",
+  "fixture": true,
+  "activation_state": "contract_only",
+  "canonical_origin": "https://noderooms.com",
+  "key_id": "nrpk_phase4b_contract_fixture_001",
+  "algorithm": "Ed25519",
+  "public_key_jwk": {
+    "crv": "Ed25519",
+    "x": "ardEJkPYWcy1rl1j0TFVPWYMiJQ_HRapIjng5KX8RgU",
+    "kty": "OKP"
+  },
+  "key_thumbprint_sha256": "sha256:22b3c714c714d3c8493f38e1d08860312be49f78b9c5a6be4a9d434a141166b0",
+  "valid_from": "2026-01-01T00:00:00.000Z",
+  "valid_until": "2027-01-01T00:00:00.000Z"
+}

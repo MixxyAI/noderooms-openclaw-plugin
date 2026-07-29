@@ -1,0 +1,125 @@
+{
+  "schema_version": "noderooms-stable-release-closure-v1",
+  "candidate": {
+    "repository": "MixxyAI/noderooms-openclaw-plugin",
+    "pull_request": 16,
+    "base_main_sha": "85bc9985ab599178913f4ad7bf23b0a4df4ad443",
+    "validated_head_sha": "c6ad23c411082b4db85b313d923d678332a60538",
+    "tested_merge_sha": "ee5767be359d3841280d50971ae34cc54d5cd0c9",
+    "package": "@mixxyai/noderooms-openclaw",
+    "version": "1.3.0",
+    "filename": "mixxyai-noderooms-openclaw-1.3.0.tgz",
+    "package_sha256": "3846f8f8a1c5d051064efc629da3e4cf768c0b10f3386436506aa3db8cdc5913",
+    "package_entry_count": 52
+  },
+  "verified_predecessor": {
+    "version": "1.3.0-beta.2",
+    "source_path": "release-source/1.3.0-beta.2",
+    "package_sha256": "909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2",
+    "trusted_publish_run_id": 30439110714,
+    "trusted_publish_head_sha": "85bc9985ab599178913f4ad7bf23b0a4df4ad443",
+    "clawhub_release_id": "rd70zhfkejk4ha0t55f9g2nvqs8bf980",
+    "stage_g_summary_sha256": "b1c9675f340388603a6484f0439f9f35b6f81c6407915ad4cc7a4e859c2ff7ae",
+    "stage_g_tools": 14,
+    "stage_g_diagnostics": 0,
+    "stage_g_live_readonly": "PASS",
+    "public_unification": "PASS"
+  },
+  "runtime_delta": {
+    "logic_changed": false,
+    "tool_count_before": 14,
+    "tool_count_after": 14,
+    "owner_commit_model_changed": false,
+    "public_write_authority_changed": false,
+    "trust_or_work_default_changed": false,
+    "allowed_packaged_files": [
+      "CHANGELOG.md",
+      "README.md",
+      "SECURITY.md",
+      "dist/contracts.d.ts",
+      "dist/contracts.js",
+      "openclaw.plugin.json",
+      "package.json"
+    ]
+  },
+  "local_candidate_validation": {
+    "node_version": "v24.18.0",
+    "tests": 266,
+    "passes": 265,
+    "failures": 0,
+    "skips": 1,
+    "source_dist_equality": "PASS",
+    "package_entry_count": 52,
+    "two_pack_sha256_match": true
+  },
+  "trusted_pr_validation": {
+    "plugin_ci": {
+      "status": "PASS",
+      "run_id": 30497506980,
+      "url": "https://github.com/MixxyAI/noderooms-openclaw-plugin/actions/runs/30497506980",
+      "head_sha": "c6ad23c411082b4db85b313d923d678332a60538",
+      "tested_merge_sha": "ee5767be359d3841280d50971ae34cc54d5cd0c9",
+      "conclusion": "success",
+      "tests": 266,
+      "passes": 266,
+      "failures": 0,
+      "skips": 0,
+      "plugin_inspector_breakages": 0,
+      "plugin_inspector_warnings": 0
+    },
+    "stable_latest_dry_run": {
+      "status": "PASS",
+      "run_id": 30497507384,
+      "url": "https://github.com/MixxyAI/noderooms-openclaw-plugin/actions/runs/30497507384",
+      "head_sha": "c6ad23c411082b4db85b313d923d678332a60538",
+      "tested_merge_sha": "ee5767be359d3841280d50971ae34cc54d5cd0c9",
+      "build_job_id": 90729641296,
+      "validate_job_id": 90730031378,
+      "conclusion": "success",
+      "reusable_workflow": "openclaw/clawhub/.github/workflows/package-publish.yml@a230d962db64019462c2c8ee400755eb92169908",
+      "dry_run": true,
+      "version": "1.3.0",
+      "tags": [
+        "latest"
+      ],
+      "candidate_artifact_id": 8742215502,
+      "candidate_artifact_archive_sha256": "af64fa87ad81b5916fa91a46a1b47baa96a982bfad29ee41a27166eb67d1f962",
+      "package_sha256_verified": true,
+      "package_entry_count": 52,
+      "inspector_artifact_id": 8742225929,
+      "inspector_artifact_archive_sha256": "70a6e167625d0aaa6ba99cf1be3bc868dea7715853ec4c752ca1a2a2fbd840dc",
+      "inspector_report_sha256": "69efbf52dc0918b281845b4c36c1358d5be8e00396ded9331650a4e4d266eda8",
+      "plugin_inspector_breakages": 0,
+      "plugin_inspector_warnings": 0,
+      "publish_json_artifact_id": 8742226609,
+      "publish_json_artifact_archive_sha256": "9fadf947f873f3077cb1c216e724da05acccfb5f8a2288f794803d74ade2ee15",
+      "publish_json_sha256": "4d2f412b6a9c58007e6abdf2a28decd650b710f44e09bde5e1ffa834ce2a6e19",
+      "publication_gate_job": "SKIPPED",
+      "publish_job": "SKIPPED",
+      "registry_modified": false
+    }
+  },
+  "publication_scope": {
+    "channel": "latest",
+    "manual_workflow_dispatch_required": true,
+    "fresh_dispatch_required": true,
+    "old_run_rerun_allowed": false,
+    "exact_confirmation": "PUBLISH 1.3.0 STABLE",
+    "owner_decision_automated": false,
+    "final_owner_approval_required": true,
+    "merge_attempted": false,
+    "stable_publication_attempted": false,
+    "latest_channel_modified": false,
+    "beta2_republication_allowed": false,
+    "version_deletion_allowed": false,
+    "noderooms_production_change_in_scope": false,
+    "noderooms_production_modified": false
+  },
+  "decision": {
+    "evaluated_on": "2026-07-30",
+    "status": "PASS",
+    "blocking_gates_open": 0,
+    "publication_allowed": true,
+    "publication_completed": false
+  }
+}

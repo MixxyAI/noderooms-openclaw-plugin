@@ -1,0 +1,82 @@
+{
+  "$schema": "../connector-scope-registry-v1.schema.json",
+  "contract_version": "noderooms-connector-scope-registry-v1",
+  "registry_version": "nrcr_2026-07-23.001",
+  "policy_version": "nrp_2026-07-23.001",
+  "activation_state": "contract_only",
+  "live_enforce_allowed": false,
+  "source_provenance": {
+    "repository": "MixxyAI/noderooms-openclaw-plugin",
+    "commit": "e9ba2c9ba48fc2200d2f3af603f5e0036a2c76f7",
+    "tree": "b44d4cb79f4e7c13b80bcbe5910945895ac3be65"
+  },
+  "profiles": [
+    {
+      "profile_id": "nrscp_github_pull_request_draft_v1",
+      "scope": "connector.github.pull_request.draft",
+      "status": "reference_only",
+      "provider": "github",
+      "connector_id": "openclaw.reference.github",
+      "connector_version": "0.0.0-reference.1",
+      "tool_name": "github_create_pull_request",
+      "tool_schema_fingerprint": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37",
+      "tool_input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "repository_full_name",
+          "head_ref",
+          "base_ref",
+          "title",
+          "body",
+          "draft"
+        ],
+        "properties": {
+          "repository_full_name": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$",
+            "maxLength": 200
+          },
+          "head_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "base_ref": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 65536
+          },
+          "draft": {
+            "const": true
+          }
+        }
+      },
+      "action": "create_draft",
+      "resource_type": "github_repository",
+      "resource_selector": {
+        "strategy": "exact",
+        "required_claims": [
+          "repository_full_name",
+          "base_ref"
+        ],
+        "wildcards_allowed": false
+      },
+      "risk": "high",
+      "side_effect_class": "write",
+      "replay_semantics": "at_most_once_dispatch",
+      "approval_policy": "allow_once",
+      "receipt_profile": "external_action_receipt_v2",
+      "description": "Contract-only reference profile for creating one GitHub Draft pull request in one exact repository and base branch."
+    }
+  ]
+}
