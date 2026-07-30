@@ -1,0 +1,139 @@
+{
+  "$schema": "https://noderooms.com/contracts/artifact-runtime-fingerprint-v1.schema.json",
+  "contract_version": "noderooms-artifact-runtime-fingerprint.v1",
+  "fixture": true,
+  "authority_status": "evidence_only_no_authority",
+  "profiles": {
+    "archive_fingerprint": "raw-artifact-bytes-sha256-v1",
+    "directory_normalization": "noderooms-portable-directory-tree-sha256-v1",
+    "runtime_fingerprint": "noderooms-runtime-observation-sha256-v1"
+  },
+  "artifact_binding": {
+    "package_name": "@example/trustbridge-fixture",
+    "package_version": "0.0.0-005b-fixture",
+    "publisher_id": "example-fixture-publisher",
+    "origin_uri": "https://example.invalid/registry/trustbridge-fixture",
+    "directory": {
+      "root_label": "package_root",
+      "normalization_profile": "noderooms-portable-directory-tree-sha256-v1",
+      "tree_fingerprint_sha256": "sha256:9c45a6821f4b0b47dbf26024baa3cd4d301127c9ede974c668c267323d8fb2a0",
+      "file_count": 4
+    }
+  },
+  "package_json_sha256": "sha256:4542314e8bb0c7b73ee97e9416b500cd5c1b331749367f00aa8093ad8f7cd179",
+  "directory_manifest": {
+    "normalization_profile": "noderooms-portable-directory-tree-sha256-v1",
+    "root_label": "package_root",
+    "file_count": 4,
+    "directory_count": 2,
+    "total_file_bytes": 241,
+    "entries": [
+      {
+        "kind": "file",
+        "path": "LICENSE",
+        "size_bytes": 41,
+        "sha256": "sha256:7371bb53b039dec45fbff6a045b3004fd9549711f1a2f8f08ebf4acfc189e869"
+      },
+      {
+        "kind": "directory",
+        "path": "assets"
+      },
+      {
+        "kind": "file",
+        "path": "assets/policy.json",
+        "size_bytes": 57,
+        "sha256": "sha256:317c38b0144a9a9fbdd101f08f1a80dfa66a4846ce0692d50e52e4a2ab9f1a8a"
+      },
+      {
+        "kind": "directory",
+        "path": "dist"
+      },
+      {
+        "kind": "file",
+        "path": "dist/index.js",
+        "size_bytes": 43,
+        "sha256": "sha256:df9532ac3dd5fe4c75b41566195a2be8e4f4f12ceda6e60da91caedc426dae08"
+      },
+      {
+        "kind": "file",
+        "path": "package.json",
+        "size_bytes": 100,
+        "sha256": "sha256:4542314e8bb0c7b73ee97e9416b500cd5c1b331749367f00aa8093ad8f7cd179"
+      }
+    ]
+  },
+  "runtime_observation_manifest": {
+    "fingerprint_profile": "noderooms-runtime-observation-sha256-v1",
+    "openclaw": {
+      "version": "2026.7.1-2",
+      "package_json_sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "directory_tree_fingerprint_sha256": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+      "plugin_api_fingerprint_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    "node": {
+      "version": "24.18.0",
+      "executable_sha256": "sha256:4444444444444444444444444444444444444444444444444444444444444444"
+    },
+    "plugin": {
+      "package_name": "@example/trustbridge-fixture",
+      "package_version": "0.0.0-005b-fixture",
+      "package_directory_tree_fingerprint_sha256": "sha256:9c45a6821f4b0b47dbf26024baa3cd4d301127c9ede974c668c267323d8fb2a0",
+      "package_archive_sha256": null
+    },
+    "bindings": {
+      "gateway_fingerprint_sha256": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+      "openclaw_agent_fingerprint_sha256": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+      "runtime_key_thumbprint_sha256": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+      "sanitized_config_fingerprint_sha256": "sha256:8888888888888888888888888888888888888888888888888888888888888888"
+    },
+    "environment": {
+      "platform": "linux",
+      "arch": "x64",
+      "environment_class": "linux-x64-node24"
+    }
+  },
+  "runtime_binding": {
+    "openclaw_version": "2026.7.1-2",
+    "openclaw_plugin_api_fingerprint_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "plugin_package_name": "@example/trustbridge-fixture",
+    "plugin_package_version": "0.0.0-005b-fixture",
+    "gateway_fingerprint_sha256": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "runtime_instance_fingerprint_sha256": "sha256:bd1fee1c2da451cb651875e7e302694257690c7f9e37591b2e6430741644ab15",
+    "openclaw_agent_fingerprint_sha256": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+    "runtime_key_thumbprint_sha256": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+    "sanitized_config_fingerprint_sha256": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+    "environment_class": "linux-x64-node24"
+  },
+  "claims": {
+    "archive_bytes_exactly_hashed": false,
+    "directory_contents_exactly_hashed": true,
+    "archive_directory_correspondence_proven": false,
+    "publisher_control_verified": false,
+    "origin_content_verified": false,
+    "runtime_observation_source_verified": false,
+    "file_modes_included": false,
+    "symlinks_allowed": false,
+    "line_endings_normalized": false,
+    "runtime_observation_exactly_fingerprinted": true,
+    "artifact_safe_claimed": false,
+    "execution_authority_granted": false,
+    "production_enforcement_enabled": false,
+    "owner_decision_automated": false,
+    "external_validation_complete": false
+  },
+  "zero_side_effects": {
+    "NODE_ROOMS_PRODUCTION_NETWORK_CALLS": 0,
+    "PUBLIC_WRITES": 0,
+    "PROVIDER_WRITES": 0,
+    "OWNER_COMMANDS": 0,
+    "LIVE_LEASE_REQUESTS": 0,
+    "GATEWAY_STARTS": 0,
+    "GATEWAY_RESTARTS": 0,
+    "CLAWHUB_PUBLISH_ATTEMPTS": 0,
+    "NPM_PUBLISH_ATTEMPTS": 0,
+    "OPENCLAW_CONFIG_WRITES": 0,
+    "ARTIFACT_INSTALL_ATTEMPTS": 0,
+    "ARTIFACT_BLOCK_ATTEMPTS": 0
+  },
+  "result_fingerprint_sha256": "sha256:2c20f0d28accf9bf965fcff38dce7bfb892cbd2277bff188bb0d8f8c13eb5607"
+}

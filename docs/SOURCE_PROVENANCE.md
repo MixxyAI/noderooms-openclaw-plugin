@@ -439,3 +439,95 @@ This strategic integration is documentation- and contract-test-only. It
 performs no competitor scan, reputation scoring, runtime enforcement,
 production call, provider write, Gateway change, package publication, or
 cross-Gateway trust action.
+
+## TrustBridge Alpha2 005A remote publication record
+
+After the local record above was created, 005A was published through the
+authenticated GitHub connector as one atomic commit:
+
+```text
+pull request: https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/17
+state: open draft
+branch: feature/noderooms-trustbridge-alpha2
+commit: 0313084b450cf915f9a2a2f95a08d9f27682c65a
+base: cda19d39ffdf0a05d111ff156bd1448f8a55588d
+changed files: 9
+additions: 3341
+deletions: 0
+GitHub CI run: 40
+GitHub CI conclusion: success
+```
+
+The remote blobs were compared byte-for-byte with the locally validated 005A
+candidate before the draft PR was opened. `main` and the stable package were
+not modified.
+
+## TrustBridge Alpha2 005B development base
+
+005B is a separate repository-only development layer stacked conceptually on
+the exact 005A draft-PR head:
+
+```text
+0313084b450cf915f9a2a2f95a08d9f27682c65a
+```
+
+The local work branch is:
+
+```text
+feature/noderooms-trustbridge-alpha2-005b
+```
+
+No Owner-approved TrustBridge npm SemVer identity existed when 005B began.
+The milestone therefore makes an explicit no-package decision: the engine,
+schema, vectors, tests, and ADR remain under `tools/`, `contracts/`, `tests/`,
+and `docs/`, outside the root npm allowlist. `package.json`,
+`openclaw.plugin.json`, `src/`, `dist/`, every `release-source/*` tree, and
+all publication workflows remain unchanged.
+
+005B freezes the final directory normalization profile:
+
+```text
+noderooms-portable-directory-tree-sha256-v1
+```
+
+The canonical fictional vector binds:
+
+```text
+directory tree:
+sha256:9c45a6821f4b0b47dbf26024baa3cd4d301127c9ede974c668c267323d8fb2a0
+
+runtime instance:
+sha256:bd1fee1c2da451cb651875e7e302694257690c7f9e37591b2e6430741644ab15
+
+complete 005B result:
+sha256:2c20f0d28accf9bf965fcff38dce7bfb892cbd2277bff188bb0d8f8c13eb5607
+```
+
+The engine is local read-only code. It imports no network, subprocess,
+environment, or filesystem-write API. It performs no install, extraction,
+Gateway action, Owner decision, provider write, package publication, or
+production call. Its result is evidence-only and explicitly does not claim
+archive-to-directory correspondence, artifact safety, external validation, or
+production enforcement.
+
+The final local validation used exact Node `24.18.0` and reported:
+
+```text
+005B targeted tests:       18 pass / 0 fail
+full repository suite:     297 total / 296 pass / 0 fail / 1 PHP skip
+isolated OpenClaw loader:  pass / 14 tools / 6 hooks
+ClawHub 0.23.1:            pass / 0 breakage / 0 warning /
+                            0 deprecation / 0 issue
+git diff --check:          pass
+```
+
+The final post-change pack proof contains exactly 52 files and remains
+byte-for-byte the published stable artifact:
+
+```text
+3846f8f8a1c5d051064efc629da3e4cf768c0b10f3386436506aa3db8cdc5913
+```
+
+No npm or ClawHub publish, Gateway start or restart, production call, provider
+write, Owner command, live lease request, OpenClaw config write, artifact
+install, or artifact block occurred.
