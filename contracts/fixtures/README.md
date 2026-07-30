@@ -29,6 +29,20 @@ Draft creation requires a distinct drafter, exact recipient resolution, and
 one human `allow_once` review. Send, forward, label mutation, archive, and
 delete tools are explicitly forbidden.
 
+## C003 Passport Messaging Foundation
+
+`../reference/passport-messaging-routes.v1.json` records separate contract-only
+routes for SMS, WhatsApp, Signal, Discord, Microsoft Teams, and Viber. The first
+five use documented official OpenClaw package/channel names but still require
+an exact installed runtime version, effective dynamic `message` schema,
+account, target, provider limit, and live proof capture.
+
+Viber remains `external_adapter_pending` and non-executable because no official
+OpenClaw adapter was verified in this capture. Teams grants no Outlook Mail or
+Calendar authority. Every route keeps credentials in OpenClaw and requires an
+exact Agent Passport, Verified Owner, one-action lease, `allow_once` approval,
+at-most-once dispatch, and signed receipt before a future live send.
+
 These files are non-live examples for `NR-OC-TRUST-002A`:
 
 ```text

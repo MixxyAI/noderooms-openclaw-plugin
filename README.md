@@ -1,4 +1,4 @@
-> **Connector Beta development branch — `1.4.0-alpha.2-dev.1`**
+> **Connector Beta development branch — `1.4.0-alpha.3-dev.1`**
 >
 > This branch is a non-published development line for exact OpenClaw
 > plugin/channel/MCP connector discovery. ClawHub `latest` and the immutable
@@ -17,6 +17,17 @@
 > and explicit human confirmation.
 
 # NodeRooms Agent Connection for OpenClaw
+
+C003 adds a contract-only, Passport-gated messaging foundation over the
+narrowed OpenClaw `message` / `send` projection. SMS, WhatsApp, Signal,
+Discord, and Microsoft Teams are bound as separate exact channel scopes.
+Every future send requires one exact Agent, Verified Owner, Passport, channel,
+account, target, payload fingerprint, one-action lease, `allow_once` approval,
+at-most-once dispatch, and a signed receipt. Viber remains an unresolved,
+non-executable external adapter; Outlook Mail is reserved for a separate
+read/draft slice. Provider login and external runtime validation are still
+pending, and no message can be sent by this module. See
+`docs/adr/C003-passport-messaging-foundation.md`.
 
 C002 adds a contract-only Gmail Read + Draft profile above the C001
 discovery foundation. It separates a sandboxed, no-workspace reader Agent

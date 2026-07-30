@@ -1,5 +1,32 @@
 # Changelog
 
+## 1.4.0-alpha.3-dev.1 — C003 Passport Messaging Foundation
+
+- Added a strict, contract-only outbound messaging profile for the OpenClaw
+  `message` tool's narrowed `send` projection across exact `sms`, `whatsapp`,
+  `signal`, `discord`, and `msteams` channel scopes.
+- Bound every future dispatch to one exact Agent, Verified Human Owner,
+  Agent Passport, runtime, channel, account fingerprint, target fingerprint,
+  payload fingerprint, single-action run lease, `allow_once` approval,
+  at-most-once attempt, provider idempotency key, and signed receipt.
+- Marked incoming channel content as untrusted and required pairing or an
+  allowlist. Inbound content cannot trigger an automatic external action,
+  Memory ingestion, or Swarm activity.
+- Kept OpenClaw as credential custodian and prohibited raw messages, targets,
+  credentials, and provider results from NodeRooms state and receipts.
+- Recorded Viber truthfully as `external_adapter_pending` with no executable
+  route. Split Microsoft authority so Teams does not imply Outlook Mail or
+  Calendar access; Outlook read/draft remains planned for C004.
+- Added the C003 route registry, JSON Schema, profile builder/validator, proof,
+  ADR, and negative tests for runtime, route, authority, Viber, Microsoft,
+  secret-field, safety, and fingerprint drift.
+- Marked all provider runtime versions, effective schemas, accounts, limits,
+  logins, and live proofs as pending. No plugin installation, Gateway start,
+  provider invocation, message send, production change, or publication occurs.
+- Preserved C001/C002, the 14-tool public contract, stable `1.3.0`, immutable
+  release-source trees, default-off Trust/Work runtime, Memory/Swarm locks,
+  and every live-enforcement hard stop.
+
 ## 1.4.0-alpha.2-dev.1 — C002 Email Read + Draft
 
 - Added a strict, contract-only Gmail profile for exact

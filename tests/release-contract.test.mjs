@@ -29,6 +29,10 @@ const emailReadDraftProfile = await readFile(
     new URL("../dist/email-read-draft-profile.js", import.meta.url),
     "utf8",
 );
+const passportMessagingProfile = await readFile(
+    new URL("../dist/passport-messaging-profile.js", import.meta.url),
+    "utf8",
+);
 const stableSourcePackage = JSON.parse(await readFile(
     new URL("../release-source/1.3.0/package.json", import.meta.url),
     "utf8",
@@ -77,7 +81,7 @@ const stableReleaseClosure = JSON.parse(await readFile(
 ));
 
 test("Connector Beta uses a distinct development identity and preserves stable 1.3.0", () => {
-    assert.equal(pkg.version, "1.4.0-alpha.2-dev.1");
+    assert.equal(pkg.version, "1.4.0-alpha.3-dev.1");
     assert.equal(manifest.version, pkg.version);
     assert.equal(stableSourcePackage.version, "1.3.0");
     assert.equal(stableSourceManifest.version, stableSourcePackage.version);
@@ -601,6 +605,26 @@ test("C002 Email Read + Draft profile is packaged but disconnected and non-live"
     assert.doesNotMatch(emailReadDraftProfile, /\.runTask\(/);
     assert.doesNotMatch(emailReadDraftProfile, /\.resume\(/);
     assert.doesNotMatch(emailReadDraftProfile, /child_process/);
+});
+
+test("C003 Passport Messaging profile is packaged but disconnected and non-live", () => {
+    assert.doesNotMatch(index, /passport-messaging-profile/);
+    assert.doesNotMatch(index, /buildPassportMessagingProfileV1/);
+    assert.match(
+        passportMessagingProfile,
+        /PASSPORT_MESSAGING_DEVELOPMENT_IDENTITY =\s*"1\.4\.0-alpha\.3-dev\.1"/,
+    );
+    assert.match(
+        passportMessagingProfile,
+        /PASSPORT_MESSAGING_LIVE_USE_ALLOWED = false/,
+    );
+    assert.match(passportMessagingProfile, /external_validation_pending/);
+    assert.doesNotMatch(passportMessagingProfile, /\bfetch\(/);
+    assert.doesNotMatch(passportMessagingProfile, /tools\.invoke/);
+    assert.doesNotMatch(passportMessagingProfile, /runMessageAction/);
+    assert.doesNotMatch(passportMessagingProfile, /\.runTask\(/);
+    assert.doesNotMatch(passportMessagingProfile, /\.resume\(/);
+    assert.doesNotMatch(passportMessagingProfile, /child_process/);
 });
 
 test("Phase 4 owner inventory commands are present and Owner-gated", () => {

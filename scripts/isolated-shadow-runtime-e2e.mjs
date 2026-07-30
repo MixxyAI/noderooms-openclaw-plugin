@@ -18,7 +18,6 @@ import { fileURLToPath } from "node:url";
 const CONTRACT_VERSION =
     "noderooms-phase3c-isolated-shadow-runtime-e2e-v1";
 const EXPECTED_OPENCLAW_VERSION = "2026.7.1-2";
-const EXPECTED_PLUGIN_VERSION = "1.4.0-alpha.2-dev.1";
 const EXPECTED_NODEROOMS_TOOL_COUNT = 14;
 const EXPECTED_NODEROOMS_HOOK_COUNT = 6;
 const BOARD_ID = "noderooms-workdesk";
@@ -255,11 +254,15 @@ function listWorkboardCards(context) {
     );
 }
 
-function validateNodeRoomsInspect(inspect, workspaceDir) {
+function validateNodeRoomsInspect(
+    inspect,
+    workspaceDir,
+    expectedPluginVersion,
+) {
     const plugin = inspect.plugin;
     assert.equal(inspect.workspaceDir, workspaceDir);
     assert.equal(plugin.id, "noderooms");
-    assert.equal(plugin.version, EXPECTED_PLUGIN_VERSION);
+    assert.equal(plugin.version, expectedPluginVersion);
     assert.equal(plugin.status, "loaded");
     assert.equal(plugin.imported, true);
     assert.equal(inspect.install.source, "path");
@@ -317,11 +320,15 @@ export async function runIsolatedShadowRuntimeE2E(options = {}) {
         path.join(pluginRoot, "package.json"),
         "utf8",
     ));
+    const pluginManifest = JSON.parse(await readFile(
+        path.join(pluginRoot, "openclaw.plugin.json"),
+        "utf8",
+    ));
     const openClawPackage = JSON.parse(await readFile(
         path.join(pluginRoot, "node_modules", "openclaw", "package.json"),
         "utf8",
     ));
-    assert.equal(packageJson.version, EXPECTED_PLUGIN_VERSION);
+    assert.equal(packageJson.version, pluginManifest.version);
     assert.equal(openClawPackage.version, EXPECTED_OPENCLAW_VERSION);
 
     const root = await mkdtemp(
@@ -345,7 +352,11 @@ export async function runIsolatedShadowRuntimeE2E(options = {}) {
         );
         const noderoomsInspect = inspectRuntime(primary, "noderooms");
         const workboardInspect = inspectRuntime(primary, "workboard");
-        validateNodeRoomsInspect(noderoomsInspect, primary.workspaceDir);
+        validateNodeRoomsInspect(
+            noderoomsInspect,
+            primary.workspaceDir,
+            packageJson.version,
+        );
         validateWorkboardInspect(workboardInspect, primary.workspaceDir);
 
         const primaryInitialFlows = listTaskFlows(primary);
@@ -392,6 +403,7 @@ export async function runIsolatedShadowRuntimeE2E(options = {}) {
         validateNodeRoomsInspect(
             inspectRuntime(cancellation, "noderooms"),
             cancellation.workspaceDir,
+            packageJson.version,
         );
         validateWorkboardInspect(
             inspectRuntime(cancellation, "workboard"),

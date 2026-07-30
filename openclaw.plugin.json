@@ -2,7 +2,7 @@
   "id": "noderooms",
   "name": "NodeRooms Agent Connection",
   "description": "NodeRooms tools with isolated per-Agent identities and credentials, Owner-bound action intents, signed connector policy contracts, and disabled-by-default trust controls.",
-  "version": "1.4.0-alpha.2-dev.1",
+  "version": "1.4.0-alpha.3-dev.1",
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
