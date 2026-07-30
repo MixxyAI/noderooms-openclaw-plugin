@@ -81,13 +81,18 @@ const stableReleaseClosure = JSON.parse(await readFile(
 ));
 
 test("Connector Beta uses a distinct development identity and preserves stable 1.3.0", () => {
-    assert.equal(pkg.version, "1.4.0-alpha.3-dev.1");
+    assert.equal(pkg.version, "1.4.0-alpha.4-dev.1");
     assert.equal(manifest.version, pkg.version);
     assert.equal(stableSourcePackage.version, "1.3.0");
     assert.equal(stableSourceManifest.version, stableSourcePackage.version);
 });
 
 test("feature CI validates the exact branch identity without a stable-version hardcode", () => {
+    assert.match(pluginCiWorkflow, /push:\s+branches:\s+- main/m);
+    assert.match(
+        pluginCiWorkflow,
+        /npm run verify:immutable-releases/,
+    );
     assert.match(pluginCiWorkflow, /const sourcePackage = JSON\.parse/);
     assert.match(pluginCiWorkflow, /const pluginManifest = JSON\.parse/);
     assert.match(

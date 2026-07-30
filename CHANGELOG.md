@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.4.0-alpha.4-dev.1 — Unified TrustBridge + Connector Platform
+
+- Established one canonical development line at
+  `feature/noderooms-openclaw-connectors-alpha4` from exact merged
+  `main@db4f461664b0ac8f251631fe05534f774db93616`.
+- Kept `main` as the reviewed integration baseline and added post-merge CI for
+  direct `main` updates in addition to feature-branch and pull-request runs.
+- Added a fail-closed immutable release-source verifier for Beta.1, Beta.2, and
+  stable `1.3.0` using their exact Git tree object IDs.
+- Added TrustBridge 005C, a repository-only adapter that closes exact 005B
+  artifact/runtime identity, capability request, Verified Human Owner
+  decision, one-action lease, canonical intent, at-most-once reservation, and
+  signed provider-outcome receipt references into the 005A evidence envelope.
+- Kept 005C fixture-only and evidence-only. Runtime cross-binding, Owner
+  automation, replay expansion, receipt tampering, and non-fixture use fail
+  closed; raw provider content and credentials never enter the evidence.
+- Advanced only the non-published development package, manifest, lockfile, and
+  client identity. ClawHub `latest`, all release-source trees, the 14-tool
+  public contract, default-off Trust/Work runtime, and live-enforcement
+  prohibition remain unchanged.
+
 ## 1.4.0-alpha.3-dev.1 — C003 Passport Messaging Foundation
 
 - Added a strict, contract-only outbound messaging profile for the OpenClaw

@@ -1,8 +1,10 @@
-> **Connector Beta development branch — `1.4.0-alpha.3-dev.1`**
+> **TrustBridge + Connector Platform development line — `1.4.0-alpha.4-dev.1`**
 >
-> This branch is a non-published development line for exact OpenClaw
-> plugin/channel/MCP connector discovery. ClawHub `latest` and the immutable
-> stable release source remain `1.3.0`. Do not publish this development
+> `main` is the reviewed integration baseline. Active development continues on
+> `feature/noderooms-openclaw-connectors-alpha4`; direct development on
+> `main` is prohibited. The line combines TrustBridge evidence with exact
+> OpenClaw plugin/channel/MCP connector contracts. ClawHub `latest` and every
+> immutable release source remain `1.3.0`. Do not publish this development
 > identity or install it into a production Gateway.
 >
 > **Stable baseline — `1.3.0`**
@@ -17,6 +19,14 @@
 > and explicit human confirmation.
 
 # NodeRooms Agent Connection for OpenClaw
+
+TrustBridge 005C adds a repository-only adapter that binds the exact 005B
+artifact/runtime fingerprint to the existing capability request, Verified
+Human Owner decision, one-action lease, canonical intent, at-most-once
+reservation, and signed provider-outcome receipt before projecting a 005A
+evidence envelope. Alpha4 accepts contract fixtures only; the adapter is
+disconnected from the live plugin and grants no execution authority. See
+`docs/adr/005C-authority-intent-outcome-evidence-adapter.md`.
 
 C003 adds a contract-only, Passport-gated messaging foundation over the
 narrowed OpenClaw `message` / `send` projection. SMS, WhatsApp, Signal,
