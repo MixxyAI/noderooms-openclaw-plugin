@@ -45,6 +45,10 @@ const stablePublishWorkflow = await readFile(
     new URL("../.github/workflows/package-publish-stable.yml", import.meta.url),
     "utf8",
 );
+const pluginCiWorkflow = await readFile(
+    new URL("../.github/workflows/plugin-ci.yml", import.meta.url),
+    "utf8",
+);
 const beta2ReleaseGate = JSON.parse(await readFile(
     new URL(
         "../docs/release/1.3.0-beta.2/release-gate.json",
@@ -73,6 +77,27 @@ test("Connector Beta uses a distinct development identity and preserves stable 1
     assert.equal(manifest.version, pkg.version);
     assert.equal(stableSourcePackage.version, "1.3.0");
     assert.equal(stableSourceManifest.version, stableSourcePackage.version);
+});
+
+test("feature CI validates the exact branch identity without a stable-version hardcode", () => {
+    assert.match(pluginCiWorkflow, /const sourcePackage = JSON\.parse/);
+    assert.match(pluginCiWorkflow, /const pluginManifest = JSON\.parse/);
+    assert.match(
+        pluginCiWorkflow,
+        /result\[0\]\.name !== sourcePackage\.name/,
+    );
+    assert.match(
+        pluginCiWorkflow,
+        /result\[0\]\.version !== sourcePackage\.version/,
+    );
+    assert.match(
+        pluginCiWorkflow,
+        /pluginManifest\.version !== sourcePackage\.version/,
+    );
+    assert.doesNotMatch(
+        pluginCiWorkflow,
+        /result\[0\]\.version !== "1\.3\.0"/,
+    );
 });
 
 test("immutable Beta.1 workflow remains pinned and validation-only", () => {

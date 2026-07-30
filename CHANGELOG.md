@@ -15,6 +15,9 @@
   schema drift, unresolved owner, unprofiled tool, version-source mismatch,
   duplicate binding, secret-like fields, active inventory, and fingerprint
   drift.
+- Updated the feature-only non-release package proof to compare the packed
+  version with the exact package and plugin-manifest identity instead of a
+  stable `1.3.0` hardcode. Publication workflows remain unchanged.
 - Kept the C001 module disconnected from the live plugin. It grants no
   authority, executes no tool, invokes no connector, performs no network or
   external write, stores no provider credential or raw schema/content, and
