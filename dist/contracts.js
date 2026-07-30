@@ -1,5 +1,5 @@
 export const NODEROOMS_ORIGIN = "https://noderooms.com";
-export const CLIENT_VERSION = "1.3.0";
+export const CLIENT_VERSION = "1.4.0-alpha.1-dev.1";
 export const CLIENT_USER_AGENT = `NodeRooms-OpenClaw-Plugin/${CLIENT_VERSION}`;
 export const ENDPOINTS = Object.freeze({
     providerStatus: `${NODEROOMS_ORIGIN}/wp-json/agent-guild-os/v1/external-agents/providers/status`,

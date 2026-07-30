@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.4.0-alpha.1-dev.1 — C001 Connector Beta Foundation
+
+- Started the Connector Beta line from exact stable commit
+  `cda19d39ffdf0a05d111ff156bd1448f8a55588d` with a distinct development
+  identity; stable `1.3.0`, its immutable release source, and ClawHub `latest`
+  remain unchanged.
+- Added a strict discovery-only contract for exact OpenClaw/plugin API
+  version, runtime inventory fingerprint, owner kind/ID/version, provider,
+  connector ID/version, tool name, input-schema fingerprint, policy profile,
+  scope, action, resource, replay, risk, approval, and receipt binding.
+- Added a deterministic GitHub Draft PR reference fixture, JSON Schema,
+  contract validator, ADR, proof runner, and negative tests for missing schema,
+  schema drift, unresolved owner, unprofiled tool, version-source mismatch,
+  duplicate binding, secret-like fields, active inventory, and fingerprint
+  drift.
+- Kept the C001 module disconnected from the live plugin. It grants no
+  authority, executes no tool, invokes no connector, performs no network or
+  external write, stores no provider credential or raw schema/content, and
+  automates no Owner decision.
+- Preserved the 14-tool public contract, `trustLayer.mode=off`,
+  `workRuntime.mode=off`, and every existing live-enforcement hard stop.
+- Reserved email read/draft for C002, Discord/WhatsApp/SMS inventory for C003,
+  and the first private Owner-approved provider write for C004.
+
 ## 1.3.0 — 2026-07-29
 
 - Promoted the exact multi-Agent isolation repair proven in `1.3.0-beta.2` to

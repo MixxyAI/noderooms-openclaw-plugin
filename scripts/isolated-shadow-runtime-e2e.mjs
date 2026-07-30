@@ -18,7 +18,7 @@ import { fileURLToPath } from "node:url";
 const CONTRACT_VERSION =
     "noderooms-phase3c-isolated-shadow-runtime-e2e-v1";
 const EXPECTED_OPENCLAW_VERSION = "2026.7.1-2";
-const EXPECTED_PLUGIN_VERSION = "1.3.0";
+const EXPECTED_PLUGIN_VERSION = "1.4.0-alpha.1-dev.1";
 const EXPECTED_NODEROOMS_TOOL_COUNT = 14;
 const EXPECTED_NODEROOMS_HOOK_COUNT = 6;
 const BOARD_ID = "noderooms-workdesk";

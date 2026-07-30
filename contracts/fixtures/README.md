@@ -1,5 +1,19 @@
 # Connector contract fixtures
 
+## C001 Connector Beta foundation
+
+`connector-beta.github-reference-foundation-v1.json` is a deterministic,
+discovery-only output fixture for development identity
+`1.4.0-alpha.1-dev.1`. It reuses the existing exact GitHub Draft PR contract
+descriptor to prove the additional owner-version and runtime-inventory
+binding. It is `reference_only`, stores no provider credential or raw schema,
+and grants no tool or connector authority.
+
+The C001 schema admits future `email`, `discord`, `whatsapp`, and `sms`
+families, but this fixture does not claim that any of those providers has been
+inventoried or enabled. Each requires a separate exact runtime capture and
+policy profile.
+
 These files are non-live examples for `NR-OC-TRUST-002A`:
 
 ```text

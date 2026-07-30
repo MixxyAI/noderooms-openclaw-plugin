@@ -1,0 +1,502 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:openclaw-connector-beta-foundation:v1",
+  "title": "NodeRooms OpenClaw Connector Beta foundation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "development_identity",
+    "activation_state",
+    "live_connector_use_allowed",
+    "foundation_id",
+    "capture_kind",
+    "captured_at",
+    "runtime_binding",
+    "metrics",
+    "connectors",
+    "safety",
+    "foundation_fingerprint_sha256"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "noderooms-openclaw-connector-beta-foundation-v1"
+    },
+    "development_identity": {
+      "const": "1.4.0-alpha.1-dev.1"
+    },
+    "activation_state": {
+      "const": "discovery_only"
+    },
+    "live_connector_use_allowed": {
+      "const": false
+    },
+    "foundation_id": {
+      "type": "string",
+      "pattern": "^nrcbf_[a-z0-9][a-z0-9._-]{2,95}$"
+    },
+    "capture_kind": {
+      "enum": [
+        "contract_fixture",
+        "runtime_capture"
+      ]
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "runtime_binding": {
+      "$ref": "#/$defs/runtime_binding"
+    },
+    "metrics": {
+      "$ref": "#/$defs/metrics"
+    },
+    "connectors": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/connector"
+      }
+    },
+    "safety": {
+      "$ref": "#/$defs/safety"
+    },
+    "foundation_fingerprint_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "capture_kind": {
+            "const": "contract_fixture"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "runtime_binding": {
+            "properties": {
+              "catalog_kind": {
+                "const": "contract_fixture"
+              }
+            }
+          },
+          "connectors": {
+            "items": {
+              "properties": {
+                "family": {
+                  "const": "reference"
+                },
+                "status": {
+                  "const": "reference_only"
+                },
+                "owner": {
+                  "properties": {
+                    "version_source": {
+                      "const": "contract_fixture"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "runtime_binding": {
+            "properties": {
+              "catalog_kind": {
+                "enum": [
+                  "tools_catalog",
+                  "tools_effective"
+                ]
+              }
+            }
+          },
+          "connectors": {
+            "items": {
+              "properties": {
+                "family": {
+                  "enum": [
+                    "email",
+                    "discord",
+                    "whatsapp",
+                    "sms"
+                  ]
+                },
+                "status": {
+                  "const": "inventory_verified_non_live"
+                },
+                "owner": {
+                  "properties": {
+                    "version_source": {
+                      "enum": [
+                        "runtime_plugin_manifest",
+                        "runtime_package",
+                        "runtime_mcp_handshake"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-[0-9A-Za-z.-]+)?$",
+      "maxLength": 128
+    },
+    "runtime_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "platform",
+        "openclaw_version",
+        "plugin_api_version",
+        "catalog_kind",
+        "agent_id_fingerprint_sha256",
+        "inventory_contract_version",
+        "inventory_generation",
+        "inventory_snapshot_fingerprint_sha256",
+        "registry_version",
+        "policy_version"
+      ],
+      "properties": {
+        "platform": {
+          "const": "openclaw"
+        },
+        "openclaw_version": {
+          "$ref": "#/$defs/version"
+        },
+        "plugin_api_version": {
+          "$ref": "#/$defs/version"
+        },
+        "catalog_kind": {
+          "enum": [
+            "tools_catalog",
+            "tools_effective",
+            "contract_fixture"
+          ]
+        },
+        "agent_id_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "inventory_contract_version": {
+          "const": "noderooms-runtime-tool-inventory-v1"
+        },
+        "inventory_generation": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "inventory_snapshot_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "registry_version": {
+          "type": "string",
+          "pattern": "^nrcr_[a-z0-9][a-z0-9._-]{2,63}$"
+        },
+        "policy_version": {
+          "type": "string",
+          "pattern": "^nrp_[a-z0-9][a-z0-9._-]{2,63}$"
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "connector_count",
+        "connector_family_count",
+        "tool_binding_count",
+        "schema_verified_tool_count",
+        "unclassified_tool_count",
+        "drifted_tool_count"
+      ],
+      "properties": {
+        "connector_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 64
+        },
+        "connector_family_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "tool_binding_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8192
+        },
+        "schema_verified_tool_count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8192
+        },
+        "unclassified_tool_count": {
+          "const": 0
+        },
+        "drifted_tool_count": {
+          "const": 0
+        }
+      }
+    },
+    "owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "owner_id",
+        "resolution",
+        "owner_version",
+        "version_source"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "plugin",
+            "channel",
+            "mcp"
+          ]
+        },
+        "owner_id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:@/-]{1,160}$"
+        },
+        "resolution": {
+          "const": "exact"
+        },
+        "owner_version": {
+          "$ref": "#/$defs/version"
+        },
+        "version_source": {
+          "enum": [
+            "contract_fixture",
+            "runtime_plugin_manifest",
+            "runtime_package",
+            "runtime_mcp_handshake"
+          ]
+        }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tool_name",
+        "profile_id",
+        "scope",
+        "input_schema_fingerprint_sha256",
+        "output_receipt_profile",
+        "replay_semantics",
+        "side_effect_class",
+        "risk",
+        "approval_policy",
+        "action",
+        "resource_type",
+        "coverage_status",
+        "enforce_eligible",
+        "authority_status"
+      ],
+      "properties": {
+        "tool_name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._:-]{1,128}$"
+        },
+        "profile_id": {
+          "type": "string",
+          "pattern": "^nrscp_[a-z0-9][a-z0-9_]{2,95}$"
+        },
+        "scope": {
+          "type": "string",
+          "pattern": "^connector\\.[a-z][a-z0-9_]{1,31}\\.[a-z][a-z0-9_]{1,47}\\.[a-z][a-z0-9_]{1,47}$"
+        },
+        "input_schema_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "output_receipt_profile": {
+          "enum": [
+            "read_observation_v1",
+            "external_action_receipt_v2"
+          ]
+        },
+        "replay_semantics": {
+          "enum": [
+            "replay_safe_read",
+            "at_most_once_dispatch",
+            "provider_idempotent"
+          ]
+        },
+        "side_effect_class": {
+          "enum": [
+            "read",
+            "write",
+            "destructive",
+            "admin"
+          ]
+        },
+        "risk": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "approval_policy": {
+          "enum": [
+            "none",
+            "allow_once"
+          ]
+        },
+        "action": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "resource_type": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "coverage_status": {
+          "const": "covered_contract_only"
+        },
+        "enforce_eligible": {
+          "const": false
+        },
+        "authority_status": {
+          "const": "discovery_only_no_authority"
+        }
+      }
+    },
+    "connector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "connector_key",
+        "family",
+        "status",
+        "owner",
+        "provider",
+        "connector_id",
+        "connector_version",
+        "credential_custodian",
+        "noderooms_stores_provider_credentials",
+        "tools",
+        "authority_status"
+      ],
+      "properties": {
+        "connector_key": {
+          "type": "string",
+          "pattern": "^nrcbc_[a-z0-9][a-z0-9_]{2,95}$"
+        },
+        "family": {
+          "enum": [
+            "email",
+            "discord",
+            "whatsapp",
+            "sms",
+            "reference"
+          ]
+        },
+        "status": {
+          "enum": [
+            "reference_only",
+            "inventory_verified_non_live"
+          ]
+        },
+        "owner": {
+          "$ref": "#/$defs/owner"
+        },
+        "provider": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,31}$"
+        },
+        "connector_id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9._:-]{2,127}$"
+        },
+        "connector_version": {
+          "$ref": "#/$defs/version"
+        },
+        "credential_custodian": {
+          "const": "openclaw"
+        },
+        "noderooms_stores_provider_credentials": {
+          "const": false
+        },
+        "tools": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 128,
+          "items": {
+            "$ref": "#/$defs/tool"
+          }
+        },
+        "authority_status": {
+          "const": "discovery_only_no_authority"
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grants_authority",
+        "executes_tools",
+        "invokes_connectors",
+        "performs_network_request",
+        "performs_external_write",
+        "stores_provider_credentials",
+        "stores_raw_schema",
+        "stores_raw_parameters",
+        "stores_raw_results",
+        "automates_owner_decision"
+      ],
+      "properties": {
+        "grants_authority": {
+          "const": false
+        },
+        "executes_tools": {
+          "const": false
+        },
+        "invokes_connectors": {
+          "const": false
+        },
+        "performs_network_request": {
+          "const": false
+        },
+        "performs_external_write": {
+          "const": false
+        },
+        "stores_provider_credentials": {
+          "const": false
+        },
+        "stores_raw_schema": {
+          "const": false
+        },
+        "stores_raw_parameters": {
+          "const": false
+        },
+        "stores_raw_results": {
+          "const": false
+        },
+        "automates_owner_decision": {
+          "const": false
+        }
+      }
+    }
+  }
+}

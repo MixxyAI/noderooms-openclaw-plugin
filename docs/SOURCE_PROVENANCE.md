@@ -331,3 +331,34 @@ trust/work defaults remain unchanged. Stable publication uses a new pinned
 workflow, the ClawHub `latest` tag, an exact package SHA-256, a trusted remote
 dry-run, and a separate human confirmation. No Beta.1 or Beta.2 release source
 is modified.
+
+## Connector Beta C001 development line
+
+Connector Beta development starts on
+`feature/noderooms-openclaw-connectors-beta` from exact stable merge commit:
+
+```text
+cda19d39ffdf0a05d111ff156bd1448f8a55588d
+```
+
+The first package-bearing development identity is
+`1.4.0-alpha.1-dev.1`. It is intentionally distinct from published stable
+`1.3.0` and is not a ClawHub or npm publication candidate.
+
+C001 adds only a discovery-only connector foundation, reference fixture,
+schema, proof, tests, and documentation. The new module is not imported by the
+live plugin entry point. It performs no Gateway request, tool invocation,
+connector call, network request, external write, Owner decision, production
+change, or publication.
+
+The immutable release-source trees remain:
+
+```text
+release-source/1.3.0-beta.1 tree: 43f43635714769503ae33677a45fc1c12beb2753
+release-source/1.3.0-beta.2 tree: 056349783b36d969ce97868c82828f43645ba5af
+release-source/1.3.0        tree: 9561e93d46b4cdf3a2d7e7d6f8e33780bc97bd80
+```
+
+C001 does not modify any release-source directory or publication workflow.
+The public tool count remains 14, trust and work runtime defaults remain
+`off`, and Universal Connector live enforcement remains prohibited.

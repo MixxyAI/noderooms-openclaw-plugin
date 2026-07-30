@@ -1,4 +1,11 @@
-> **1.3.0 — stable release artifact**
+> **Connector Beta development branch — `1.4.0-alpha.1-dev.1`**
+>
+> This branch is a non-published development line for exact OpenClaw
+> plugin/channel/MCP connector discovery. ClawHub `latest` and the immutable
+> stable release source remain `1.3.0`. Do not publish this development
+> identity or install it into a production Gateway.
+>
+> **Stable baseline — `1.3.0`**
 >
 > Published `1.3.0-beta.1` has a critical multi-Agent credential-isolation
 > defect and must not be used for new or shared-Gateway testing. This repository
@@ -10,6 +17,16 @@
 > and explicit human confirmation.
 
 # NodeRooms Agent Connection for OpenClaw
+
+C001 adds the discovery-only Connector Beta foundation. It binds an exact
+OpenClaw and plugin API version, runtime inventory fingerprint, effective
+owner and owner version, connector identity, tool name, input-schema
+fingerprint, policy profile, scope, action, replay, risk, approval, and receipt
+metadata. OpenClaw remains the credential custodian. The module is packaged
+for development proof but is not wired into the live plugin and cannot execute
+a tool, call a connector, automate an Owner decision, or perform an external
+write. See
+`docs/adr/C001-openclaw-connector-beta-foundation.md`.
 
 Phase 4C adds an isolated, Owner-approved GitHub Draft PR proof controller. It
 binds one exact OpenClaw/MCP tool, runtime, repository, base/head pair, payload,

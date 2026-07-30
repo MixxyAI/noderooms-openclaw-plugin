@@ -21,6 +21,18 @@ const githubDraftPrE2E = await readFile(
     new URL("../dist/github-draft-pr-e2e.js", import.meta.url),
     "utf8",
 );
+const connectorBetaFoundation = await readFile(
+    new URL("../dist/connector-beta-foundation.js", import.meta.url),
+    "utf8",
+);
+const stableSourcePackage = JSON.parse(await readFile(
+    new URL("../release-source/1.3.0/package.json", import.meta.url),
+    "utf8",
+));
+const stableSourceManifest = JSON.parse(await readFile(
+    new URL("../release-source/1.3.0/openclaw.plugin.json", import.meta.url),
+    "utf8",
+));
 const beta1PublishWorkflow = await readFile(
     new URL("../.github/workflows/package-publish.yml", import.meta.url),
     "utf8",
@@ -56,9 +68,11 @@ const stableReleaseClosure = JSON.parse(await readFile(
     "utf8",
 ));
 
-test("package and manifest versions match the stable release candidate", () => {
-    assert.equal(pkg.version, "1.3.0");
+test("Connector Beta uses a distinct development identity and preserves stable 1.3.0", () => {
+    assert.equal(pkg.version, "1.4.0-alpha.1-dev.1");
     assert.equal(manifest.version, pkg.version);
+    assert.equal(stableSourcePackage.version, "1.3.0");
+    assert.equal(stableSourceManifest.version, stableSourcePackage.version);
 });
 
 test("immutable Beta.1 workflow remains pinned and validation-only", () => {
@@ -231,7 +245,7 @@ test("stable promotion records fresh PR CI and latest dry-run evidence before pu
         stableReleaseGate.schema_version,
         "noderooms-stable-release-gate-v1",
     );
-    assert.equal(stableReleaseGate.candidate.version, pkg.version);
+    assert.equal(stableReleaseGate.candidate.version, stableSourcePackage.version);
     assert.equal(
         stableReleaseGate.promotion.predecessor_version,
         "1.3.0-beta.2",
@@ -516,6 +530,25 @@ test("Phase 4C Draft PR proof remains pure, signed, isolated, and non-live", () 
     assert.doesNotMatch(githubDraftPrE2E, /\.runTask\(/);
     assert.doesNotMatch(githubDraftPrE2E, /\.resume\(/);
     assert.doesNotMatch(githubDraftPrE2E, /child_process/);
+});
+
+test("C001 Connector Beta foundation is packaged but disconnected and non-live", () => {
+    assert.doesNotMatch(index, /connector-beta-foundation/);
+    assert.doesNotMatch(index, /buildConnectorBetaFoundationV1/);
+    assert.match(
+        connectorBetaFoundation,
+        /CONNECTOR_BETA_DEVELOPMENT_IDENTITY =\s*"1\.4\.0-alpha\.1-dev\.1"/,
+    );
+    assert.match(
+        connectorBetaFoundation,
+        /CONNECTOR_BETA_LIVE_CONNECTOR_USE_ALLOWED = false/,
+    );
+    assert.doesNotMatch(connectorBetaFoundation, /\bfetch\(/);
+    assert.doesNotMatch(connectorBetaFoundation, /"tools\.invoke"/);
+    assert.doesNotMatch(connectorBetaFoundation, /"tools\.catalog"/);
+    assert.doesNotMatch(connectorBetaFoundation, /\.runTask\(/);
+    assert.doesNotMatch(connectorBetaFoundation, /\.resume\(/);
+    assert.doesNotMatch(connectorBetaFoundation, /child_process/);
 });
 
 test("Phase 4 owner inventory commands are present and Owner-gated", () => {
