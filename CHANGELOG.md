@@ -1,5 +1,85 @@
 # Changelog
 
+## 1.4.0-alpha.3-dev.1 — C003 Passport Messaging Foundation
+
+- Added a strict, contract-only outbound messaging profile for the OpenClaw
+  `message` tool's narrowed `send` projection across exact `sms`, `whatsapp`,
+  `signal`, `discord`, and `msteams` channel scopes.
+- Bound every future dispatch to one exact Agent, Verified Human Owner,
+  Agent Passport, runtime, channel, account fingerprint, target fingerprint,
+  payload fingerprint, single-action run lease, `allow_once` approval,
+  at-most-once attempt, provider idempotency key, and signed receipt.
+- Marked incoming channel content as untrusted and required pairing or an
+  allowlist. Inbound content cannot trigger an automatic external action,
+  Memory ingestion, or Swarm activity.
+- Kept OpenClaw as credential custodian and prohibited raw messages, targets,
+  credentials, and provider results from NodeRooms state and receipts.
+- Recorded Viber truthfully as `external_adapter_pending` with no executable
+  route. Split Microsoft authority so Teams does not imply Outlook Mail or
+  Calendar access; Outlook read/draft remains planned for C004.
+- Added the C003 route registry, JSON Schema, profile builder/validator, proof,
+  ADR, and negative tests for runtime, route, authority, Viber, Microsoft,
+  secret-field, safety, and fingerprint drift.
+- Marked all provider runtime versions, effective schemas, accounts, limits,
+  logins, and live proofs as pending. No plugin installation, Gateway start,
+  provider invocation, message send, production change, or publication occurs.
+- Preserved C001/C002, the 14-tool public contract, stable `1.3.0`, immutable
+  release-source trees, default-off Trust/Work runtime, Memory/Swarm locks,
+  and every live-enforcement hard stop.
+
+## 1.4.0-alpha.2-dev.1 — C002 Email Read + Draft
+
+- Added a strict, contract-only Gmail profile for exact
+  `gmail_search_emails`, `gmail_read_email_thread`, and
+  `gmail_create_draft` tool identities, schemas, fingerprints, scopes,
+  side-effect classes, replay semantics, approvals, and receipts.
+- Split email handling between a dedicated reader Agent and a distinct
+  Owner-reviewed drafter. The reader treats mail as untrusted external
+  content, runs in a session sandbox with no workspace access, permits only
+  Gmail search/thread read, and hands off summaries only.
+- Required exact recipient resolution, prohibited automatic recipient
+  selection, and bound draft creation to one human `allow_once` review.
+  Draft creation remains an unsent mailbox write and grants no send, forward,
+  archive, label, delete, or destructive capability.
+- Added the C002 JSON Schema, canonical registry and descriptor fixtures,
+  profile builder/validator, proof runner, ADR, and negative tests for
+  schema/owner/version/semantic drift, missing or extra tools, cross-Agent
+  collapse, secret-like fields, unsafe safety-state changes, and fingerprint
+  tampering.
+- Marked the status truthfully as `contract_only` and
+  `external_validation_pending`. No live Gmail/OpenClaw call, mailbox read,
+  draft creation, Gateway change, production change, or publication occurs.
+- Kept C001 packaged and disconnected, preserved the 14-tool public contract,
+  stable `1.3.0`, immutable release-source trees, default-off Trust/Work
+  runtime, Memory/Swarm locks, and every live-enforcement hard stop.
+
+## 1.4.0-alpha.1-dev.1 — C001 Connector Beta Foundation
+
+- Started the Connector Beta line from exact stable commit
+  `cda19d39ffdf0a05d111ff156bd1448f8a55588d` with a distinct development
+  identity; stable `1.3.0`, its immutable release source, and ClawHub `latest`
+  remain unchanged.
+- Added a strict discovery-only contract for exact OpenClaw/plugin API
+  version, runtime inventory fingerprint, owner kind/ID/version, provider,
+  connector ID/version, tool name, input-schema fingerprint, policy profile,
+  scope, action, resource, replay, risk, approval, and receipt binding.
+- Added a deterministic GitHub Draft PR reference fixture, JSON Schema,
+  contract validator, ADR, proof runner, and negative tests for missing schema,
+  schema drift, unresolved owner, unprofiled tool, version-source mismatch,
+  duplicate binding, secret-like fields, active inventory, and fingerprint
+  drift.
+- Updated the feature-only non-release package proof to compare the packed
+  version with the exact package and plugin-manifest identity instead of a
+  stable `1.3.0` hardcode. Publication workflows remain unchanged.
+- Kept the C001 module disconnected from the live plugin. It grants no
+  authority, executes no tool, invokes no connector, performs no network or
+  external write, stores no provider credential or raw schema/content, and
+  automates no Owner decision.
+- Preserved the 14-tool public contract, `trustLayer.mode=off`,
+  `workRuntime.mode=off`, and every existing live-enforcement hard stop.
+- Reserved email read/draft for C002, Discord/WhatsApp/SMS inventory for C003,
+  and the first private Owner-approved provider write for C004.
+
 ## 1.3.0 — 2026-07-29
 
 - Promoted the exact multi-Agent isolation repair proven in `1.3.0-beta.2` to

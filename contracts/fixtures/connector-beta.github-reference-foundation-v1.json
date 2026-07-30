@@ -1,0 +1,80 @@
+{
+  "contract_version": "noderooms-openclaw-connector-beta-foundation-v1",
+  "development_identity": "1.4.0-alpha.1-dev.1",
+  "activation_state": "discovery_only",
+  "live_connector_use_allowed": false,
+  "foundation_id": "nrcbf_2026-07-30.001",
+  "capture_kind": "contract_fixture",
+  "captured_at": "2026-07-30T10:30:00.000Z",
+  "runtime_binding": {
+    "platform": "openclaw",
+    "openclaw_version": "2026.7.1-2",
+    "plugin_api_version": "2026.7.1-2",
+    "catalog_kind": "contract_fixture",
+    "agent_id_fingerprint_sha256": "sha256:017aa6d0d50a455c7ecadfff2c99ee6a15d0d265d839bf546868d71022e9a82c",
+    "inventory_contract_version": "noderooms-runtime-tool-inventory-v1",
+    "inventory_generation": 1,
+    "inventory_snapshot_fingerprint_sha256": "sha256:43527e9263fafbe2b8f701a491eab19924ebc9fb5c932d8ddc8fc37a567503b8",
+    "registry_version": "nrcr_2026-07-23.001",
+    "policy_version": "nrp_2026-07-23.001"
+  },
+  "metrics": {
+    "connector_count": 1,
+    "connector_family_count": 1,
+    "tool_binding_count": 1,
+    "schema_verified_tool_count": 1,
+    "unclassified_tool_count": 0,
+    "drifted_tool_count": 0
+  },
+  "connectors": [
+    {
+      "connector_key": "nrcbc_github_draft_pr_reference_v1",
+      "family": "reference",
+      "status": "reference_only",
+      "owner": {
+        "kind": "mcp",
+        "owner_id": "github",
+        "resolution": "exact",
+        "owner_version": "0.0.0-reference.1",
+        "version_source": "contract_fixture"
+      },
+      "provider": "github",
+      "connector_id": "openclaw.reference.github",
+      "connector_version": "0.0.0-reference.1",
+      "credential_custodian": "openclaw",
+      "noderooms_stores_provider_credentials": false,
+      "tools": [
+        {
+          "tool_name": "github_create_pull_request",
+          "profile_id": "nrscp_github_pull_request_draft_v1",
+          "scope": "connector.github.pull_request.draft",
+          "input_schema_fingerprint_sha256": "sha256:c12e12e4f6a0d03d85c46dbe4e17cfe814f7a988f56ecc4c2b40089d621f8c37",
+          "output_receipt_profile": "external_action_receipt_v2",
+          "replay_semantics": "at_most_once_dispatch",
+          "side_effect_class": "write",
+          "risk": "high",
+          "approval_policy": "allow_once",
+          "action": "create_draft",
+          "resource_type": "github_repository",
+          "coverage_status": "covered_contract_only",
+          "enforce_eligible": false,
+          "authority_status": "discovery_only_no_authority"
+        }
+      ],
+      "authority_status": "discovery_only_no_authority"
+    }
+  ],
+  "safety": {
+    "grants_authority": false,
+    "executes_tools": false,
+    "invokes_connectors": false,
+    "performs_network_request": false,
+    "performs_external_write": false,
+    "stores_provider_credentials": false,
+    "stores_raw_schema": false,
+    "stores_raw_parameters": false,
+    "stores_raw_results": false,
+    "automates_owner_decision": false
+  },
+  "foundation_fingerprint_sha256": "sha256:6cb27c236ed6110bffd591bee938979e38bf47eabe45dcaf24cd2e03cc273686"
+}

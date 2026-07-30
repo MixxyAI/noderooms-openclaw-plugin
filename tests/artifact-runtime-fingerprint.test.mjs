@@ -60,6 +60,10 @@ const evidenceFixture = await readJson(
 );
 const packageJson = await readJson("package.json");
 const pluginManifest = await readJson("openclaw.plugin.json");
+const stablePackageJson = await readJson("release-source/1.3.0/package.json");
+const stablePluginManifest = await readJson(
+    "release-source/1.3.0/openclaw.plugin.json",
+);
 const engineSource = await readFile(
     join(
         repositoryRoot,
@@ -446,8 +450,10 @@ test("005B engine has no network, process execution, environment, or write API",
 });
 
 test("005B remains outside immutable stable 1.3.0 package bytes", () => {
-    assert.equal(packageJson.version, "1.3.0");
-    assert.equal(pluginManifest.version, "1.3.0");
+    assert.equal(stablePackageJson.version, "1.3.0");
+    assert.equal(stablePluginManifest.version, "1.3.0");
+    assert.deepEqual(packageJson.files, stablePackageJson.files);
+    assert.equal(packageJson.version, pluginManifest.version);
     assert.equal(pluginManifest.contracts.tools.length, 14);
     const files = new Set(packageJson.files);
     const candidatePaths = [

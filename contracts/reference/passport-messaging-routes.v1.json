@@ -1,0 +1,97 @@
+{
+  "contract_version": "noderooms-passport-messaging-route-registry-v1",
+  "development_identity": "1.4.0-alpha.3-dev.1",
+  "openclaw_version": "2026.7.1-2",
+  "activation_state": "contract_only",
+  "live_messaging_use_allowed": false,
+  "routes": [
+    {
+      "channel_id": "sms",
+      "plugin_package": "@openclaw/sms",
+      "distribution": "official_downloadable",
+      "status": "official_plugin_pending_runtime",
+      "scope": "connector.sms.message.send",
+      "allowed_target_kinds": ["direct_e164"],
+      "runtime_version_capture_required": true,
+      "exact_account_required": true,
+      "exact_target_required": true,
+      "text_only_first_proof": true,
+      "provider_limits_runtime_capture_required": true,
+      "live_authority_allowed": false
+    },
+    {
+      "channel_id": "whatsapp",
+      "plugin_package": "@openclaw/whatsapp",
+      "distribution": "official_downloadable",
+      "status": "official_plugin_pending_runtime",
+      "scope": "connector.whatsapp.message.send",
+      "allowed_target_kinds": ["direct_e164"],
+      "runtime_version_capture_required": true,
+      "exact_account_required": true,
+      "exact_target_required": true,
+      "text_only_first_proof": true,
+      "provider_limits_runtime_capture_required": true,
+      "live_authority_allowed": false
+    },
+    {
+      "channel_id": "signal",
+      "plugin_package": "@openclaw/signal",
+      "distribution": "official_downloadable",
+      "status": "official_plugin_pending_runtime",
+      "scope": "connector.signal.message.send",
+      "allowed_target_kinds": ["direct_e164"],
+      "runtime_version_capture_required": true,
+      "exact_account_required": true,
+      "exact_target_required": true,
+      "text_only_first_proof": true,
+      "provider_limits_runtime_capture_required": true,
+      "live_authority_allowed": false
+    },
+    {
+      "channel_id": "discord",
+      "plugin_package": "@openclaw/discord",
+      "distribution": "official_downloadable",
+      "status": "official_plugin_pending_runtime",
+      "scope": "connector.discord.message.send",
+      "allowed_target_kinds": ["direct_user", "guild_channel"],
+      "runtime_version_capture_required": true,
+      "exact_account_required": true,
+      "exact_target_required": true,
+      "text_only_first_proof": true,
+      "provider_limits_runtime_capture_required": true,
+      "live_authority_allowed": false
+    },
+    {
+      "channel_id": "msteams",
+      "plugin_package": "@openclaw/msteams",
+      "distribution": "bundled_or_official_downloadable",
+      "status": "bundled_plugin_pending_runtime",
+      "scope": "connector.msteams.message.send",
+      "allowed_target_kinds": ["direct_user", "team_channel"],
+      "runtime_version_capture_required": true,
+      "exact_account_required": true,
+      "exact_target_required": true,
+      "text_only_first_proof": true,
+      "provider_limits_runtime_capture_required": true,
+      "live_authority_allowed": false
+    },
+    {
+      "channel_id": "viber",
+      "plugin_package": "external:unresolved",
+      "distribution": "external_unresolved",
+      "status": "external_adapter_pending",
+      "scope": "connector.viber.message.send",
+      "allowed_target_kinds": ["external_adapter_pending"],
+      "runtime_version_capture_required": true,
+      "exact_account_required": true,
+      "exact_target_required": true,
+      "text_only_first_proof": true,
+      "provider_limits_runtime_capture_required": true,
+      "live_authority_allowed": false
+    }
+  ],
+  "microsoft_future": {
+    "outlook_mail": "planned_c004_read_draft",
+    "calendar": "not_in_c003"
+  }
+}

@@ -1,5 +1,48 @@
 # Connector contract fixtures
 
+## C001 Connector Beta foundation
+
+`connector-beta.github-reference-foundation-v1.json` is a deterministic,
+discovery-only output fixture for development identity
+`1.4.0-alpha.1-dev.1`. It reuses the existing exact GitHub Draft PR contract
+descriptor to prove the additional owner-version and runtime-inventory
+binding. It is `reference_only`, stores no provider credential or raw schema,
+and grants no tool or connector authority.
+
+The C001 schema admits future `email`, `discord`, `whatsapp`, and `sms`
+families, but this fixture does not claim that any of those providers has been
+inventoried or enabled. Each requires a separate exact runtime capture and
+policy profile.
+
+## C002 Email Read + Draft
+
+`gmail-read-draft.runtime-tool-descriptor-v1.json` and
+`../reference/gmail-read-draft.v1.json` define three exact contract tools:
+Gmail search, Gmail thread read, and unsent draft creation. The fixture
+contains no real account, mailbox, message, recipient, attachment, draft, or
+credential data.
+
+The C002 profile is `contract_only` and
+`external_validation_pending`. It must not be represented as a live OpenClaw
+runtime capture. Search and read belong only to a restricted reader Agent.
+Draft creation requires a distinct drafter, exact recipient resolution, and
+one human `allow_once` review. Send, forward, label mutation, archive, and
+delete tools are explicitly forbidden.
+
+## C003 Passport Messaging Foundation
+
+`../reference/passport-messaging-routes.v1.json` records separate contract-only
+routes for SMS, WhatsApp, Signal, Discord, Microsoft Teams, and Viber. The first
+five use documented official OpenClaw package/channel names but still require
+an exact installed runtime version, effective dynamic `message` schema,
+account, target, provider limit, and live proof capture.
+
+Viber remains `external_adapter_pending` and non-executable because no official
+OpenClaw adapter was verified in this capture. Teams grants no Outlook Mail or
+Calendar authority. Every route keeps credentials in OpenClaw and requires an
+exact Agent Passport, Verified Owner, one-action lease, `allow_once` approval,
+at-most-once dispatch, and signed receipt before a future live send.
+
 These files are non-live examples for `NR-OC-TRUST-002A`:
 
 ```text

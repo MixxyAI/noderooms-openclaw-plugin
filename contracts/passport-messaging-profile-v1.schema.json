@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:passport-messaging-profile:v1",
+  "title": "NodeRooms Passport messaging profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "development_identity",
+    "activation_state",
+    "live_messaging_use_allowed",
+    "runtime_validation_status",
+    "profile_id",
+    "captured_at",
+    "runtime_binding",
+    "passport_gate",
+    "inbound_boundary",
+    "outbound_dispatch",
+    "routes",
+    "microsoft_future",
+    "receipt",
+    "safety",
+    "profile_fingerprint_sha256"
+  ],
+  "properties": {
+    "contract_version": { "const": "noderooms-passport-messaging-profile-v1" },
+    "development_identity": { "const": "1.4.0-alpha.3-dev.1" },
+    "activation_state": { "const": "contract_only" },
+    "live_messaging_use_allowed": { "const": false },
+    "runtime_validation_status": { "const": "external_validation_pending" },
+    "profile_id": { "type": "string", "pattern": "^nrc003_[a-z0-9][a-z0-9._-]{2,95}$" },
+    "captured_at": { "type": "string", "format": "date-time" },
+    "runtime_binding": { "$ref": "#/$defs/runtimeBinding" },
+    "passport_gate": { "$ref": "#/$defs/passportGate" },
+    "inbound_boundary": { "$ref": "#/$defs/inboundBoundary" },
+    "outbound_dispatch": { "$ref": "#/$defs/outboundDispatch" },
+    "routes": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": { "$ref": "#/$defs/route" }
+    },
+    "microsoft_future": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["teams_channel_id", "outlook_mail", "calendar", "shared_microsoft_authority_allowed"],
+      "properties": {
+        "teams_channel_id": { "const": "msteams" },
+        "outlook_mail": { "const": "planned_c004_read_draft" },
+        "calendar": { "const": "not_in_c003" },
+        "shared_microsoft_authority_allowed": { "const": false }
+      }
+    },
+    "receipt": { "$ref": "#/$defs/receipt" },
+    "safety": { "$ref": "#/$defs/safety" },
+    "profile_fingerprint_sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" }
+  },
+  "$defs": {
+    "runtimeBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "openclaw_version",
+        "tool_owner",
+        "tool_name",
+        "action",
+        "message_tool_schema_status",
+        "runtime_message_schema_fingerprint_sha256",
+        "noderooms_projection_schema",
+        "noderooms_projection_schema_fingerprint_sha256",
+        "raw_tool_schema_stored"
+      ],
+      "properties": {
+        "openclaw_version": { "const": "2026.7.1-2" },
+        "tool_owner": { "const": "openclaw_builtin" },
+        "tool_name": { "const": "message" },
+        "action": { "const": "send" },
+        "message_tool_schema_status": { "const": "narrowed_projection_runtime_capture_pending" },
+        "runtime_message_schema_fingerprint_sha256": { "const": "capture_required" },
+        "noderooms_projection_schema": { "type": "object" },
+        "noderooms_projection_schema_fingerprint_sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "raw_tool_schema_stored": { "const": false }
+      }
+    },
+    "passportGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "agent_id_fingerprint_sha256",
+        "verified_human_owner_required",
+        "verified_agent_passport_required",
+        "exact_runtime_binding_required",
+        "per_agent_run_lease_required",
+        "lease_scope_must_equal_route_scope",
+        "lease_channel_must_equal_route_channel",
+        "lease_account_fingerprint_required",
+        "lease_target_fingerprint_required",
+        "max_actions_per_lease",
+        "shared_credential_allowed",
+        "wildcard_scope_allowed",
+        "automatic_owner_decision_allowed"
+      ],
+      "properties": {
+        "agent_id_fingerprint_sha256": { "type": "string", "pattern": "^sha256:[a-f0-9]{64}$" },
+        "verified_human_owner_required": { "const": true },
+        "verified_agent_passport_required": { "const": true },
+        "exact_runtime_binding_required": { "const": true },
+        "per_agent_run_lease_required": { "const": true },
+        "lease_scope_must_equal_route_scope": { "const": true },
+        "lease_channel_must_equal_route_channel": { "const": true },
+        "lease_account_fingerprint_required": { "const": true },
+        "lease_target_fingerprint_required": { "const": true },
+        "max_actions_per_lease": { "const": 1 },
+        "shared_credential_allowed": { "const": false },
+        "wildcard_scope_allowed": { "const": false },
+        "automatic_owner_decision_allowed": { "const": false }
+      }
+    },
+    "inboundBoundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pairing_or_allowlist_required",
+        "input_trust",
+        "automatic_action_from_inbound_content_allowed",
+        "memory_ingestion_enabled",
+        "swarm_enabled"
+      ],
+      "properties": {
+        "pairing_or_allowlist_required": { "const": true },
+        "input_trust": { "const": "untrusted_external_content" },
+        "automatic_action_from_inbound_content_allowed": { "const": false },
+        "memory_ingestion_enabled": { "const": false },
+        "swarm_enabled": { "const": false }
+      }
+    },
+    "outboundDispatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "action",
+        "content_mode",
+        "exact_channel_required",
+        "exact_account_required",
+        "exact_target_required",
+        "exact_payload_fingerprint_required",
+        "approval_policy",
+        "replay_semantics",
+        "dispatch_attempt_ceiling",
+        "provider_idempotency_key_required",
+        "automatic_retry_allowed",
+        "unknown_outcome_policy",
+        "cross_channel_fallback_allowed",
+        "automatic_recipient_selection_allowed"
+      ],
+      "properties": {
+        "action": { "const": "send" },
+        "content_mode": { "const": "text_only_first_proof" },
+        "exact_channel_required": { "const": true },
+        "exact_account_required": { "const": true },
+        "exact_target_required": { "const": true },
+        "exact_payload_fingerprint_required": { "const": true },
+        "approval_policy": { "const": "allow_once" },
+        "replay_semantics": { "const": "at_most_once_dispatch" },
+        "dispatch_attempt_ceiling": { "const": 1 },
+        "provider_idempotency_key_required": { "const": true },
+        "automatic_retry_allowed": { "const": false },
+        "unknown_outcome_policy": { "const": "seal_and_reconcile_read_only_or_stop" },
+        "cross_channel_fallback_allowed": { "const": false },
+        "automatic_recipient_selection_allowed": { "const": false }
+      }
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "channel_id",
+        "plugin_package",
+        "distribution",
+        "status",
+        "scope",
+        "allowed_target_kinds",
+        "owner",
+        "credential_custodian",
+        "noderooms_stores_provider_credentials",
+        "runtime_version_capture_required",
+        "exact_account_required",
+        "exact_target_required",
+        "text_only_first_proof",
+        "provider_limits_runtime_capture_required",
+        "live_authority_allowed"
+      ],
+      "properties": {
+        "channel_id": { "enum": ["discord", "msteams", "signal", "sms", "viber", "whatsapp"] },
+        "plugin_package": { "type": "string" },
+        "distribution": { "enum": ["official_downloadable", "bundled_or_official_downloadable", "external_unresolved"] },
+        "status": { "enum": ["official_plugin_pending_runtime", "bundled_plugin_pending_runtime", "external_adapter_pending"] },
+        "scope": { "type": "string", "pattern": "^connector\\.[a-z][a-z0-9_]{1,31}\\.[a-z][a-z0-9_]{1,47}\\.[a-z][a-z0-9_]{1,47}$" },
+        "allowed_target_kinds": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "owner": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "owner_id", "resolution", "openclaw_version", "runtime_plugin_version"],
+          "properties": {
+            "kind": { "const": "channel" },
+            "owner_id": { "type": "string" },
+            "resolution": { "enum": ["exact_name_only", "unresolved"] },
+            "openclaw_version": { "const": "2026.7.1-2" },
+            "runtime_plugin_version": { "const": "capture_required" }
+          }
+        },
+        "credential_custodian": { "const": "openclaw" },
+        "noderooms_stores_provider_credentials": { "const": false },
+        "runtime_version_capture_required": { "const": true },
+        "exact_account_required": { "const": true },
+        "exact_target_required": { "const": true },
+        "text_only_first_proof": { "const": true },
+        "provider_limits_runtime_capture_required": { "const": true },
+        "live_authority_allowed": { "const": false }
+      }
+    },
+    "receipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "profile",
+        "signature_required",
+        "fields",
+        "stores_raw_message",
+        "stores_raw_target",
+        "stores_provider_credentials",
+        "exactly_once_effect_claim_allowed"
+      ],
+      "properties": {
+        "profile": { "const": "signed_external_action_receipt_v2" },
+        "signature_required": { "const": true },
+        "fields": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+        "stores_raw_message": { "const": false },
+        "stores_raw_target": { "const": false },
+        "stores_provider_credentials": { "const": false },
+        "exactly_once_effect_claim_allowed": { "const": false }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grants_authority",
+        "executes_tools",
+        "invokes_connector",
+        "sends_message",
+        "retries_unknown_send",
+        "enables_viber",
+        "enables_outlook_mail",
+        "enables_calendar",
+        "stores_provider_credentials",
+        "stores_raw_message",
+        "stores_raw_target",
+        "stores_raw_provider_result",
+        "wildcard_activation_allowed",
+        "shared_credential_allowed",
+        "public_write_unlocked",
+        "memory_ingestion_enabled",
+        "swarm_enabled"
+      ],
+      "properties": {
+        "grants_authority": { "const": false },
+        "executes_tools": { "const": false },
+        "invokes_connector": { "const": false },
+        "sends_message": { "const": false },
+        "retries_unknown_send": { "const": false },
+        "enables_viber": { "const": false },
+        "enables_outlook_mail": { "const": false },
+        "enables_calendar": { "const": false },
+        "stores_provider_credentials": { "const": false },
+        "stores_raw_message": { "const": false },
+        "stores_raw_target": { "const": false },
+        "stores_raw_provider_result": { "const": false },
+        "wildcard_activation_allowed": { "const": false },
+        "shared_credential_allowed": { "const": false },
+        "public_write_unlocked": { "const": false },
+        "memory_ingestion_enabled": { "const": false },
+        "swarm_enabled": { "const": false }
+      }
+    }
+  }
+}

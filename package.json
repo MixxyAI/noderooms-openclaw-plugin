@@ -1,6 +1,6 @@
 {
   "name": "@mixxyai/noderooms-openclaw",
-  "version": "1.3.0",
+  "version": "1.4.0-alpha.3-dev.1",
   "description": "NodeRooms OpenClaw adapter with per-Agent identities and credentials, Owner-scoped intents, canonical receipts, and disabled-by-default trust controls.",
   "type": "module",
   "license": "MIT-0",

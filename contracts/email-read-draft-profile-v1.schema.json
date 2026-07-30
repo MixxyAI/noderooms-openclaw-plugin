@@ -1,0 +1,537 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:noderooms:contract:email-read-draft-profile:v1",
+  "title": "NodeRooms Email Read + Draft profile v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "development_identity",
+    "activation_state",
+    "live_email_use_allowed",
+    "runtime_validation_status",
+    "profile_id",
+    "captured_at",
+    "connector",
+    "inventory_binding",
+    "reader",
+    "drafter",
+    "forbidden_tool_names",
+    "safety",
+    "profile_fingerprint_sha256"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "noderooms-email-read-draft-profile-v1"
+    },
+    "development_identity": {
+      "const": "1.4.0-alpha.2-dev.1"
+    },
+    "activation_state": {
+      "const": "contract_only"
+    },
+    "live_email_use_allowed": {
+      "const": false
+    },
+    "runtime_validation_status": {
+      "const": "external_validation_pending"
+    },
+    "profile_id": {
+      "type": "string",
+      "pattern": "^nrc002_[a-z0-9][a-z0-9._-]{2,95}$"
+    },
+    "captured_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "connector": {
+      "$ref": "#/$defs/connector"
+    },
+    "inventory_binding": {
+      "$ref": "#/$defs/inventory_binding"
+    },
+    "reader": {
+      "$ref": "#/$defs/reader"
+    },
+    "drafter": {
+      "$ref": "#/$defs/drafter"
+    },
+    "forbidden_tool_names": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "uniqueItems": true,
+      "prefixItems": [
+        {
+          "const": "gmail_apply_labels_to_emails"
+        },
+        {
+          "const": "gmail_archive_emails"
+        },
+        {
+          "const": "gmail_batch_modify_email"
+        },
+        {
+          "const": "gmail_bulk_label_matching_emails"
+        },
+        {
+          "const": "gmail_create_label"
+        },
+        {
+          "const": "gmail_delete_emails"
+        },
+        {
+          "const": "gmail_forward_emails"
+        },
+        {
+          "const": "gmail_send_draft"
+        },
+        {
+          "const": "gmail_send_email"
+        },
+        {
+          "const": "gmail_update_draft"
+        }
+      ],
+      "items": false
+    },
+    "safety": {
+      "$ref": "#/$defs/safety"
+    },
+    "profile_fingerprint_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "connector": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner",
+        "provider",
+        "connector_id",
+        "connector_version",
+        "credential_custodian",
+        "noderooms_stores_provider_credentials",
+        "account_binding_fingerprint_sha256"
+      ],
+      "properties": {
+        "owner": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "owner_id",
+            "resolution",
+            "owner_version",
+            "version_source"
+          ],
+          "properties": {
+            "kind": {
+              "const": "plugin"
+            },
+            "owner_id": {
+              "const": "gmail"
+            },
+            "resolution": {
+              "const": "exact"
+            },
+            "owner_version": {
+              "const": "0.1.5"
+            },
+            "version_source": {
+              "const": "contract_fixture"
+            }
+          }
+        },
+        "provider": {
+          "const": "gmail"
+        },
+        "connector_id": {
+          "const": "openclaw.codex.gmail-app"
+        },
+        "connector_version": {
+          "const": "0.1.5"
+        },
+        "credential_custodian": {
+          "const": "openclaw"
+        },
+        "noderooms_stores_provider_credentials": {
+          "const": false
+        },
+        "account_binding_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "inventory_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inventory_contract_version",
+        "inventory_snapshot_fingerprint_sha256",
+        "registry_version",
+        "policy_version",
+        "inventory_tool_count",
+        "schema_verified_tool_count",
+        "unclassified_tool_count",
+        "drifted_tool_count"
+      ],
+      "properties": {
+        "inventory_contract_version": {
+          "const": "noderooms-runtime-tool-inventory-v1"
+        },
+        "inventory_snapshot_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "registry_version": {
+          "const": "nrcr_2026-07-30.002"
+        },
+        "policy_version": {
+          "const": "nrp_2026-07-30.002"
+        },
+        "inventory_tool_count": {
+          "const": 3
+        },
+        "schema_verified_tool_count": {
+          "const": 3
+        },
+        "unclassified_tool_count": {
+          "const": 0
+        },
+        "drifted_tool_count": {
+          "const": 0
+        }
+      }
+    },
+    "tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tool_name",
+        "profile_id",
+        "scope",
+        "action",
+        "resource_type",
+        "input_schema_fingerprint_sha256",
+        "side_effect_class",
+        "risk",
+        "replay_semantics",
+        "approval_policy",
+        "receipt_profile",
+        "coverage_status",
+        "enforce_eligible",
+        "authority_status"
+      ],
+      "properties": {
+        "tool_name": {
+          "enum": [
+            "gmail_search_emails",
+            "gmail_read_email_thread",
+            "gmail_create_draft"
+          ]
+        },
+        "profile_id": {
+          "type": "string",
+          "pattern": "^nrscp_[a-z0-9][a-z0-9_]{2,95}$"
+        },
+        "scope": {
+          "enum": [
+            "connector.gmail.message.search",
+            "connector.gmail.thread.read",
+            "connector.gmail.message.draft"
+          ]
+        },
+        "action": {
+          "enum": [
+            "search",
+            "read_thread",
+            "create_draft"
+          ]
+        },
+        "resource_type": {
+          "enum": [
+            "gmail_message",
+            "gmail_thread"
+          ]
+        },
+        "input_schema_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "side_effect_class": {
+          "enum": [
+            "read",
+            "write"
+          ]
+        },
+        "risk": {
+          "enum": [
+            "medium",
+            "high"
+          ]
+        },
+        "replay_semantics": {
+          "enum": [
+            "replay_safe_read",
+            "at_most_once_dispatch"
+          ]
+        },
+        "approval_policy": {
+          "enum": [
+            "none",
+            "allow_once"
+          ]
+        },
+        "receipt_profile": {
+          "enum": [
+            "read_observation_v1",
+            "external_action_receipt_v2"
+          ]
+        },
+        "coverage_status": {
+          "const": "covered_contract_only"
+        },
+        "enforce_eligible": {
+          "const": false
+        },
+        "authority_status": {
+          "const": "contract_only_no_authority"
+        }
+      }
+    },
+    "reader": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "agent_id_fingerprint_sha256",
+        "input_trust",
+        "sandbox_mode",
+        "sandbox_scope",
+        "workspace_access",
+        "allowed_tool_names",
+        "denied_tool_groups",
+        "tools",
+        "handoff_policy",
+        "memory_ingestion_enabled",
+        "swarm_enabled"
+      ],
+      "properties": {
+        "role": {
+          "const": "dedicated_mail_reader"
+        },
+        "agent_id_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "input_trust": {
+          "const": "untrusted_external_content"
+        },
+        "sandbox_mode": {
+          "const": "all"
+        },
+        "sandbox_scope": {
+          "const": "session"
+        },
+        "workspace_access": {
+          "const": "none"
+        },
+        "allowed_tool_names": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "prefixItems": [
+            {
+              "const": "gmail_read_email_thread"
+            },
+            {
+              "const": "gmail_search_emails"
+            }
+          ],
+          "items": false
+        },
+        "denied_tool_groups": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "prefixItems": [
+            {
+              "const": "browser"
+            },
+            {
+              "const": "cron"
+            },
+            {
+              "const": "gateway"
+            },
+            {
+              "const": "group:fs"
+            },
+            {
+              "const": "group:runtime"
+            },
+            {
+              "const": "group:web"
+            },
+            {
+              "const": "nodes"
+            }
+          ],
+          "items": false
+        },
+        "tools": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "$ref": "#/$defs/tool"
+          }
+        },
+        "handoff_policy": {
+          "const": "summary_only"
+        },
+        "memory_ingestion_enabled": {
+          "const": false
+        },
+        "swarm_enabled": {
+          "const": false
+        }
+      }
+    },
+    "drafter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "agent_id_fingerprint_sha256",
+        "tool",
+        "mailbox_effect",
+        "exact_recipient_resolution_required",
+        "automatic_recipient_selection_allowed",
+        "human_owner_review_required",
+        "approval_policy",
+        "send_capability_present",
+        "forward_capability_present",
+        "destructive_capability_present"
+      ],
+      "properties": {
+        "role": {
+          "const": "owner_reviewed_mail_drafter"
+        },
+        "agent_id_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "tool": {
+          "$ref": "#/$defs/tool"
+        },
+        "mailbox_effect": {
+          "const": "create_unsent_draft_only"
+        },
+        "exact_recipient_resolution_required": {
+          "const": true
+        },
+        "automatic_recipient_selection_allowed": {
+          "const": false
+        },
+        "human_owner_review_required": {
+          "const": true
+        },
+        "approval_policy": {
+          "const": "allow_once"
+        },
+        "send_capability_present": {
+          "const": false
+        },
+        "forward_capability_present": {
+          "const": false
+        },
+        "destructive_capability_present": {
+          "const": false
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "grants_authority",
+        "executes_tools",
+        "invokes_email_connector",
+        "reads_live_mailbox",
+        "creates_live_draft",
+        "sends_email",
+        "forwards_email",
+        "mutates_labels",
+        "archives_email",
+        "deletes_email",
+        "stores_provider_credentials",
+        "stores_raw_email_content",
+        "stores_raw_draft_content",
+        "stores_raw_recipient_values",
+        "automates_recipient_selection",
+        "automates_owner_decision",
+        "memory_ingestion_enabled",
+        "swarm_enabled"
+      ],
+      "properties": {
+        "grants_authority": {
+          "const": false
+        },
+        "executes_tools": {
+          "const": false
+        },
+        "invokes_email_connector": {
+          "const": false
+        },
+        "reads_live_mailbox": {
+          "const": false
+        },
+        "creates_live_draft": {
+          "const": false
+        },
+        "sends_email": {
+          "const": false
+        },
+        "forwards_email": {
+          "const": false
+        },
+        "mutates_labels": {
+          "const": false
+        },
+        "archives_email": {
+          "const": false
+        },
+        "deletes_email": {
+          "const": false
+        },
+        "stores_provider_credentials": {
+          "const": false
+        },
+        "stores_raw_email_content": {
+          "const": false
+        },
+        "stores_raw_draft_content": {
+          "const": false
+        },
+        "stores_raw_recipient_values": {
+          "const": false
+        },
+        "automates_recipient_selection": {
+          "const": false
+        },
+        "automates_owner_decision": {
+          "const": false
+        },
+        "memory_ingestion_enabled": {
+          "const": false
+        },
+        "swarm_enabled": {
+          "const": false
+        }
+      }
+    }
+  }
+}

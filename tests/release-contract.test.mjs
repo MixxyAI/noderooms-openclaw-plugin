@@ -21,6 +21,26 @@ const githubDraftPrE2E = await readFile(
     new URL("../dist/github-draft-pr-e2e.js", import.meta.url),
     "utf8",
 );
+const connectorBetaFoundation = await readFile(
+    new URL("../dist/connector-beta-foundation.js", import.meta.url),
+    "utf8",
+);
+const emailReadDraftProfile = await readFile(
+    new URL("../dist/email-read-draft-profile.js", import.meta.url),
+    "utf8",
+);
+const passportMessagingProfile = await readFile(
+    new URL("../dist/passport-messaging-profile.js", import.meta.url),
+    "utf8",
+);
+const stableSourcePackage = JSON.parse(await readFile(
+    new URL("../release-source/1.3.0/package.json", import.meta.url),
+    "utf8",
+));
+const stableSourceManifest = JSON.parse(await readFile(
+    new URL("../release-source/1.3.0/openclaw.plugin.json", import.meta.url),
+    "utf8",
+));
 const beta1PublishWorkflow = await readFile(
     new URL("../.github/workflows/package-publish.yml", import.meta.url),
     "utf8",
@@ -31,6 +51,10 @@ const beta2PublishWorkflow = await readFile(
 );
 const stablePublishWorkflow = await readFile(
     new URL("../.github/workflows/package-publish-stable.yml", import.meta.url),
+    "utf8",
+);
+const pluginCiWorkflow = await readFile(
+    new URL("../.github/workflows/plugin-ci.yml", import.meta.url),
     "utf8",
 );
 const beta2ReleaseGate = JSON.parse(await readFile(
@@ -56,9 +80,32 @@ const stableReleaseClosure = JSON.parse(await readFile(
     "utf8",
 ));
 
-test("package and manifest versions match the stable release candidate", () => {
-    assert.equal(pkg.version, "1.3.0");
+test("Connector Beta uses a distinct development identity and preserves stable 1.3.0", () => {
+    assert.equal(pkg.version, "1.4.0-alpha.3-dev.1");
     assert.equal(manifest.version, pkg.version);
+    assert.equal(stableSourcePackage.version, "1.3.0");
+    assert.equal(stableSourceManifest.version, stableSourcePackage.version);
+});
+
+test("feature CI validates the exact branch identity without a stable-version hardcode", () => {
+    assert.match(pluginCiWorkflow, /const sourcePackage = JSON\.parse/);
+    assert.match(pluginCiWorkflow, /const pluginManifest = JSON\.parse/);
+    assert.match(
+        pluginCiWorkflow,
+        /result\[0\]\.name !== sourcePackage\.name/,
+    );
+    assert.match(
+        pluginCiWorkflow,
+        /result\[0\]\.version !== sourcePackage\.version/,
+    );
+    assert.match(
+        pluginCiWorkflow,
+        /pluginManifest\.version !== sourcePackage\.version/,
+    );
+    assert.doesNotMatch(
+        pluginCiWorkflow,
+        /result\[0\]\.version !== "1\.3\.0"/,
+    );
 });
 
 test("immutable Beta.1 workflow remains pinned and validation-only", () => {
@@ -231,7 +278,7 @@ test("stable promotion records fresh PR CI and latest dry-run evidence before pu
         stableReleaseGate.schema_version,
         "noderooms-stable-release-gate-v1",
     );
-    assert.equal(stableReleaseGate.candidate.version, pkg.version);
+    assert.equal(stableReleaseGate.candidate.version, stableSourcePackage.version);
     assert.equal(
         stableReleaseGate.promotion.predecessor_version,
         "1.3.0-beta.2",
@@ -516,6 +563,68 @@ test("Phase 4C Draft PR proof remains pure, signed, isolated, and non-live", () 
     assert.doesNotMatch(githubDraftPrE2E, /\.runTask\(/);
     assert.doesNotMatch(githubDraftPrE2E, /\.resume\(/);
     assert.doesNotMatch(githubDraftPrE2E, /child_process/);
+});
+
+test("C001 Connector Beta foundation is packaged but disconnected and non-live", () => {
+    assert.doesNotMatch(index, /connector-beta-foundation/);
+    assert.doesNotMatch(index, /buildConnectorBetaFoundationV1/);
+    assert.match(
+        connectorBetaFoundation,
+        /CONNECTOR_BETA_DEVELOPMENT_IDENTITY =\s*"1\.4\.0-alpha\.1-dev\.1"/,
+    );
+    assert.match(
+        connectorBetaFoundation,
+        /CONNECTOR_BETA_LIVE_CONNECTOR_USE_ALLOWED = false/,
+    );
+    assert.doesNotMatch(connectorBetaFoundation, /\bfetch\(/);
+    assert.doesNotMatch(connectorBetaFoundation, /"tools\.invoke"/);
+    assert.doesNotMatch(connectorBetaFoundation, /"tools\.catalog"/);
+    assert.doesNotMatch(connectorBetaFoundation, /\.runTask\(/);
+    assert.doesNotMatch(connectorBetaFoundation, /\.resume\(/);
+    assert.doesNotMatch(connectorBetaFoundation, /child_process/);
+});
+
+test("C002 Email Read + Draft profile is packaged but disconnected and non-live", () => {
+    assert.doesNotMatch(index, /email-read-draft-profile/);
+    assert.doesNotMatch(index, /buildEmailReadDraftProfileV1/);
+    assert.match(
+        emailReadDraftProfile,
+        /EMAIL_READ_DRAFT_DEVELOPMENT_IDENTITY =\s*"1\.4\.0-alpha\.2-dev\.1"/,
+    );
+    assert.match(
+        emailReadDraftProfile,
+        /EMAIL_READ_DRAFT_LIVE_USE_ALLOWED = false/,
+    );
+    assert.match(
+        emailReadDraftProfile,
+        /external_validation_pending/,
+    );
+    assert.doesNotMatch(emailReadDraftProfile, /\bfetch\(/);
+    assert.doesNotMatch(emailReadDraftProfile, /"tools\.invoke"/);
+    assert.doesNotMatch(emailReadDraftProfile, /"tools\.catalog"/);
+    assert.doesNotMatch(emailReadDraftProfile, /\.runTask\(/);
+    assert.doesNotMatch(emailReadDraftProfile, /\.resume\(/);
+    assert.doesNotMatch(emailReadDraftProfile, /child_process/);
+});
+
+test("C003 Passport Messaging profile is packaged but disconnected and non-live", () => {
+    assert.doesNotMatch(index, /passport-messaging-profile/);
+    assert.doesNotMatch(index, /buildPassportMessagingProfileV1/);
+    assert.match(
+        passportMessagingProfile,
+        /PASSPORT_MESSAGING_DEVELOPMENT_IDENTITY =\s*"1\.4\.0-alpha\.3-dev\.1"/,
+    );
+    assert.match(
+        passportMessagingProfile,
+        /PASSPORT_MESSAGING_LIVE_USE_ALLOWED = false/,
+    );
+    assert.match(passportMessagingProfile, /external_validation_pending/);
+    assert.doesNotMatch(passportMessagingProfile, /\bfetch\(/);
+    assert.doesNotMatch(passportMessagingProfile, /tools\.invoke/);
+    assert.doesNotMatch(passportMessagingProfile, /runMessageAction/);
+    assert.doesNotMatch(passportMessagingProfile, /\.runTask\(/);
+    assert.doesNotMatch(passportMessagingProfile, /\.resume\(/);
+    assert.doesNotMatch(passportMessagingProfile, /child_process/);
 });
 
 test("Phase 4 owner inventory commands are present and Owner-gated", () => {

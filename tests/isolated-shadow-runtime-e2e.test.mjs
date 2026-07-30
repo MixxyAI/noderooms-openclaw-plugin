@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -11,6 +12,10 @@ const pluginRoot = path.resolve(
     path.dirname(fileURLToPath(import.meta.url)),
     "..",
 );
+const packageJson = JSON.parse(await readFile(
+    path.join(pluginRoot, "package.json"),
+    "utf8",
+));
 
 let proofPromise;
 function proof() {
@@ -26,7 +31,7 @@ test("003C pins and loads the exact supported OpenClaw host", async () => {
         "noderooms-phase3c-isolated-shadow-runtime-e2e-v1",
     );
     assert.equal(result.host.openclaw_version, "2026.7.1-2");
-    assert.equal(result.host.plugin_version, "1.3.0");
+    assert.equal(result.host.plugin_version, packageJson.version);
     assert.equal(result.host.exact_host_version_pinned, true);
 });
 

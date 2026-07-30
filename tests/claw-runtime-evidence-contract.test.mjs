@@ -26,6 +26,10 @@ const unknownOutcomeFixture = await readJson(
 );
 const packageJson = await readJson("package.json");
 const manifest = await readJson("openclaw.plugin.json");
+const stablePackageJson = await readJson("release-source/1.3.0/package.json");
+const stableManifest = await readJson(
+    "release-source/1.3.0/openclaw.plugin.json",
+);
 const pluginIndex = await readText("src/index.js");
 const strategicSupplement = await readText(
     "docs/strategy/NODEROOMS_TRUSTBRIDGE_ALPHA2_COMPETITIVE_POSITION_20260730_HU.md",
@@ -831,8 +835,10 @@ test("005A remains outside the published 1.3.0 package and live entry point", ()
         "docs/SOURCE_PROVENANCE.md",
         "tests/claw-runtime-evidence-contract.test.mjs",
     ];
-    assert.equal(packageJson.version, "1.3.0");
-    assert.equal(manifest.version, "1.3.0");
+    assert.equal(stablePackageJson.version, "1.3.0");
+    assert.equal(stableManifest.version, "1.3.0");
+    assert.deepEqual(packageJson.files, stablePackageJson.files);
+    assert.equal(packageJson.version, manifest.version);
     assert.equal(manifest.contracts.tools.length, 14);
     assert.equal(
         manifest.configSchema.properties.trustLayer.properties.mode.default,
