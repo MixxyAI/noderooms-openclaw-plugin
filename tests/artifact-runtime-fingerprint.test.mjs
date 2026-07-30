@@ -139,6 +139,38 @@ test("canonical 005B fixture is byte-stable and schema-valid", async () => {
     );
 });
 
+test("origin URI validation mirrors the schema and fails closed", async () => {
+    const prefix = "https://example.invalid/";
+    const maximumLengthOrigin = `${prefix}${"a".repeat(512 - prefix.length)}`;
+    assert.equal(maximumLengthOrigin.length, 512);
+    const maximumLengthResult = await buildArtifactRuntimeFingerprintResult(
+        fixtureConfig({ origin_uri: maximumLengthOrigin }),
+    );
+    assert.equal(Value.Check(schema, maximumLengthResult), true);
+
+    const invalidOrigins = [
+        ["non-string URL object", new URL(`${prefix}path`)],
+        ["uppercase scheme", "HTTPS://example.invalid/path"],
+        ["surrounding whitespace", ` ${prefix}path `],
+        ["missing authority slashes", "https:example.invalid/path"],
+        ["backslash", "https://example.invalid\\path"],
+        ["over schema length", `${prefix}${"a".repeat(513 - prefix.length)}`],
+        ["invalid percent escape", `${prefix}%zz`],
+        ["RFC 3986 forbidden character", `${prefix}|x`],
+        ["trailing control character", `${prefix}path\n`],
+    ];
+    for (const [label, origin_uri] of invalidOrigins) {
+        await assert.rejects(
+            () => buildArtifactRuntimeFingerprintResult(
+                fixtureConfig({ origin_uri }),
+            ),
+            (error) => error instanceof ArtifactRuntimeFingerprintError
+                && error.code === "UNSAFE_ORIGIN_URI",
+            label,
+        );
+    }
+});
+
 test("directory manifest is sorted by UTF-8 bytes and binds exact raw files", async () => {
     const result = await fingerprintDirectory(fixturePackageRoot);
     const paths = result.manifest.entries.map((entry) => entry.path);

@@ -15,6 +15,7 @@ import {
     sep,
 } from "node:path";
 import { pathToFileURL } from "node:url";
+import { IsUri } from "typebox/format";
 
 import {
     canonicalJson,
@@ -36,6 +37,7 @@ const PACKAGE_NAME_PATTERN = /^[A-Za-z0-9@][A-Za-z0-9._@/-]{0,213}$/;
 const VERSION_PATTERN = /^[A-Za-z0-9][A-Za-z0-9.+_-]{0,79}$/;
 const SAFE_IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:@/-]{0,159}$/;
 const COMMIT_SHA_PATTERN = /^[a-f0-9]{40}$/;
+const HTTPS_URI_WITHOUT_QUERY_PATTERN = /^https:\/\/[^?#]+$/;
 const WINDOWS_RESERVED_NAME_PATTERN =
     /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?$/i;
 const SENSITIVE_FIELD_PATTERN =
@@ -71,6 +73,7 @@ const MAX_FILE_BYTES = 2_147_483_648;
 const MAX_PACKAGE_JSON_BYTES = 1_048_576;
 const MAX_RELATIVE_PATH_BYTES = 512;
 const MAX_PATH_SEGMENT_BYTES = 120;
+const MAX_ORIGIN_URI_LENGTH = 512;
 const READ_FLAGS = fsConstants.O_RDONLY
     | (Number.isInteger(fsConstants.O_NOFOLLOW) ? fsConstants.O_NOFOLLOW : 0);
 
@@ -126,6 +129,15 @@ function assertIntegerRange(value, minimum, maximum, code, label) {
 }
 
 function assertSafeHttpsUrl(value, label) {
+    if (typeof value !== "string"
+        || value.length > MAX_ORIGIN_URI_LENGTH
+        || !HTTPS_URI_WITHOUT_QUERY_PATTERN.test(value)
+        || !IsUri(value)) {
+        fail(
+            "UNSAFE_ORIGIN_URI",
+            `${label} must match the schema HTTPS URI profile.`,
+        );
+    }
     let parsed;
     try {
         parsed = new URL(value);
