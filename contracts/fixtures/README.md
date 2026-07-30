@@ -157,3 +157,41 @@ The checkpoint proves monotonic, restart-safe comparison metadata without
 storing a schema, signature, raw parameter, result, or credential. Exact
 replay is idempotent; rollback, equivocation, sequence gaps, invalid
 predecessors, and checkpoint drift fail closed.
+
+`NR-OC-TRUSTBRIDGE-005A` adds:
+
+```text
+claw-runtime-evidence.readonly-pass-v0.1.json
+claw-runtime-evidence.revoked-v0.1.json
+claw-runtime-evidence.unknown-outcome-v0.1.json
+```
+
+The positive fixture binds fictional exact archive bytes and a normalized
+directory fingerprint to one fictional exact OpenClaw runtime and pseudonymous
+Agent, Passport, Owner, Gateway, runtime, key, and sanitized-config
+fingerprints. It contains no raw identity, credential, prompt, tool argument,
+tool result, provider response, local path, or private key.
+
+All required read-only checks pass and every side-effect counter is zero. The
+fixture still states:
+
+```text
+authority_status=evidence_only_no_authority
+live_enforce_allowed=false
+absolute_safety_claimed=false
+exactly_once_effect_claimed=false
+execution_authority_granted=false
+```
+
+The revoked fixture is intentionally invalid because it marks revoked evidence
+as active. The unknown-outcome fixture is intentionally invalid because
+`unknown` is not a permitted completed check outcome. Both are negative
+fail-closed test vectors, not examples for acceptance.
+
+Fixture attestation remains `not_run`. A non-fixture record requires an
+Ed25519 signature and a separate external trust-anchor reference; the evidence
+record cannot establish trust by embedding its own public key.
+
+These fixtures do not assess the published NodeRooms `1.3.0` artifact, install
+or block any artifact, change an OpenClaw configuration, start a Gateway, call
+production, write to a provider, or publish to ClawHub or npm.
