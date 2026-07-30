@@ -1,0 +1,1056 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://noderooms.com/contracts/claw-runtime-evidence-v0.1.schema.json",
+  "title": "NodeRooms Claw Runtime Evidence v0.1",
+  "description": "A public-safe, evidence-only contract binding an exact Claw artifact to an exact runtime, optional Owner-bound authority references, bounded check outcomes, lifecycle status, and an external trust-anchor reference. This contract grants no execution authority and makes no absolute safety or exactly-once claim.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "$schema",
+    "contract_version",
+    "fixture",
+    "evidence_id",
+    "evidence_profile",
+    "authority_status",
+    "live_enforce_allowed",
+    "schema_binding",
+    "artifact_binding",
+    "runtime_binding",
+    "claims",
+    "assessment",
+    "zero_side_effects",
+    "lifecycle",
+    "evidence_fingerprint_sha256",
+    "attestation"
+  ],
+  "properties": {
+    "$schema": {
+      "const": "https://noderooms.com/contracts/claw-runtime-evidence-v0.1.schema.json"
+    },
+    "contract_version": {
+      "const": "claw-runtime-evidence.v0.1"
+    },
+    "fixture": {
+      "type": "boolean"
+    },
+    "evidence_id": {
+      "$ref": "#/$defs/evidenceId"
+    },
+    "evidence_profile": {
+      "enum": [
+        "artifact_runtime_assessment",
+        "owner_bound_read_only_observation",
+        "owner_approved_external_action_outcome"
+      ]
+    },
+    "authority_status": {
+      "const": "evidence_only_no_authority"
+    },
+    "live_enforce_allowed": {
+      "const": false
+    },
+    "schema_binding": {
+      "$ref": "#/$defs/schemaBinding"
+    },
+    "artifact_binding": {
+      "$ref": "#/$defs/artifactBinding"
+    },
+    "runtime_binding": {
+      "$ref": "#/$defs/runtimeBinding"
+    },
+    "authority_binding": {
+      "$ref": "#/$defs/authorityBinding"
+    },
+    "claims": {
+      "$ref": "#/$defs/claims"
+    },
+    "assessment": {
+      "$ref": "#/$defs/assessment"
+    },
+    "zero_side_effects": {
+      "$ref": "#/$defs/sideEffectCounters"
+    },
+    "lifecycle": {
+      "$ref": "#/$defs/lifecycle"
+    },
+    "evidence_fingerprint_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "attestation": {
+      "$ref": "#/$defs/attestation"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "evidence_profile": {
+            "const": "owner_bound_read_only_observation"
+          }
+        },
+        "required": [
+          "evidence_profile"
+        ]
+      },
+      "then": {
+        "required": [
+          "authority_binding"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence_profile": {
+            "const": "owner_approved_external_action_outcome"
+          }
+        },
+        "required": [
+          "evidence_profile"
+        ]
+      },
+      "then": {
+        "required": [
+          "authority_binding"
+        ],
+        "properties": {
+          "authority_binding": {
+            "required": [
+              "noderooms_agent_fingerprint_sha256",
+              "passport_fingerprint_sha256",
+              "owner_fingerprint_sha256",
+              "runtime_binding_record_fingerprint_sha256",
+              "capability_request_fingerprint_sha256",
+              "owner_decision_fingerprint_sha256",
+              "run_lease_fingerprint_sha256",
+              "external_action_intent_fingerprint_sha256",
+              "external_action_receipt_fingerprint_sha256",
+              "owner_decision_automated",
+              "shared_run_secret_allowed",
+              "shared_lease_allowed",
+              "live_lease_used",
+              "lease_state_at_observation"
+            ],
+            "properties": {
+              "owner_decision_automated": {
+                "const": false
+              },
+              "shared_run_secret_allowed": {
+                "const": false
+              },
+              "shared_lease_allowed": {
+                "const": false
+              },
+              "live_lease_used": {
+                "const": true
+              },
+              "lease_state_at_observation": {
+                "const": "active"
+              }
+            }
+          },
+          "zero_side_effects": {
+            "properties": {
+              "PROVIDER_WRITES": {
+                "maximum": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "evidence_profile": {
+            "enum": [
+              "artifact_runtime_assessment",
+              "owner_bound_read_only_observation"
+            ]
+          }
+        },
+        "required": [
+          "evidence_profile"
+        ]
+      },
+      "then": {
+        "properties": {
+          "zero_side_effects": {
+            "properties": {
+              "NODE_ROOMS_PRODUCTION_NETWORK_CALLS": {
+                "const": 0
+              },
+              "PUBLIC_WRITES": {
+                "const": 0
+              },
+              "PROVIDER_WRITES": {
+                "const": 0
+              },
+              "OWNER_COMMANDS": {
+                "const": 0
+              },
+              "LIVE_LEASE_REQUESTS": {
+                "const": 0
+              },
+              "GATEWAY_STARTS": {
+                "const": 0
+              },
+              "GATEWAY_RESTARTS": {
+                "const": 0
+              },
+              "CLAWHUB_PUBLISH_ATTEMPTS": {
+                "const": 0
+              },
+              "NPM_PUBLISH_ATTEMPTS": {
+                "const": 0
+              },
+              "OPENCLAW_CONFIG_WRITES": {
+                "const": 0
+              },
+              "ARTIFACT_INSTALL_ATTEMPTS": {
+                "const": 0
+              },
+              "ARTIFACT_BLOCK_ATTEMPTS": {
+                "const": 0
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "fixture": {
+            "const": false
+          }
+        },
+        "required": [
+          "fixture"
+        ]
+      },
+      "then": {
+        "properties": {
+          "attestation": {
+            "$ref": "#/$defs/signedAttestation"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "evidenceId": {
+      "type": "string",
+      "pattern": "^nrevd_[a-f0-9]{32}$"
+    },
+    "statusRecordId": {
+      "type": "string",
+      "pattern": "^nrevstatus_[a-f0-9]{32}$"
+    },
+    "anchorId": {
+      "type": "string",
+      "pattern": "^nranchor_[a-f0-9]{32}$"
+    },
+    "safeIdentifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:@/-]*$"
+    },
+    "packageName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 214,
+      "pattern": "^[A-Za-z0-9@][A-Za-z0-9._@/-]*$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9.+_-]*$"
+    },
+    "checkId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[a-z][a-z0-9._:-]*$"
+    },
+    "checkVersion": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+(?:\\.[0-9]+)?$"
+    },
+    "httpsUriWithoutQuery": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 512,
+      "pattern": "^https://[^?#]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "schemaBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "schema_fingerprint_sha256",
+        "fingerprint_profile",
+        "semantic_validation_profile"
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "https://noderooms.com/contracts/claw-runtime-evidence-v0.1.schema.json"
+        },
+        "schema_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "fingerprint_profile": {
+          "const": "raw-utf8-lf-sha256-v1"
+        },
+        "semantic_validation_profile": {
+          "const": "noderooms-claw-runtime-evidence-semantic-v0.1"
+        }
+      }
+    },
+    "archiveBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "format",
+        "sha256",
+        "size_bytes"
+      ],
+      "properties": {
+        "format": {
+          "enum": [
+            "npm_tgz",
+            "zip",
+            "tar",
+            "other_declared"
+          ]
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483648
+        }
+      }
+    },
+    "directoryBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "root_label",
+        "normalization_profile",
+        "tree_fingerprint_sha256",
+        "file_count"
+      ],
+      "properties": {
+        "root_label": {
+          "const": "package_root"
+        },
+        "normalization_profile": {
+          "$ref": "#/$defs/safeIdentifier"
+        },
+        "tree_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "file_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000
+        }
+      }
+    },
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "package_name",
+        "package_version",
+        "publisher_id",
+        "origin_uri"
+      ],
+      "properties": {
+        "package_name": {
+          "$ref": "#/$defs/packageName"
+        },
+        "package_version": {
+          "$ref": "#/$defs/version"
+        },
+        "publisher_id": {
+          "$ref": "#/$defs/safeIdentifier"
+        },
+        "origin_uri": {
+          "$ref": "#/$defs/httpsUriWithoutQuery"
+        },
+        "archive": {
+          "$ref": "#/$defs/archiveBinding"
+        },
+        "directory": {
+          "$ref": "#/$defs/directoryBinding"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "archive"
+          ]
+        },
+        {
+          "required": [
+            "directory"
+          ]
+        }
+      ]
+    },
+    "runtimeBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "openclaw_version",
+        "openclaw_plugin_api_fingerprint_sha256",
+        "plugin_package_name",
+        "plugin_package_version",
+        "gateway_fingerprint_sha256",
+        "runtime_instance_fingerprint_sha256",
+        "openclaw_agent_fingerprint_sha256",
+        "runtime_key_thumbprint_sha256",
+        "sanitized_config_fingerprint_sha256",
+        "environment_class"
+      ],
+      "properties": {
+        "openclaw_version": {
+          "$ref": "#/$defs/version"
+        },
+        "openclaw_plugin_api_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "plugin_package_name": {
+          "$ref": "#/$defs/packageName"
+        },
+        "plugin_package_version": {
+          "$ref": "#/$defs/version"
+        },
+        "gateway_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "runtime_instance_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "openclaw_agent_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "runtime_key_thumbprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "sanitized_config_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "environment_class": {
+          "$ref": "#/$defs/safeIdentifier"
+        },
+        "source_commit_sha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        }
+      }
+    },
+    "authorityBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "noderooms_agent_fingerprint_sha256",
+        "passport_fingerprint_sha256",
+        "owner_fingerprint_sha256",
+        "runtime_binding_record_fingerprint_sha256",
+        "owner_decision_automated",
+        "shared_run_secret_allowed",
+        "shared_lease_allowed",
+        "live_lease_used",
+        "lease_state_at_observation"
+      ],
+      "properties": {
+        "noderooms_agent_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "passport_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "owner_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "runtime_binding_record_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "capability_request_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "owner_decision_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "run_lease_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "external_action_intent_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "external_action_receipt_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "owner_decision_automated": {
+          "const": false
+        },
+        "shared_run_secret_allowed": {
+          "const": false
+        },
+        "shared_lease_allowed": {
+          "const": false
+        },
+        "live_lease_used": {
+          "type": "boolean"
+        },
+        "lease_state_at_observation": {
+          "enum": [
+            "not_present",
+            "active",
+            "expired",
+            "revoked",
+            "exhausted"
+          ]
+        }
+      }
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_available",
+        "absolute_safety_claimed",
+        "exactly_once_effect_claimed",
+        "execution_authority_granted",
+        "reputation_score_generated",
+        "owner_decision_automated"
+      ],
+      "properties": {
+        "evidence_available": {
+          "const": true
+        },
+        "absolute_safety_claimed": {
+          "const": false
+        },
+        "exactly_once_effect_claimed": {
+          "const": false
+        },
+        "execution_authority_granted": {
+          "const": false
+        },
+        "reputation_score_generated": {
+          "const": false
+        },
+        "owner_decision_automated": {
+          "const": false
+        }
+      }
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check_id",
+        "check_version",
+        "required",
+        "completed",
+        "outcome",
+        "source",
+        "side_effect_class"
+      ],
+      "properties": {
+        "check_id": {
+          "$ref": "#/$defs/checkId"
+        },
+        "check_version": {
+          "$ref": "#/$defs/checkVersion"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "completed": {
+          "type": "boolean"
+        },
+        "outcome": {
+          "enum": [
+            "pass",
+            "fail",
+            "inconclusive",
+            "not_run"
+          ]
+        },
+        "source": {
+          "enum": [
+            "artifact_bytes",
+            "normalized_directory",
+            "runtime_observation",
+            "authority_chain",
+            "receipt_projection",
+            "lifecycle_status"
+          ]
+        },
+        "side_effect_class": {
+          "enum": [
+            "none",
+            "local_read",
+            "external_read",
+            "external_write"
+          ]
+        },
+        "observed_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "evidence_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "evidence_uri": {
+          "$ref": "#/$defs/httpsUriWithoutQuery"
+        },
+        "result_code": {
+          "$ref": "#/$defs/safeIdentifier"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "not_run"
+              }
+            },
+            "required": [
+              "outcome"
+            ]
+          },
+          "then": {
+            "properties": {
+              "completed": {
+                "const": false
+              }
+            }
+          },
+          "else": {
+            "required": [
+              "observed_at",
+              "evidence_fingerprint_sha256"
+            ],
+            "properties": {
+              "completed": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "assessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "outcome",
+        "completed",
+        "required_check_count",
+        "completed_required_check_count",
+        "passed_required_check_count",
+        "failed_required_check_count",
+        "inconclusive_required_check_count",
+        "not_run_required_check_count",
+        "checks"
+      ],
+      "properties": {
+        "outcome": {
+          "enum": [
+            "pass",
+            "fail",
+            "inconclusive"
+          ]
+        },
+        "completed": {
+          "type": "boolean"
+        },
+        "required_check_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 256
+        },
+        "completed_required_check_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 256
+        },
+        "passed_required_check_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 256
+        },
+        "failed_required_check_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 256
+        },
+        "inconclusive_required_check_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 256
+        },
+        "not_run_required_check_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 256
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 256,
+          "items": {
+            "$ref": "#/$defs/check"
+          }
+        }
+      }
+    },
+    "sideEffectCounters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "NODE_ROOMS_PRODUCTION_NETWORK_CALLS",
+        "PUBLIC_WRITES",
+        "PROVIDER_WRITES",
+        "OWNER_COMMANDS",
+        "LIVE_LEASE_REQUESTS",
+        "GATEWAY_STARTS",
+        "GATEWAY_RESTARTS",
+        "CLAWHUB_PUBLISH_ATTEMPTS",
+        "NPM_PUBLISH_ATTEMPTS",
+        "OPENCLAW_CONFIG_WRITES",
+        "ARTIFACT_INSTALL_ATTEMPTS",
+        "ARTIFACT_BLOCK_ATTEMPTS"
+      ],
+      "properties": {
+        "NODE_ROOMS_PRODUCTION_NETWORK_CALLS": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "PUBLIC_WRITES": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "PROVIDER_WRITES": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "OWNER_COMMANDS": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "LIVE_LEASE_REQUESTS": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "GATEWAY_STARTS": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "GATEWAY_RESTARTS": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "CLAWHUB_PUBLISH_ATTEMPTS": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "NPM_PUBLISH_ATTEMPTS": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "OPENCLAW_CONFIG_WRITES": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ARTIFACT_INSTALL_ATTEMPTS": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ARTIFACT_BLOCK_ATTEMPTS": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issued_at",
+        "expires_at",
+        "status_checked_at",
+        "current_status",
+        "active",
+        "status_model",
+        "status_record_id",
+        "status_record_uri",
+        "status_record_fingerprint_sha256"
+      ],
+      "properties": {
+        "issued_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "expires_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "status_checked_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "current_status": {
+          "enum": [
+            "active",
+            "revoked",
+            "superseded",
+            "expired",
+            "unknown_offline"
+          ]
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "status_model": {
+          "const": "external_signed_status_record"
+        },
+        "status_record_id": {
+          "$ref": "#/$defs/statusRecordId"
+        },
+        "status_record_uri": {
+          "$ref": "#/$defs/httpsUriWithoutQuery"
+        },
+        "status_record_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "revoked_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "superseded_by_evidence_id": {
+          "$ref": "#/$defs/evidenceId"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "current_status": {
+                "const": "active"
+              }
+            },
+            "required": [
+              "current_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "active": {
+                "const": true
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "active": {
+                "const": false
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "current_status": {
+                "const": "revoked"
+              }
+            },
+            "required": [
+              "current_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "revoked_at"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "current_status": {
+                "const": "superseded"
+              }
+            },
+            "required": [
+              "current_status"
+            ]
+          },
+          "then": {
+            "required": [
+              "superseded_by_evidence_id"
+            ]
+          }
+        }
+      ]
+    },
+    "externalTrustAnchorReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "anchor_id",
+        "anchor_uri",
+        "anchor_fingerprint_sha256"
+      ],
+      "properties": {
+        "anchor_id": {
+          "$ref": "#/$defs/anchorId"
+        },
+        "anchor_uri": {
+          "$ref": "#/$defs/httpsUriWithoutQuery"
+        },
+        "anchor_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "unsignedAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attestation_status",
+        "external_trust_anchor_required",
+        "reason_code"
+      ],
+      "properties": {
+        "attestation_status": {
+          "const": "not_run"
+        },
+        "external_trust_anchor_required": {
+          "const": true
+        },
+        "reason_code": {
+          "enum": [
+            "contract_fixture",
+            "verifier_not_run"
+          ]
+        }
+      }
+    },
+    "signedAttestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attestation_status",
+        "external_trust_anchor_required",
+        "algorithm",
+        "signature_profile",
+        "key_id",
+        "key_thumbprint_sha256",
+        "signed_evidence_fingerprint_sha256",
+        "signed_at",
+        "signature_base64url",
+        "external_trust_anchor"
+      ],
+      "properties": {
+        "attestation_status": {
+          "const": "signed"
+        },
+        "external_trust_anchor_required": {
+          "const": true
+        },
+        "algorithm": {
+          "const": "Ed25519"
+        },
+        "signature_profile": {
+          "const": "claw-runtime-evidence-signature-v0.1"
+        },
+        "key_id": {
+          "$ref": "#/$defs/safeIdentifier"
+        },
+        "key_thumbprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "signed_evidence_fingerprint_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "signed_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "signature_base64url": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        },
+        "external_trust_anchor": {
+          "$ref": "#/$defs/externalTrustAnchorReference"
+        }
+      }
+    },
+    "attestation": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/unsignedAttestation"
+        },
+        {
+          "$ref": "#/$defs/signedAttestation"
+        }
+      ]
+    }
+  },
+  "x-noderooms-contract": {
+    "authority_granted": false,
+    "live_enforce_allowed": false,
+    "absolute_safety_claimed": false,
+    "exactly_once_effect_claimed": false,
+    "external_trust_anchor_required": true,
+    "max_document_bytes": 262144,
+    "max_nesting_depth": 24,
+    "semantic_validation_profile": "noderooms-claw-runtime-evidence-semantic-v0.1",
+    "semantic_error_codes": [
+      "EVIDENCE_UNKNOWN_FIELD",
+      "EVIDENCE_REQUIRED_FIELD_MISSING",
+      "EVIDENCE_TYPE_INVALID",
+      "EVIDENCE_CONTRACT_VERSION_INVALID",
+      "EVIDENCE_ID_INVALID",
+      "EVIDENCE_PROFILE_INVALID",
+      "EVIDENCE_HASH_INVALID",
+      "EVIDENCE_WILDCARD_REJECTED",
+      "EVIDENCE_TIMESTAMP_INVALID",
+      "EVIDENCE_TIME_ORDER_INVALID",
+      "EVIDENCE_LIFECYCLE_CONFLICT",
+      "EVIDENCE_SUPERSEDE_CYCLE",
+      "EVIDENCE_DUPLICATE_CHECK",
+      "EVIDENCE_REQUIRED_CHECK_NOT_RUN",
+      "EVIDENCE_CHECK_OUTCOME_INVALID",
+      "EVIDENCE_CHECK_STATE_INVALID",
+      "EVIDENCE_PRIVATE_KEY_EMBEDDED",
+      "EVIDENCE_SENSITIVE_FIELD",
+      "EVIDENCE_URL_UNSAFE",
+      "EVIDENCE_ARTIFACT_RUNTIME_MISMATCH",
+      "EVIDENCE_AUTHORITY_BINDING_REQUIRED",
+      "EVIDENCE_CLAIM_INVALID",
+      "EVIDENCE_SIDE_EFFECT_GATE_FAILED",
+      "EVIDENCE_ATTESTATION_INVALID",
+      "EVIDENCE_AGGREGATE_MISMATCH",
+      "EVIDENCE_SCHEMA_FINGERPRINT_MISMATCH",
+      "EVIDENCE_FINGERPRINT_MISMATCH",
+      "EVIDENCE_DOCUMENT_TOO_LARGE",
+      "EVIDENCE_NESTING_TOO_DEEP"
+    ]
+  }
+}

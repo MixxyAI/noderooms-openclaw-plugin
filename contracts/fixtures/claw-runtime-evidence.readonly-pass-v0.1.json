@@ -1,0 +1,142 @@
+{
+  "$schema": "https://noderooms.com/contracts/claw-runtime-evidence-v0.1.schema.json",
+  "contract_version": "claw-runtime-evidence.v0.1",
+  "fixture": true,
+  "evidence_id": "nrevd_11111111111111111111111111111111",
+  "evidence_profile": "owner_bound_read_only_observation",
+  "authority_status": "evidence_only_no_authority",
+  "live_enforce_allowed": false,
+  "schema_binding": {
+    "schema_id": "https://noderooms.com/contracts/claw-runtime-evidence-v0.1.schema.json",
+    "schema_fingerprint_sha256": "sha256:575639855990dad4e8a7d20457e3cd52b7a2266f15b8bef04a4d2862f0416634",
+    "fingerprint_profile": "raw-utf8-lf-sha256-v1",
+    "semantic_validation_profile": "noderooms-claw-runtime-evidence-semantic-v0.1"
+  },
+  "artifact_binding": {
+    "package_name": "@example/claw-fixture",
+    "package_version": "0.0.0-fixture",
+    "publisher_id": "example-fixture-publisher",
+    "origin_uri": "https://example.invalid/registry/claw-fixture",
+    "archive": {
+      "format": "npm_tgz",
+      "sha256": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "size_bytes": 4096
+    },
+    "directory": {
+      "root_label": "package_root",
+      "normalization_profile": "fixture-directory-profile-v0.1",
+      "tree_fingerprint_sha256": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "file_count": 12
+    }
+  },
+  "runtime_binding": {
+    "openclaw_version": "2026.7.1-2",
+    "openclaw_plugin_api_fingerprint_sha256": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "plugin_package_name": "@example/claw-fixture",
+    "plugin_package_version": "0.0.0-fixture",
+    "gateway_fingerprint_sha256": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "runtime_instance_fingerprint_sha256": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "openclaw_agent_fingerprint_sha256": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "runtime_key_thumbprint_sha256": "sha256:0000000000000000000000000000000000000000000000000000000000000001",
+    "sanitized_config_fingerprint_sha256": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "environment_class": "linux-x64-node24-fixture"
+  },
+  "authority_binding": {
+    "noderooms_agent_fingerprint_sha256": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "passport_fingerprint_sha256": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+    "owner_fingerprint_sha256": "sha256:4444444444444444444444444444444444444444444444444444444444444444",
+    "runtime_binding_record_fingerprint_sha256": "sha256:5555555555555555555555555555555555555555555555555555555555555555",
+    "owner_decision_automated": false,
+    "shared_run_secret_allowed": false,
+    "shared_lease_allowed": false,
+    "live_lease_used": false,
+    "lease_state_at_observation": "not_present"
+  },
+  "claims": {
+    "evidence_available": true,
+    "absolute_safety_claimed": false,
+    "exactly_once_effect_claimed": false,
+    "execution_authority_granted": false,
+    "reputation_score_generated": false,
+    "owner_decision_automated": false
+  },
+  "assessment": {
+    "outcome": "pass",
+    "completed": true,
+    "required_check_count": 3,
+    "completed_required_check_count": 3,
+    "passed_required_check_count": 3,
+    "failed_required_check_count": 0,
+    "inconclusive_required_check_count": 0,
+    "not_run_required_check_count": 0,
+    "checks": [
+      {
+        "check_id": "artifact.archive.sha256",
+        "check_version": "v0.1",
+        "required": true,
+        "completed": true,
+        "outcome": "pass",
+        "source": "artifact_bytes",
+        "side_effect_class": "none",
+        "observed_at": "2026-07-30T08:10:00Z",
+        "evidence_fingerprint_sha256": "sha256:6666666666666666666666666666666666666666666666666666666666666666",
+        "result_code": "exact_archive_digest_match"
+      },
+      {
+        "check_id": "runtime.openclaw.compatibility",
+        "check_version": "v0.1",
+        "required": true,
+        "completed": true,
+        "outcome": "pass",
+        "source": "runtime_observation",
+        "side_effect_class": "local_read",
+        "observed_at": "2026-07-30T08:11:00Z",
+        "evidence_fingerprint_sha256": "sha256:7777777777777777777777777777777777777777777777777777777777777777",
+        "result_code": "exact_runtime_binding_match"
+      },
+      {
+        "check_id": "authority.owner.runtime-binding",
+        "check_version": "v0.1",
+        "required": true,
+        "completed": true,
+        "outcome": "pass",
+        "source": "authority_chain",
+        "side_effect_class": "none",
+        "observed_at": "2026-07-30T08:12:00Z",
+        "evidence_fingerprint_sha256": "sha256:8888888888888888888888888888888888888888888888888888888888888888",
+        "result_code": "owner_bound_runtime_reference_match"
+      }
+    ]
+  },
+  "zero_side_effects": {
+    "NODE_ROOMS_PRODUCTION_NETWORK_CALLS": 0,
+    "PUBLIC_WRITES": 0,
+    "PROVIDER_WRITES": 0,
+    "OWNER_COMMANDS": 0,
+    "LIVE_LEASE_REQUESTS": 0,
+    "GATEWAY_STARTS": 0,
+    "GATEWAY_RESTARTS": 0,
+    "CLAWHUB_PUBLISH_ATTEMPTS": 0,
+    "NPM_PUBLISH_ATTEMPTS": 0,
+    "OPENCLAW_CONFIG_WRITES": 0,
+    "ARTIFACT_INSTALL_ATTEMPTS": 0,
+    "ARTIFACT_BLOCK_ATTEMPTS": 0
+  },
+  "lifecycle": {
+    "issued_at": "2026-07-30T08:15:00Z",
+    "expires_at": "2026-08-01T08:15:00Z",
+    "status_checked_at": "2026-07-30T08:15:00Z",
+    "current_status": "active",
+    "active": true,
+    "status_model": "external_signed_status_record",
+    "status_record_id": "nrevstatus_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status_record_uri": "https://example.invalid/evidence/status/nrevstatus_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status_record_fingerprint_sha256": "sha256:9999999999999999999999999999999999999999999999999999999999999999"
+  },
+  "evidence_fingerprint_sha256": "sha256:fdeb8a23a97c29b8fc706255c6b33097645546cf8100aa800f425ddae3994bbe",
+  "attestation": {
+    "attestation_status": "not_run",
+    "external_trust_anchor_required": true,
+    "reason_code": "contract_fixture"
+  }
+}
