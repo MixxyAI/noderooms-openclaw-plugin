@@ -195,3 +195,44 @@ record cannot establish trust by embedding its own public key.
 These fixtures do not assess the published NodeRooms `1.3.0` artifact, install
 or block any artifact, change an OpenClaw configuration, start a Gateway, call
 production, write to a provider, or publish to ClawHub or npm.
+
+`NR-OC-TRUSTBRIDGE-005B` adds:
+
+```text
+artifact-runtime-fingerprint-v1/package/
+artifact-runtime-fingerprint-v1/runtime-observation.json
+artifact-runtime-fingerprint-v1/expected-result.json
+```
+
+The fictional four-file package tree freezes the final
+`noderooms-portable-directory-tree-sha256-v1` vector. Its normalized tree
+fingerprint is:
+
+```text
+sha256:9c45a6821f4b0b47dbf26024baa3cd4d301127c9ede974c668c267323d8fb2a0
+```
+
+The runtime observation contains fictional fingerprints only. It binds the
+fixture artifact to exact OpenClaw, Node, Gateway, Agent, runtime-key, and
+sanitized-config observations without exposing any raw identity or
+configuration. The expected runtime-instance fingerprint is:
+
+```text
+sha256:bd1fee1c2da451cb651875e7e302694257690c7f9e37591b2e6430741644ab15
+```
+
+The complete result fingerprint is:
+
+```text
+sha256:2c20f0d28accf9bf965fcff38dce7bfb892cbd2277bff188bb0d8f8c13eb5607
+```
+
+The directory profile rejects symlinks, traversal, non-portable paths, and
+ASCII case collisions. It hashes raw file bytes, so line-ending changes are
+visible. Permission bits, ownership, timestamps, xattrs, ACLs, hardlink
+identity, and archive metadata are explicitly outside the directory claim.
+
+The fixture has no archive, so
+`archive_bytes_exactly_hashed=false`. Even when a separately supplied archive
+is hashed, `archive_directory_correspondence_proven` remains false. The engine
+does not install, extract, execute, approve, or block an artifact.
