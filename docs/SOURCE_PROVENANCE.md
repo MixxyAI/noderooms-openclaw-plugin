@@ -375,3 +375,203 @@ release-source/1.3.0        tree: 9561e93d46b4cdf3a2d7e7d6f8e33780bc97bd80
 C001 does not modify any release-source directory or publication workflow.
 The public tool count remains 14, trust and work runtime defaults remain
 `off`, and Universal Connector live enforcement remains prohibited.
+
+## TrustBridge Alpha2 005A development base
+
+The contract-only Alpha2 development lane starts from exact `main` commit:
+
+```text
+cda19d39ffdf0a05d111ff156bd1448f8a55588d
+```
+
+That commit is the merge of pull request #16 and the exact stable `1.3.0`
+promotion state. Before the 005A branch was created, a detached read-only
+preflight verified:
+
+```text
+origin/main match: yes
+working tree clean: yes
+open pull requests: 0
+immutable Beta.1 source: verified
+immutable Beta.2 source: verified
+immutable stable 1.3.0 source: verified
+build: pass
+tests: 266 total / 265 pass / 0 fail / 1 intentional PHP skip
+public tools: 14
+trustLayer default: off
+workRuntime default: off
+live enforce: false
+```
+
+The immutable reproducible package SHA-256 values at that base are:
+
+```text
+1.3.0-beta.1  27f9fa2a5d4f3af9ed5aa984d6c8b260c9298f0292749fa698839c70e256ea27
+1.3.0-beta.2  909016696cbcc9931c535b05f77b644bc55e792432a8a611a5b3f810024d17a2
+1.3.0         3846f8f8a1c5d051064efc629da3e4cf768c0b10f3386436506aa3db8cdc5913
+```
+
+The local branch:
+
+```text
+feature/noderooms-trustbridge-alpha2
+```
+
+adds only the repository-side 005A schema, public-safe fixtures, ADR, contract
+test, fixture documentation, the Owner-supplied competitive-position
+supplement, and this provenance record. It does not change a runtime source,
+generated distribution file, package identity, plugin manifest, OpenClaw
+configuration, release source, or publication workflow.
+
+The root `README.md` and `CHANGELOG.md` are intentionally unchanged because
+they are members of the exact published 52-file `1.3.0` package. The 005A
+paths under `contracts/`, `tests/`, and `docs/` are outside that package
+allowlist.
+
+005A inherits Alpha1 exact rules, default-off state, public-safe observation
+boundary, and per-Agent runtime isolation. It also references the later
+002A–002D and 004A–004C authority and receipt chain by fingerprint. Alpha1's
+local `trust-events-v1.json` remains a non-canonical development ledger and
+cannot become TrustBridge evidence without a later explicit adapter,
+normalization profile, verifier, and external trust anchor.
+
+No 005A commit, push, pull request, package publication, Gateway change, or
+production modification is implied by this local provenance entry.
+
+The completed local 005A validation on exact Node `24.18.0` reports:
+
+```text
+005A targeted contract tests: 13 pass / 0 fail
+full repository tests:        279 total / 278 pass / 0 fail / 1 PHP skip
+isolated OpenClaw loader:      pass / 14 tools / 6 hooks
+ClawHub 0.23.1 validation:     pass / 0 breakage / 0 warning / 0 issue
+git diff --check:              pass
+```
+
+An exact pre-change/base pack and post-change/candidate pack both contained
+52 files and produced:
+
+```text
+SHA-256: 3846f8f8a1c5d051064efc629da3e4cf768c0b10f3386436506aa3db8cdc5913
+```
+
+This proves that the repository-only 005A files do not alter the published
+stable package bytes.
+
+## TrustBridge Alpha2 competitive-position supplement
+
+The Owner-supplied strategic direction dated 2026-07-30 is preserved at:
+
+```text
+docs/strategy/NODEROOMS_TRUSTBRIDGE_ALPHA2_COMPETITIVE_POSITION_20260730_HU.md
+```
+
+The supplement is normative for Alpha2 prioritization and communication. It
+does not claim that an Agent Passport, permission layer, expiring grant,
+signed receipt, repository evidence, or Agent community is individually
+unique. It defines the defensible target as the integrated, externally
+verifiable chain from Verified Owner through exact artifact/runtime identity,
+exact scoped authority, provider outcome, privacy-preserving receipt,
+replay protection, and later portable cross-Gateway evidence.
+
+The 005A ADR references this supplement directly. The 005A contract suite also
+requires the integrated-chain terms, bounded proof-status vocabulary, explicit
+prohibited-claim list, zero runtime authority, disabled production
+enforcement, and immutable `1.3.0` boundary to remain present.
+
+This strategic integration is documentation- and contract-test-only. It
+performs no competitor scan, reputation scoring, runtime enforcement,
+production call, provider write, Gateway change, package publication, or
+cross-Gateway trust action.
+
+## TrustBridge Alpha2 005A remote publication record
+
+After the local record above was created, 005A was published through the
+authenticated GitHub connector as one atomic commit:
+
+```text
+pull request: https://github.com/MixxyAI/noderooms-openclaw-plugin/pull/17
+state: open draft
+branch: feature/noderooms-trustbridge-alpha2
+commit: 0313084b450cf915f9a2a2f95a08d9f27682c65a
+base: cda19d39ffdf0a05d111ff156bd1448f8a55588d
+changed files: 9
+additions: 3341
+deletions: 0
+GitHub CI run: 40
+GitHub CI conclusion: success
+```
+
+The remote blobs were compared byte-for-byte with the locally validated 005A
+candidate before the draft PR was opened. `main` and the stable package were
+not modified.
+
+## TrustBridge Alpha2 005B development base
+
+005B is a separate repository-only development layer stacked conceptually on
+the exact 005A draft-PR head:
+
+```text
+0313084b450cf915f9a2a2f95a08d9f27682c65a
+```
+
+The local work branch is:
+
+```text
+feature/noderooms-trustbridge-alpha2-005b
+```
+
+No Owner-approved TrustBridge npm SemVer identity existed when 005B began.
+The milestone therefore makes an explicit no-package decision: the engine,
+schema, vectors, tests, and ADR remain under `tools/`, `contracts/`, `tests/`,
+and `docs/`, outside the root npm allowlist. `package.json`,
+`openclaw.plugin.json`, `src/`, `dist/`, every `release-source/*` tree, and
+all publication workflows remain unchanged.
+
+005B freezes the final directory normalization profile:
+
+```text
+noderooms-portable-directory-tree-sha256-v1
+```
+
+The canonical fictional vector binds:
+
+```text
+directory tree:
+sha256:9c45a6821f4b0b47dbf26024baa3cd4d301127c9ede974c668c267323d8fb2a0
+
+runtime instance:
+sha256:bd1fee1c2da451cb651875e7e302694257690c7f9e37591b2e6430741644ab15
+
+complete 005B result:
+sha256:2c20f0d28accf9bf965fcff38dce7bfb892cbd2277bff188bb0d8f8c13eb5607
+```
+
+The engine is local read-only code. It imports no network, subprocess,
+environment, or filesystem-write API. It performs no install, extraction,
+Gateway action, Owner decision, provider write, package publication, or
+production call. Its result is evidence-only and explicitly does not claim
+archive-to-directory correspondence, artifact safety, external validation, or
+production enforcement.
+
+The final local validation used exact Node `24.18.0` and reported:
+
+```text
+005B targeted tests:       18 pass / 0 fail
+full repository suite:     297 total / 296 pass / 0 fail / 1 PHP skip
+isolated OpenClaw loader:  pass / 14 tools / 6 hooks
+ClawHub 0.23.1:            pass / 0 breakage / 0 warning /
+                            0 deprecation / 0 issue
+git diff --check:          pass
+```
+
+The final post-change pack proof contains exactly 52 files and remains
+byte-for-byte the published stable artifact:
+
+```text
+3846f8f8a1c5d051064efc629da3e4cf768c0b10f3386436506aa3db8cdc5913
+```
+
+No npm or ClawHub publish, Gateway start or restart, production call, provider
+write, Owner command, live lease request, OpenClaw config write, artifact
+install, or artifact block occurred.
