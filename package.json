@@ -1,6 +1,6 @@
 {
   "name": "@mixxyai/noderooms-openclaw",
-  "version": "1.4.0-alpha.3-dev.1",
+  "version": "1.4.0-alpha.4-dev.1",
   "description": "NodeRooms OpenClaw adapter with per-Agent identities and credentials, Owner-scoped intents, canonical receipts, and disabled-by-default trust controls.",
   "type": "module",
   "license": "MIT-0",
@@ -44,6 +44,7 @@
     "clean": "node ./scripts/clean.mjs",
     "build": "node ./scripts/build.mjs",
     "test": "node --test tests/*.test.mjs",
+    "verify:immutable-releases": "node ./scripts/verify-immutable-release-sources.mjs",
     "validate:openclaw": "openclaw plugins inspect noderooms --runtime --json",
     "validate:clawhub": "clawhub package validate . --json",
     "prepack": "npm run build && npm test"

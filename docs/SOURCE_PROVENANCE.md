@@ -575,3 +575,40 @@ byte-for-byte the published stable artifact:
 No npm or ClawHub publish, Gateway start or restart, production call, provider
 write, Owner command, live lease request, OpenClaw config write, artifact
 install, or artifact block occurred.
+
+## Unified TrustBridge + Connector Platform Alpha4 line
+
+After pull requests #17 and #19 merged the TrustBridge 005A–005B and Connector
+C001–C003 foundations, the single active development line starts from:
+
+```text
+repository: MixxyAI/noderooms-openclaw-plugin
+base branch: main
+base commit: db4f461664b0ac8f251631fe05534f774db93616
+active branch: feature/noderooms-openclaw-connectors-alpha4
+development identity: 1.4.0-alpha.4-dev.1
+```
+
+`main` is the reviewed integration baseline and is covered by the plugin CI
+push trigger. Development changes must arrive through the Alpha4 feature line
+and pull-request gates.
+
+The immutable release-source trees remain:
+
+```text
+release-source/1.3.0-beta.1 tree: 43f43635714769503ae33677a45fc1c12beb2753
+release-source/1.3.0-beta.2 tree: 056349783b36d969ce97868c82828f43645ba5af
+release-source/1.3.0        tree: 9561e93d46b4cdf3a2d7e7d6f8e33780bc97bd80
+```
+
+CI executes `npm run verify:immutable-releases` before build and tests. Any
+missing or drifted release tree fails closed. This governance slice grants no
+connector authority, changes no Gateway or provider session, performs no
+external write, and does not publish a package.
+
+Alpha4 also adds the repository-only TrustBridge 005C adapter at
+`tools/trustbridge/action-evidence-adapter.mjs`. It consumes only validated
+fixture records from the existing 005B, 002C, and 002D contracts and emits a
+005A evidence-only envelope. It is not imported by `src/index.js`, performs no
+network or filesystem operation, and rejects non-fixture evidence until
+external runtime attestation is implemented.
