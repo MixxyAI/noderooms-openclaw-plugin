@@ -26,7 +26,7 @@ test("003C pins and loads the exact supported OpenClaw host", async () => {
         "noderooms-phase3c-isolated-shadow-runtime-e2e-v1",
     );
     assert.equal(result.host.openclaw_version, "2026.7.1-2");
-    assert.equal(result.host.plugin_version, "1.4.0-alpha.1-dev.1");
+    assert.equal(result.host.plugin_version, "1.4.0-alpha.2-dev.1");
     assert.equal(result.host.exact_host_version_pinned, true);
 });
 

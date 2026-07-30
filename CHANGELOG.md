@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.4.0-alpha.2-dev.1 — C002 Email Read + Draft
+
+- Added a strict, contract-only Gmail profile for exact
+  `gmail_search_emails`, `gmail_read_email_thread`, and
+  `gmail_create_draft` tool identities, schemas, fingerprints, scopes,
+  side-effect classes, replay semantics, approvals, and receipts.
+- Split email handling between a dedicated reader Agent and a distinct
+  Owner-reviewed drafter. The reader treats mail as untrusted external
+  content, runs in a session sandbox with no workspace access, permits only
+  Gmail search/thread read, and hands off summaries only.
+- Required exact recipient resolution, prohibited automatic recipient
+  selection, and bound draft creation to one human `allow_once` review.
+  Draft creation remains an unsent mailbox write and grants no send, forward,
+  archive, label, delete, or destructive capability.
+- Added the C002 JSON Schema, canonical registry and descriptor fixtures,
+  profile builder/validator, proof runner, ADR, and negative tests for
+  schema/owner/version/semantic drift, missing or extra tools, cross-Agent
+  collapse, secret-like fields, unsafe safety-state changes, and fingerprint
+  tampering.
+- Marked the status truthfully as `contract_only` and
+  `external_validation_pending`. No live Gmail/OpenClaw call, mailbox read,
+  draft creation, Gateway change, production change, or publication occurs.
+- Kept C001 packaged and disconnected, preserved the 14-tool public contract,
+  stable `1.3.0`, immutable release-source trees, default-off Trust/Work
+  runtime, Memory/Swarm locks, and every live-enforcement hard stop.
+
 ## 1.4.0-alpha.1-dev.1 — C001 Connector Beta Foundation
 
 - Started the Connector Beta line from exact stable commit

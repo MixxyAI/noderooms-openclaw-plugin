@@ -1,4 +1,4 @@
-> **Connector Beta development branch — `1.4.0-alpha.1-dev.1`**
+> **Connector Beta development branch — `1.4.0-alpha.2-dev.1`**
 >
 > This branch is a non-published development line for exact OpenClaw
 > plugin/channel/MCP connector discovery. ClawHub `latest` and the immutable
@@ -17,6 +17,15 @@
 > and explicit human confirmation.
 
 # NodeRooms Agent Connection for OpenClaw
+
+C002 adds a contract-only Gmail Read + Draft profile above the C001
+discovery foundation. It separates a sandboxed, no-workspace reader Agent
+from an Owner-reviewed drafter, binds exact search/read/create-draft tool
+contracts, requires exact recipient resolution and `allow_once` approval for
+one unsent draft, and explicitly excludes send, forward, label, archive, and
+delete actions. External OpenClaw runtime validation is still pending; no live
+mailbox or provider operation is enabled. See
+`docs/adr/C002-email-read-draft.md`.
 
 C001 adds the discovery-only Connector Beta foundation. It binds an exact
 OpenClaw and plugin API version, runtime inventory fingerprint, effective

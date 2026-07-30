@@ -1,0 +1,355 @@
+{
+  "$schema": "../connector-scope-registry-v1.schema.json",
+  "contract_version": "noderooms-connector-scope-registry-v1",
+  "registry_version": "nrcr_2026-07-30.002",
+  "policy_version": "nrp_2026-07-30.002",
+  "activation_state": "contract_only",
+  "live_enforce_allowed": false,
+  "profiles": [
+    {
+      "profile_id": "nrscp_gmail_message_search_v1",
+      "scope": "connector.gmail.message.search",
+      "status": "reference_only",
+      "provider": "gmail",
+      "connector_id": "openclaw.codex.gmail-app",
+      "connector_version": "0.1.5",
+      "tool_name": "gmail_search_emails",
+      "tool_schema_fingerprint": "sha256:2da285b2598f3171a82954b26d80e6bbc660fb871534dd1fa0f722fbc1f0c621",
+      "tool_input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label_ids": {
+            "oneOf": [
+              {
+                "type": "array",
+                "maxItems": 32,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "next_page_token": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 4096
+          }
+        }
+      },
+      "action": "search",
+      "resource_type": "gmail_message",
+      "resource_selector": {
+        "strategy": "exact",
+        "required_claims": [
+          "account_binding_fingerprint_sha256",
+          "query_fingerprint_sha256"
+        ],
+        "wildcards_allowed": false
+      },
+      "risk": "medium",
+      "side_effect_class": "read",
+      "replay_semantics": "replay_safe_read",
+      "approval_policy": "none",
+      "receipt_profile": "read_observation_v1",
+      "description": "Contract-only profile for bounded Gmail search through a dedicated restricted reader Agent."
+    },
+    {
+      "profile_id": "nrscp_gmail_thread_read_v1",
+      "scope": "connector.gmail.thread.read",
+      "status": "reference_only",
+      "provider": "gmail",
+      "connector_id": "openclaw.codex.gmail-app",
+      "connector_version": "0.1.5",
+      "tool_name": "gmail_read_email_thread",
+      "tool_schema_fingerprint": "sha256:4a3ed4557e309026e68dd455fab0ea1de43f299ae87f1ad95b611cb90534f382",
+      "tool_input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "id_type": {
+            "type": "string",
+            "enum": [
+              "message",
+              "thread"
+            ]
+          },
+          "max_messages": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      },
+      "action": "read_thread",
+      "resource_type": "gmail_thread",
+      "resource_selector": {
+        "strategy": "exact",
+        "required_claims": [
+          "account_binding_fingerprint_sha256",
+          "thread_id_fingerprint_sha256"
+        ],
+        "wildcards_allowed": false
+      },
+      "risk": "medium",
+      "side_effect_class": "read",
+      "replay_semantics": "replay_safe_read",
+      "approval_policy": "none",
+      "receipt_profile": "read_observation_v1",
+      "description": "Contract-only profile for reading one bounded Gmail thread as untrusted external content."
+    },
+    {
+      "profile_id": "nrscp_gmail_message_draft_v1",
+      "scope": "connector.gmail.message.draft",
+      "status": "reference_only",
+      "provider": "gmail",
+      "connector_id": "openclaw.codex.gmail-app",
+      "connector_version": "0.1.5",
+      "tool_name": "gmail_create_draft",
+      "tool_schema_fingerprint": "sha256:ba72ff315b1ed81d2bafa4e70e80a70b9453e392c9bff94a5e1cb9d927aed490",
+      "tool_input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "properties": {
+          "body": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "message"
+            ],
+            "properties": {
+              "message": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "payload",
+                  "subject"
+                ],
+                "properties": {
+                  "bcc": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "cc": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "from_address": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 320
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "payload": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "mime_type"
+                    ],
+                    "properties": {
+                      "body": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "base64_url_content": {
+                                "oneOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 10485760
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "content": {
+                                "oneOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 10485760
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "charset": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 80
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "content_disposition": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "inline",
+                              "attachment"
+                            ]
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "content_id": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 998
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "filename": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 255
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "mime_type": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 127
+                      },
+                      "parts": {
+                        "oneOf": [
+                          {
+                            "type": "array",
+                            "maxItems": 128,
+                            "items": {}
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "reply_message_id": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 256
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "reply_to": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 320
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "subject": {
+                    "type": "string",
+                    "maxLength": 998
+                  },
+                  "to": {
+                    "type": "string",
+                    "maxLength": 4096
+                  }
+                }
+              }
+            }
+          },
+          "response_fields": {
+            "oneOf": [
+              {
+                "type": "array",
+                "maxItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "id",
+                    "message"
+                  ]
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "action": "create_draft",
+      "resource_type": "gmail_message",
+      "resource_selector": {
+        "strategy": "exact",
+        "required_claims": [
+          "account_binding_fingerprint_sha256",
+          "recipient_set_fingerprint_sha256",
+          "draft_payload_fingerprint_sha256"
+        ],
+        "wildcards_allowed": false
+      },
+      "risk": "high",
+      "side_effect_class": "write",
+      "replay_semantics": "at_most_once_dispatch",
+      "approval_policy": "allow_once",
+      "receipt_profile": "external_action_receipt_v2",
+      "description": "Contract-only profile for creating one unsent Gmail draft after exact recipient resolution and one explicit human Owner approval."
+    }
+  ]
+}

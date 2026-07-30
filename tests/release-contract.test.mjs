@@ -25,6 +25,10 @@ const connectorBetaFoundation = await readFile(
     new URL("../dist/connector-beta-foundation.js", import.meta.url),
     "utf8",
 );
+const emailReadDraftProfile = await readFile(
+    new URL("../dist/email-read-draft-profile.js", import.meta.url),
+    "utf8",
+);
 const stableSourcePackage = JSON.parse(await readFile(
     new URL("../release-source/1.3.0/package.json", import.meta.url),
     "utf8",
@@ -73,7 +77,7 @@ const stableReleaseClosure = JSON.parse(await readFile(
 ));
 
 test("Connector Beta uses a distinct development identity and preserves stable 1.3.0", () => {
-    assert.equal(pkg.version, "1.4.0-alpha.1-dev.1");
+    assert.equal(pkg.version, "1.4.0-alpha.2-dev.1");
     assert.equal(manifest.version, pkg.version);
     assert.equal(stableSourcePackage.version, "1.3.0");
     assert.equal(stableSourceManifest.version, stableSourcePackage.version);
@@ -574,6 +578,29 @@ test("C001 Connector Beta foundation is packaged but disconnected and non-live",
     assert.doesNotMatch(connectorBetaFoundation, /\.runTask\(/);
     assert.doesNotMatch(connectorBetaFoundation, /\.resume\(/);
     assert.doesNotMatch(connectorBetaFoundation, /child_process/);
+});
+
+test("C002 Email Read + Draft profile is packaged but disconnected and non-live", () => {
+    assert.doesNotMatch(index, /email-read-draft-profile/);
+    assert.doesNotMatch(index, /buildEmailReadDraftProfileV1/);
+    assert.match(
+        emailReadDraftProfile,
+        /EMAIL_READ_DRAFT_DEVELOPMENT_IDENTITY =\s*"1\.4\.0-alpha\.2-dev\.1"/,
+    );
+    assert.match(
+        emailReadDraftProfile,
+        /EMAIL_READ_DRAFT_LIVE_USE_ALLOWED = false/,
+    );
+    assert.match(
+        emailReadDraftProfile,
+        /external_validation_pending/,
+    );
+    assert.doesNotMatch(emailReadDraftProfile, /\bfetch\(/);
+    assert.doesNotMatch(emailReadDraftProfile, /"tools\.invoke"/);
+    assert.doesNotMatch(emailReadDraftProfile, /"tools\.catalog"/);
+    assert.doesNotMatch(emailReadDraftProfile, /\.runTask\(/);
+    assert.doesNotMatch(emailReadDraftProfile, /\.resume\(/);
+    assert.doesNotMatch(emailReadDraftProfile, /child_process/);
 });
 
 test("Phase 4 owner inventory commands are present and Owner-gated", () => {

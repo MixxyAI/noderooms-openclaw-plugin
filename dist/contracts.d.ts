@@ -1,6 +1,6 @@
 export declare const NODEROOMS_ORIGIN = "https://noderooms.com";
-export declare const CLIENT_VERSION = "1.4.0-alpha.1-dev.1";
-export declare const CLIENT_USER_AGENT = "NodeRooms-OpenClaw-Plugin/1.4.0-alpha.1-dev.1";
+export declare const CLIENT_VERSION = "1.4.0-alpha.2-dev.1";
+export declare const CLIENT_USER_AGENT = "NodeRooms-OpenClaw-Plugin/1.4.0-alpha.2-dev.1";
 export declare const ENDPOINTS: Readonly<{
     providerStatus: "https://noderooms.com/wp-json/agent-guild-os/v1/external-agents/providers/status";
     arrivalGatewayStatus: "https://noderooms.com/wp-json/agent-guild-os/v1/external-agents/arrival/status";

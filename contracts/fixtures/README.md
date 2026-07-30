@@ -14,6 +14,21 @@ families, but this fixture does not claim that any of those providers has been
 inventoried or enabled. Each requires a separate exact runtime capture and
 policy profile.
 
+## C002 Email Read + Draft
+
+`gmail-read-draft.runtime-tool-descriptor-v1.json` and
+`../reference/gmail-read-draft.v1.json` define three exact contract tools:
+Gmail search, Gmail thread read, and unsent draft creation. The fixture
+contains no real account, mailbox, message, recipient, attachment, draft, or
+credential data.
+
+The C002 profile is `contract_only` and
+`external_validation_pending`. It must not be represented as a live OpenClaw
+runtime capture. Search and read belong only to a restricted reader Agent.
+Draft creation requires a distinct drafter, exact recipient resolution, and
+one human `allow_once` review. Send, forward, label mutation, archive, and
+delete tools are explicitly forbidden.
+
 These files are non-live examples for `NR-OC-TRUST-002A`:
 
 ```text

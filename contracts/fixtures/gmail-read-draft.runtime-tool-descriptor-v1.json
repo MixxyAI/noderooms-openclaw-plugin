@@ -1,0 +1,341 @@
+{
+  "$comment": "C002 contract fixture derived from the loaded Gmail app tool contracts. It grants no runtime authority and contains no mailbox, account, message, recipient, or credential data.",
+  "contract_version": "noderooms-runtime-tool-descriptor-set-v1",
+  "fixture": true,
+  "captured_at": "2026-07-30T13:20:00Z",
+  "refresh_reason": "contract_test",
+  "inventory_generation": 1,
+  "source": {
+    "platform": "openclaw",
+    "catalog_kind": "contract_fixture",
+    "agent_id": "agent-example-email-contract"
+  },
+  "tools": [
+    {
+      "tool_name": "gmail_search_emails",
+      "owner": {
+        "kind": "plugin",
+        "owner_id": "gmail",
+        "resolution": "exact"
+      },
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label_ids": {
+            "oneOf": [
+              {
+                "type": "array",
+                "maxItems": 32,
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "max_results": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "next_page_token": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "query": {
+            "type": "string",
+            "maxLength": 4096
+          }
+        }
+      },
+      "declared_output_profile": "read_observation_v1",
+      "declared_replay_semantics": "replay_safe_read",
+      "declared_replay_safe": true,
+      "declared_side_effect_class": "read",
+      "declared_risk": "medium",
+      "host_optional": true,
+      "host_tags": [
+        "email",
+        "gmail",
+        "read",
+        "search"
+      ]
+    },
+    {
+      "tool_name": "gmail_read_email_thread",
+      "owner": {
+        "kind": "plugin",
+        "owner_id": "gmail",
+        "resolution": "exact"
+      },
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "id_type": {
+            "type": "string",
+            "enum": [
+              "message",
+              "thread"
+            ]
+          },
+          "max_messages": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          }
+        }
+      },
+      "declared_output_profile": "read_observation_v1",
+      "declared_replay_semantics": "replay_safe_read",
+      "declared_replay_safe": true,
+      "declared_side_effect_class": "read",
+      "declared_risk": "medium",
+      "host_optional": true,
+      "host_tags": [
+        "email",
+        "gmail",
+        "read",
+        "thread"
+      ]
+    },
+    {
+      "tool_name": "gmail_create_draft",
+      "owner": {
+        "kind": "plugin",
+        "owner_id": "gmail",
+        "resolution": "exact"
+      },
+      "input_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "body"
+        ],
+        "properties": {
+          "body": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "message"
+            ],
+            "properties": {
+              "message": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "payload",
+                  "subject"
+                ],
+                "properties": {
+                  "bcc": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "cc": {
+                    "type": "string",
+                    "maxLength": 4096
+                  },
+                  "from_address": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 320
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "payload": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "mime_type"
+                    ],
+                    "properties": {
+                      "body": {
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                              "base64_url_content": {
+                                "oneOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 10485760
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              },
+                              "content": {
+                                "oneOf": [
+                                  {
+                                    "type": "string",
+                                    "maxLength": 10485760
+                                  },
+                                  {
+                                    "type": "null"
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "charset": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 80
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "content_disposition": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "enum": [
+                              "inline",
+                              "attachment"
+                            ]
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "content_id": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 998
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "filename": {
+                        "oneOf": [
+                          {
+                            "type": "string",
+                            "maxLength": 255
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      },
+                      "mime_type": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 127
+                      },
+                      "parts": {
+                        "oneOf": [
+                          {
+                            "type": "array",
+                            "maxItems": 128,
+                            "items": {}
+                          },
+                          {
+                            "type": "null"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "reply_message_id": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 256
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "reply_to": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "maxLength": 320
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "subject": {
+                    "type": "string",
+                    "maxLength": 998
+                  },
+                  "to": {
+                    "type": "string",
+                    "maxLength": 4096
+                  }
+                }
+              }
+            }
+          },
+          "response_fields": {
+            "oneOf": [
+              {
+                "type": "array",
+                "maxItems": 2,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "id",
+                    "message"
+                  ]
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "declared_output_profile": "external_action_receipt_v2",
+      "declared_replay_semantics": "at_most_once_dispatch",
+      "declared_replay_safe": false,
+      "declared_side_effect_class": "write",
+      "declared_risk": "high",
+      "host_optional": true,
+      "host_tags": [
+        "draft",
+        "email",
+        "gmail",
+        "write"
+      ]
+    }
+  ]
+}

@@ -351,6 +351,19 @@ live plugin entry point. It performs no Gateway request, tool invocation,
 connector call, network request, external write, Owner decision, production
 change, or publication.
 
+## Connector Beta C002 development line
+
+C002 advances only the development package and client identity to
+`1.4.0-alpha.2-dev.1`. The stable `1.3.0` release and every immutable release
+source remain unchanged.
+
+C002 adds a contract-only Gmail Read + Draft profile derived from the loaded
+Gmail app tool contracts. Its status is
+`external_validation_pending`: no live OpenClaw Gmail inventory, mailbox
+read, draft creation, send, Gateway change, production change, or publication
+is claimed. The email module remains disconnected from the live plugin entry
+point.
+
 The immutable release-source trees remain:
 
 ```text
