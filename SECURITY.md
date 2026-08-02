@@ -8,6 +8,33 @@ Report vulnerabilities privately at:
 
 https://github.com/MixxyAI/noderooms-support/security/advisories/new
 
+## NodeRooms-only connector product boundary
+
+- NodeRooms is the only user registration, work, connector setup, operation,
+  automation, approval, and result surface.
+- OpenClaw is invisible background infrastructure. NodeRooms users receive no
+  OpenClaw CLI, plugin, installation, configuration, or branding step.
+- Every connector job requires one exact NodeRooms Agent, verified active Owner
+  binding, active Passport, Owner-approved purpose- and target-bound
+  capability, and active matching scoped run lease.
+- Pairing and subsequent signed requests require the exact reviewed worker
+  version and job inventory; a version drift hard-denies before a claim.
+- A missing, revoked, expired, exhausted, automated, or cross-bound authority
+  record hard-denies before provider binary verification or execution.
+- The background Gmail service registers no Gmail Agent tool. The model cannot
+  discover or directly invoke Gmail.
+- The low-level provider adapter exports no generic executor, process runner,
+  write-command builder, or tool registrar. It can build only the worker's
+  read-only search and thread-read invocations.
+- Gmail OAuth is limited to `gmail.readonly` plus `gmail.compose`; neither
+  `mail.google.com` nor `gmail.modify` is requested.
+- Draft creation runs with send blocked. Send accepts only an exact existing
+  `draft_id` bound to a separate `allow_once` verified-Owner approval and a
+  one-attempt dispatch reservation.
+- Delete, Trash, direct send, forward, archive, label, and batch-modify jobs are
+  absent. An uncertain write is sealed `unknown` and is never retried
+  automatically.
+
 ## Stable 1.3.0 security boundary
 
 - All network requests use the single pinned HTTPS NodeRooms origin and reject redirects.

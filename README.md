@@ -1,11 +1,10 @@
-> **TrustBridge + Connector Platform development line — `1.4.0-alpha.4-dev.1`**
+> **NodeRooms connector infrastructure development line — `1.4.0-alpha.6-dev.2`**
 >
-> `main` is the reviewed integration baseline. Active development continues on
-> `feature/noderooms-openclaw-connectors-alpha4`; direct development on
-> `main` is prohibited. The line combines TrustBridge evidence with exact
-> OpenClaw plugin/channel/MCP connector contracts. ClawHub `latest` and every
-> immutable release source remain `1.3.0`. Do not publish this development
-> identity or install it into a production Gateway.
+> `main` is the reviewed integration baseline. Alpha6 development is isolated
+> on `feature/noderooms-connectors-alpha6-product-boundary`; direct development
+> on `main` is prohibited. ClawHub `latest`, the stable package, and every
+> immutable release source remain `1.3.0`. Do not publish or production-install
+> this development identity.
 >
 > **Stable baseline — `1.3.0`**
 >
@@ -18,7 +17,43 @@
 > and permits the ClawHub `latest` update only after a separate trusted dry-run
 > and explicit human confirmation.
 
-# NodeRooms Agent Connection for OpenClaw
+# NodeRooms connector infrastructure
+
+## Canonical NodeRooms-only product boundary
+
+NodeRooms is the only user product surface. A user registers in NodeRooms,
+works in NodeRooms, connects Gmail, WhatsApp, Discord, and future apps from the
+NodeRooms interface, and sees every operation, automation, approval, and result
+in NodeRooms.
+
+The internal runtime provider is invisible background infrastructure. A
+NodeRooms user is never asked to install OpenClaw, run an OpenClaw CLI, install
+an OpenClaw plugin, configure OpenClaw, or understand the OpenClaw name. This
+repository identifies internal components for developers and infrastructure
+operators only; those names must not enter the NodeRooms customer journey.
+
+Every connector job requires the exact paired NodeRooms Agent, a verified
+Owner binding, an active Agent Passport, an Owner-approved purpose- and
+target-bound capability, and an active matching scoped run lease. Missing or
+invalid Owner binding or Passport is an immediate hard deny before provider
+execution. Missing, expired, exhausted, automated, or mismatched capability or
+lease authority is denied at the same boundary.
+
+The first Gmail background service supports search, sanitized thread read, one
+unsent draft, and sending only the exact draft covered by a separate
+`allow_once` verified-Owner approval. Delete, Trash, direct send, forward,
+archive, label, and batch-modify routes do not exist. Provider writes are never
+retried automatically after an uncertain outcome.
+
+See `docs/adr/C004-noderooms-only-product-surface.md` and the machine-readable
+`contracts/reference/noderooms-product-surface.v1.json`.
+
+The reviewed WordPress control-plane patch is isolated under
+`wordpress-reference/`. It adds the Owner Dashboard `Connect to Gmail` switch,
+schema-v3 server jobs and receipts, internal one-use Ed25519 worker pairing,
+and the exact NodeRooms REST lifecycle. It is a hash-gated reference for the
+existing `agent-guild-os` plugin, not an automatic production deployment and
+not part of the published npm package.
 
 TrustBridge 005C adds a repository-only adapter that binds the exact 005B
 artifact/runtime fingerprint to the existing capability request, Verified
@@ -86,9 +121,10 @@ Phase 3 closure evidence is documented in
 `docs/adr/003D-phase3-closure-proof.md` and can be reproduced with
 `node --test tests/phase3-closure-proof.test.mjs`.
 
-NodeRooms connects OpenClaw Agents to the public Agent City, signed Guest entry,
-Owner-reviewed Passport upgrades, scoped capabilities, run leases, persistent
-non-secret action intents, server-side idempotency, and canonical receipts.
+NodeRooms owns the user, Agent, verified Owner binding, Passport, capability,
+run lease, action, automation, approval, and result records. Internal runtimes
+may execute an exact NodeRooms-issued job, but they do not create a second user
+or Agent identity and cannot grant connector authority.
 
 ## Stable release status
 
@@ -104,9 +140,11 @@ plugin id: noderooms
 tools: 14
 ```
 
-Do not start a new Beta.1 test or advertise Beta.1 as multi-Agent ready. After
-ClawHub resolves `latest` to `1.3.0`, install either the default stable channel
-or the exact stable version:
+The following commands are historical infrastructure-operator validation only;
+they are never part of the NodeRooms user flow. Do not start a new Beta.1 test
+or advertise Beta.1 as multi-Agent ready. After ClawHub resolves `latest` to
+`1.3.0`, an infrastructure operator may install either the default stable
+channel or the exact stable version:
 
 ```powershell
 openclaw.cmd plugins install clawhub:@mixxyai/noderooms-openclaw

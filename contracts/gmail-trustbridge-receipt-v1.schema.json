@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://noderooms.com/contracts/gmail-trustbridge-receipt-v1.schema.json",
+  "title": "NodeRooms Gmail TrustBridge receipt v1",
+  "description": "Privacy-safe Ed25519-signed receipt for one exact Alpha5 Gmail pilot operation. It contains fingerprints only and never proves exactly-once provider effect.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "development_identity",
+    "receipt_id",
+    "reservation_id",
+    "operation",
+    "scope",
+    "tool_name",
+    "actor",
+    "bindings",
+    "approval",
+    "dispatch",
+    "outcome",
+    "privacy",
+    "started_at",
+    "completed_at",
+    "receipt_fingerprint_sha256",
+    "attestation"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "noderooms-gmail-trustbridge-receipt.v1"
+    },
+    "development_identity": {
+      "const": "1.4.0-alpha.5-dev.2"
+    },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^nrgmailrcpt_[a-f0-9]{32}$"
+    },
+    "reservation_id": {
+      "type": "string",
+      "pattern": "^nrgmailres_[a-f0-9]{32}$"
+    },
+    "operation": {
+      "enum": [
+        "search",
+        "read",
+        "draft",
+        "send",
+        "reply",
+        "forward",
+        "archive",
+        "label"
+      ]
+    },
+    "scope": {
+      "type": "string",
+      "pattern": "^connector\\.gmail\\.[a-z0-9._-]{3,96}$"
+    },
+    "tool_name": {
+      "type": "string",
+      "pattern": "^gmail_[a-z0-9_]{3,96}$"
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "agent_id_fingerprint_sha256"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "passport_bound_gmail_agent",
+            "dedicated_mail_reader",
+            "owner_reviewed_mail_drafter",
+            "owner_reviewed_mail_dispatcher",
+            "owner_reviewed_mail_organizer"
+          ]
+        },
+        "agent_id_fingerprint_sha256": {
+          "$ref": "#/$defs/fingerprint"
+        }
+      }
+    },
+    "bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "account_binding_fingerprint_sha256",
+        "target_fingerprint_sha256",
+        "payload_fingerprint_sha256"
+      ],
+      "properties": {
+        "account_binding_fingerprint_sha256": {
+          "$ref": "#/$defs/fingerprint"
+        },
+        "target_fingerprint_sha256": {
+          "$ref": "#/$defs/fingerprint"
+        },
+        "payload_fingerprint_sha256": {
+          "$ref": "#/$defs/fingerprint"
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy",
+        "consumed",
+        "human_owner_required",
+        "owner_decision_automated"
+      ],
+      "properties": {
+        "policy": {
+          "enum": [
+            "none",
+            "allow_once"
+          ]
+        },
+        "consumed": {
+          "type": "boolean"
+        },
+        "human_owner_required": {
+          "type": "boolean"
+        },
+        "owner_decision_automated": {
+          "const": false
+        }
+      }
+    },
+    "dispatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider_attempt_count",
+        "max_provider_attempts",
+        "automatic_retry_allowed",
+        "automatic_retry_attempted",
+        "exactly_once_effect_claimed"
+      ],
+      "properties": {
+        "provider_attempt_count": {
+          "const": 1
+        },
+        "max_provider_attempts": {
+          "const": 1
+        },
+        "automatic_retry_allowed": {
+          "const": false
+        },
+        "automatic_retry_attempted": {
+          "const": false
+        },
+        "exactly_once_effect_claimed": {
+          "const": false
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "provider_observation_fingerprint_sha256",
+        "raw_provider_result_included"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "committed",
+            "failed",
+            "unknown"
+          ]
+        },
+        "provider_observation_fingerprint_sha256": {
+          "$ref": "#/$defs/fingerprint"
+        },
+        "raw_provider_result_included": {
+          "const": false
+        }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_recipient_included",
+        "raw_subject_included",
+        "raw_body_included",
+        "raw_message_id_included",
+        "raw_thread_id_included",
+        "raw_draft_id_included",
+        "raw_provider_result_included",
+        "provider_credential_included"
+      ],
+      "properties": {
+        "raw_recipient_included": {
+          "const": false
+        },
+        "raw_subject_included": {
+          "const": false
+        },
+        "raw_body_included": {
+          "const": false
+        },
+        "raw_message_id_included": {
+          "const": false
+        },
+        "raw_thread_id_included": {
+          "const": false
+        },
+        "raw_draft_id_included": {
+          "const": false
+        },
+        "raw_provider_result_included": {
+          "const": false
+        },
+        "provider_credential_included": {
+          "const": false
+        }
+      }
+    },
+    "started_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "completed_at": {
+      "$ref": "#/$defs/timestamp"
+    },
+    "receipt_fingerprint_sha256": {
+      "$ref": "#/$defs/fingerprint"
+    },
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issuer",
+        "algorithm",
+        "key_id",
+        "key_thumbprint_sha256",
+        "signed_receipt_fingerprint_sha256",
+        "signed_at",
+        "signature_base64url"
+      ],
+      "properties": {
+        "issuer": {
+          "const": "noderooms-gmail-trustbridge-alpha5"
+        },
+        "algorithm": {
+          "const": "Ed25519"
+        },
+        "key_id": {
+          "type": "string",
+          "pattern": "^nrgmailkey_[a-f0-9]{24}$"
+        },
+        "key_thumbprint_sha256": {
+          "$ref": "#/$defs/fingerprint"
+        },
+        "signed_receipt_fingerprint_sha256": {
+          "$ref": "#/$defs/fingerprint"
+        },
+        "signed_at": {
+          "$ref": "#/$defs/timestamp"
+        },
+        "signature_base64url": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{86}$"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

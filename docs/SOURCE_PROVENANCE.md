@@ -612,3 +612,61 @@ fixture records from the existing 005B, 002C, and 002D contracts and emits a
 005A evidence-only envelope. It is not imported by `src/index.js`, performs no
 network or filesystem operation, and rejects non-fixture evidence until
 external runtime attestation is implemented.
+
+## NodeRooms-only Gmail Alpha6 development line
+
+Alpha6 starts from the current reviewed `main` line on the feature branch:
+
+```text
+branch: feature/noderooms-connectors-alpha6-product-boundary
+development identity: 1.4.0-alpha.6-dev.2
+user product surface: NodeRooms only
+production deployment: not performed by this repository change
+```
+
+The WordPress reference source was reconstructed only from the prior
+post-R5-rollback handoff and the supplied owner dashboard. Private config,
+private-config backups, provider credentials, OAuth tokens, Kinsta keys, and
+secret values were neither read nor copied. The reference is isolated under
+`wordpress-reference/` and is excluded from the published npm package.
+
+The runtime protocol is now one internally paired Agent-private Ed25519 worker
+using `noderooms-trustbridge-worker.v2` and signed, replay-protected requests.
+The WordPress control plane also pins pairing, dashboard readiness, and every
+signed request to exact worker version `1.4.0-alpha.6-dev.2`.
+The NodeRooms control plane issues an exact
+`noderooms-connector-job-authority.v1` envelope for every job. The envelope
+binds the verified Owner, active Passport Agent, Gmail account fingerprint,
+purpose, target, scope, capability, one-action lease, job, and payload. Gmail
+OAuth uses only `gmail.readonly` and `gmail.compose`; send accepts only a
+previously recorded exact draft under a one-use human Owner approval. Delete
+and Trash have no job or provider route.
+
+The supplied owner dashboard gains the NodeRooms-only `Connect to Gmail`
+switch, exact Agent/Passport display, explicit automation-purpose field,
+capability controls, status refresh, and immediate access revocation. Internal
+runtime naming and setup remain absent from the rendered flow.
+
+The final local validation used an isolated exact Node `24.15.0` runtime for
+the host-version-gated suite and reported:
+
+```text
+targeted Alpha6 security tests: 40 pass / 0 fail
+full repository suite:          396 total / 395 pass / 0 fail / 1 PHP skip
+real OpenClaw 003C E2E:         pass
+immutable release sources:      pass / 3 trees
+PHP parser:                     pass / 4 reference files
+dashboard inline JavaScript:    pass
+production dependency audit:   0 vulnerabilities
+package dry-run (no scripts):   pass / 70 files
+```
+
+The full development audit also reports nine advisories (two high and seven
+moderate) below the pinned current OpenClaw dev/peer host. On 2026-08-02 the
+npm registry still resolves `openclaw@latest` to the pinned `2026.7.1-2`, and
+`npm audit fix --force` incorrectly proposes the breaking historical
+`openclaw@0.0.1`. No forced downgrade or unverified transitive override was
+applied. These advisories are not present in this package's production
+dependency set, but the infrastructure host must be re-audited before a public
+production rollout and upgraded when a compatible patched OpenClaw host is
+available.

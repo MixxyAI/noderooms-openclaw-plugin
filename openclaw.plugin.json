@@ -2,7 +2,7 @@
   "id": "noderooms",
   "name": "NodeRooms Agent Connection",
   "description": "NodeRooms tools with isolated per-Agent identities and credentials, Owner-bound action intents, signed connector policy contracts, and disabled-by-default trust controls.",
-  "version": "1.4.0-alpha.4-dev.1",
+  "version": "1.4.0-alpha.6-dev.2",
   "configSchema": {
     "type": "object",
     "additionalProperties": false,
@@ -103,6 +103,83 @@
             "minimum": 1,
             "maximum": 512,
             "default": 128
+          }
+        }
+      },
+      "gmailTrustBridge": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Infrastructure-operator-only Gmail background worker. NodeRooms remains the only user-facing setup, approval, operation, and result surface.",
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "off",
+              "worker"
+            ],
+            "default": "off"
+          },
+          "baseUrl": {
+            "type": "string",
+            "format": "uri",
+            "default": "https://noderooms.com"
+          },
+          "openclawAgentId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$",
+            "default": "main"
+          },
+          "localPairingPort": {
+            "type": "integer",
+            "minimum": 1024,
+            "maximum": 65535,
+            "default": 45832
+          },
+          "pollIntervalMs": {
+            "type": "integer",
+            "minimum": 1000,
+            "maximum": 60000,
+            "default": 3000
+          },
+          "gog": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "account",
+              "homePath",
+              "client",
+              "executablePath",
+              "executableSha256"
+            ],
+            "properties": {
+              "account": {
+                "type": "string",
+                "minLength": 3,
+                "maxLength": 254
+              },
+              "homePath": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "client": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 64,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$"
+              },
+              "executablePath": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 1024
+              },
+              "executableSha256": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}$"
+              }
+            }
           }
         }
       }

@@ -9,6 +9,10 @@ import { wrapExternalContent } from "openclaw/plugin-sdk/security-runtime";
 import { ActionIntentStore, } from "./action-intents.js";
 import { ALL_SCOPES, ARRIVAL_ID_PATTERN, INVITE_ENV, INVITE_TOKEN_PATTERN, NODEROOMS_ORIGIN, NodeRoomsError, POLICY_ID_PATTERN, REQUEST_ID_PATTERN, } from "./contracts.js";
 import { createSignedGuestEntry, loadOrCreateGuestIdentity } from "./guest-identity.js";
+import {
+    normalizeGmailTrustBridgeWorkerConfig,
+    registerGmailTrustBridgeWorkerService,
+} from "./gmail-trustbridge-worker.js";
 import { requestJson } from "./http.js";
 import { NodeRoomsSdk } from "./sdk/client.js";
 import { createInMemorySecretStore } from "./sdk/memory-secret-store.js";
@@ -169,6 +173,20 @@ const plugin = definePluginEntry({
     description: "Channel-agnostic NodeRooms tools with OpenClaw-native Owner-scoped, restart-safe action intents and memory-only credentials.",
     register(api) {
         const stateDir = api.runtime.state.resolveStateDir();
+        const gmailWorkerConfig =
+            normalizeGmailTrustBridgeWorkerConfig(api.pluginConfig);
+        if (gmailWorkerConfig.mode === "worker") {
+            const gmailWorkerAgentDir = requireCanonicalOpenClawAgentDir(
+                resolveAgentDir(
+                    api.config ?? {},
+                    gmailWorkerConfig.openclawAgentId,
+                ),
+            );
+            registerGmailTrustBridgeWorkerService(api, {
+                config: gmailWorkerConfig,
+                agentDir: gmailWorkerAgentDir,
+            });
+        }
         const configuredName = nonEmptyString(api.pluginConfig?.guestAgentName) ?? "OpenClaw Guest Agent";
         const intents = new ActionIntentStore({
             stateFilePath: path.join(stateDir, "noderooms", "action-intents-v1.json"),
