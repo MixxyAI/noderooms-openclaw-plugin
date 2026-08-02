@@ -22,7 +22,7 @@ import {
 export const ACTION_EVIDENCE_ADAPTER_CONTRACT_VERSION =
     "noderooms-trustbridge-action-evidence-adapter.v1";
 export const ACTION_EVIDENCE_ADAPTER_DEVELOPMENT_IDENTITY =
-    "1.4.0-alpha.4-dev.1";
+    "1.4.0-alpha.6-dev.2";
 export const ACTION_EVIDENCE_ADAPTER_LIVE_AUTHORITY_ALLOWED = false;
 export const CLAW_RUNTIME_EVIDENCE_SCHEMA_ID =
     "https://noderooms.com/contracts/claw-runtime-evidence-v0.1.schema.json";

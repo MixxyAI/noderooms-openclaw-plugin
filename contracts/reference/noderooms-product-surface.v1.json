@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "contract_version": "noderooms-product-surface.v1",
+  "status": "canonical_product_boundary",
+  "user_product": "noderooms",
+  "registration_surface": "noderooms",
+  "work_surface": "noderooms",
+  "connector_setup": {
+    "surface": "noderooms",
+    "initial_connector_families": [
+      "gmail",
+      "whatsapp",
+      "discord"
+    ],
+    "runtime_setup_exposed_to_user": false
+  },
+  "authority_chain": [
+    "verified_owner_binding",
+    "active_agent_passport",
+    "owner_approved_purpose_and_target_bound_capability",
+    "active_scoped_run_lease",
+    "canonical_job",
+    "at_most_one_provider_attempt",
+    "public_safe_result_in_noderooms"
+  ],
+  "runtime": {
+    "internal_provider": "openclaw",
+    "role": "background_infrastructure",
+    "user_visible": false,
+    "user_cli_allowed": false,
+    "user_install_allowed": false,
+    "user_plugin_allowed": false,
+    "user_branding_allowed": false
+  },
+  "noderooms_surfaces": {
+    "operations": true,
+    "automations": true,
+    "approvals": true,
+    "results": true
+  },
+  "hard_deny": {
+    "missing_owner_binding": true,
+    "invalid_owner_binding": true,
+    "missing_passport": true,
+    "invalid_passport": true,
+    "missing_capability": true,
+    "expired_or_mismatched_capability": true,
+    "missing_run_lease": true,
+    "expired_exhausted_or_mismatched_run_lease": true
+  },
+  "gmail_initial_job_surface": {
+    "allowed": [
+      "gmail_oauth_start",
+      "gmail_oauth_complete",
+      "gmail_search",
+      "gmail_thread_read",
+      "gmail_draft_create",
+      "gmail_send_approved_draft",
+      "gmail_disconnect"
+    ],
+    "send_policy": "exact_draft_allow_once_verified_owner_approval",
+    "automatic_provider_retry": false,
+    "delete": "prohibited",
+    "trash": "prohibited",
+    "unsupported": [
+      "forward",
+      "archive",
+      "label",
+      "batch_modify",
+      "direct_send"
+    ]
+  }
+}

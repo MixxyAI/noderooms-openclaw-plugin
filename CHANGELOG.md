@@ -1,5 +1,45 @@
 # Changelog
 
+## 1.4.0-alpha.6-dev.2 — NodeRooms-only connector product boundary
+
+- Made NodeRooms the only user-facing registration, Agent, connector setup,
+  work, operation, automation, approval, and result surface. Recorded OpenClaw
+  strictly as invisible background infrastructure with no user CLI, plugin,
+  installation, configuration, or branding step.
+- Added the machine-readable `noderooms-product-surface.v1` reference contract,
+  ADR C004, and executable product-boundary tests.
+- Added the strict `noderooms-connector-job-authority.v1` worker envelope. Every
+  job now hard-denies before provider execution unless the exact paired Agent,
+  verified Owner binding, active Passport, human-approved purpose- and
+  target-bound capability, active matching scoped run lease, canonical job,
+  account, scope, and payload all agree.
+- Kept Gmail off the model/tool surface and registered only a full-runtime
+  background service with Agent-private Ed25519 pairing.
+- Removed the legacy generic Gmail provider executor and tool-registration
+  surface. Its remaining low-level adapter can build only read-only search and
+  thread-read commands; draft and exact approved-draft send exist only inside
+  the authority-validated worker path.
+- Added the reviewed WordPress reference control plane and Owner Dashboard
+  `Connect to Gmail` switch. The switch is bound to the selected exact Agent,
+  current Owner, active Passport, internal paired worker, an explicit
+  automation purpose, and NodeRooms-only status/revoke routes.
+- Bound pairing, dashboard readiness, and every signed worker request to the
+  exact Alpha6 worker version in addition to its Ed25519 key, Agent, Passport,
+  Owner binding, protocol, and supported-job inventory.
+- Narrowed Gmail OAuth to `gmail.readonly` plus `gmail.compose`. Added one
+  unsent-draft job guarded by provider no-send mode and one exact-draft send job
+  requiring an unexpired `allow_once` verified-Owner approval and one provider
+  attempt reservation.
+- Kept delete, Trash, direct send, forward, archive, label, and batch mutation
+  absent. Uncertain draft/send outcomes are sealed `unknown`; provider writes
+  are never retried automatically, and in-process replay is blocked.
+- Made exact-draft send reservation atomic with a per-connection database lock,
+  so concurrent Owner approvals cannot reserve a second provider attempt.
+- Preserved the immutable Beta.1, Beta.2, and stable `1.3.0` release-source
+  trees, the stable 14-tool contract, ClawHub `latest`, and production state.
+  This development commit performs no provider login, mailbox action,
+  publication, Gateway restart, or production deployment.
+
 ## 1.4.0-alpha.4-dev.1 — Unified TrustBridge + Connector Platform
 
 - Established one canonical development line at

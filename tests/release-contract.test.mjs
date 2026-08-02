@@ -81,7 +81,7 @@ const stableReleaseClosure = JSON.parse(await readFile(
 ));
 
 test("Connector Beta uses a distinct development identity and preserves stable 1.3.0", () => {
-    assert.equal(pkg.version, "1.4.0-alpha.4-dev.1");
+    assert.equal(pkg.version, "1.4.0-alpha.6-dev.2");
     assert.equal(manifest.version, pkg.version);
     assert.equal(stableSourcePackage.version, "1.3.0");
     assert.equal(stableSourceManifest.version, stableSourcePackage.version);
